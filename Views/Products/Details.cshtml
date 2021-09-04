@@ -1,0 +1,104 @@
+﻿@model OnlineStore.Models.Product
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+@*<div>
+    <h4>Product</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Price)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IsTop)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IsTop)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Discount)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Discount)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Count)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Count)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.CommodityCode)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CommodityCode)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Image)
+        </dt>
+        <dd class = "col-sm-10">
+            <img src="data:image/*;base64,@(Convert.ToBase64String(Model.Image))" class="img-fluid rounded-start " alt="Category image">
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Manufacturer)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Manufacturer.Title)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>*@
+
+
+
+<div class="card mb-3 w-75 bg-light m-3 border-end-0">
+    <div class="row g-0">
+        <div class="col-md-6">
+            <img src="data:image/*;base64,@(Convert.ToBase64String(Model.Image))" class="img-fluid rounded-start" alt="Category image">
+        </div>
+        <div class="col-md-6">
+            <div class="card-body">
+                <h5 class="card-title">@Html.DisplayNameForModel()</h5>
+                <p class="card-text"><span class="fw-bold">@Html.DisplayNameFor(m => m.Title)</span>: @Model.Title</p>
+                <p class="card-text"><span class="fw-bold">@Html.DisplayNameFor(m => m.Feature)</span>: @Model.Feature</p>
+                <p class="card-text"><span class="fw-bold">@Html.DisplayNameFor(m => m.Price)</span> @Model.Price</p>
+                <p class="card-text"><span class="fw-bold">@Html.DisplayNameFor(m => m.IsTop)</span> @Model.IsTop</p>
+                <p class="card-text"><span class="fw-bold">@Html.DisplayNameFor(m => m.Discount)</span>: @Model.Discount</p>
+                <p class="card-text"><span class="fw-bold">@Html.DisplayNameFor(m => m.Count)</span>: @Model.Count</p>
+                <p class="card-text"><span class="fw-bold">@Html.DisplayNameFor(m => m.CommodityCode)</span>: @Model.CommodityCode</p>
+                <hr />
+            </div>
+            @if (Model.CategoryProducts.Count() != 0)
+            {
+                <h2 class="ms-3">Categories:</h2>
+                <div class="card-body text-muted">
+                    @foreach (var cp in Model.CategoryProducts.Where( cp => cp.ProductId == Model.Id))
+                    {
+                        <p class="card-text">@cp.Category.Title</p>
+                    }
+                </div>
+             }
+         </div>
+    </div>
+
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning m-2">Edit</a>
+        <a asp-action="Index" class="btn btn-primary m-2">Back to List</a>
+    </div>
+</div>

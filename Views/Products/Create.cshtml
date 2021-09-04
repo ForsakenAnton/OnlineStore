@@ -1,0 +1,90 @@
+﻿@model OnlineStore.Models.ViewModels.ProductViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Product</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="mb-3">
+                <span class="text-info">* </span>
+                <label asp-for="Product.Title" class="form-label"></label>
+                <input asp-for="Product.Title" class="form-control" />
+                <span asp-validation-for="Product.Title" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <span class="text-info">* </span>
+                <label asp-for="Product.Feature" class="form-label"></label>
+                <input asp-for="Product.Feature" class="form-control" />
+                <span asp-validation-for="Product.Feature" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <span class="text-info">* </span>
+                <label asp-for="Product.Price" class="form-label"></label>
+                <input asp-for="Product.Price" class="form-control" />
+                <span asp-validation-for="Product.Price" class="text-danger"></span>
+            </div>
+
+            <div class="form-check mb-3">
+                <input asp-for="Product.IsTop" class="form-check-input" type="checkbox">
+                <label asp-for="Product.IsTop" class="form-check-label">
+                    @Html.DisplayNameFor(model => model.Product.IsTop)
+                </label>
+            </div>
+
+            <div class="mb-3">
+                <span class="text-info">* </span>
+                <label asp-for="Product.Discount" class="form-label"></label>
+                <input asp-for="Product.Discount" class="form-control" />
+                <span asp-validation-for="Product.Discount" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <span class="text-info">* </span>
+                <label asp-for="Product.Count" class="form-label"></label>
+                <input asp-for="Product.Count" class="form-control" />
+                <span asp-validation-for="Product.Count" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <span class="text-info">* </span>
+                <label asp-for="Product.CommodityCode" class="form-label"></label>
+                <input asp-for="Product.CommodityCode" class="form-control" />
+                <span asp-validation-for="Product.CommodityCode" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <span class="text-info">* </span>
+                <label asp-for="Product.Manufacturer" class="form-label"></label>
+                <select asp-for="Product.ManufacturerId" class="form-select bg-light text-dark" asp-items="@Model.ManufacturersList">
+                    <option selected="selected" disabled="disabled"> Сhoose vendor</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="CategoriesList" class="form-label"></label>
+                <select asp-for="categoriesId" class="form-select bg-light text-dark" asp-items="@Model.CategoriesList" multiple>
+                    <option selected="selected" disabled="disabled"> Сhoose categories</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <span class="text-info">* </span>
+                <label asp-for="Image" class="form-label"></label>
+                <input asp-for="Image" class="form-control" type="file" />
+            </div>
+
+            <div class="mb-3">
+                <input type="submit" value="Create" class="btn btn-success" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

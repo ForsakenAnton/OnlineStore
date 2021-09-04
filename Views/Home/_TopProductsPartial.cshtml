@@ -1,0 +1,120 @@
+﻿@model IEnumerable<OnlineStore.Models.ViewModels.ProductsGroupByCategoryViewModel>
+
+@foreach (var group in Model)
+{
+    <h4>
+        TOP offers - @group.CategoryTitle.Item2<sup><a asp-action="IndexCategories" asp-route-categoryId="@group.CategoryTitle.Item1" class="link-info text-decoration-none">@group.Products.Count() amount of goods</a></sup>
+    </h4>
+
+    <div class="container-fluid p-3 mb-5">
+        <div class="row d-flex flex-nowrap" style="overflow-x:auto">
+
+            @foreach (var product in group.Products)
+            {
+            <div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 text-truncate pt-1 pb-2">
+                <div class="card p-0 h-100 border-2 border-info main-box-shadow" style="border-radius:1rem;z-index:1000">
+                    <div class="mb-3"></div>
+                    <div class="text-center">
+                        <a asp-action="Details" asp-route-productId="@product.Id">
+                            <img src="data:image/*;base64,@(Convert.ToBase64String(product.Image))" class="card-img-top" style="max-width:10rem" alt="@product.Image.ToString()">
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        <a asp-action="Details" asp-route-productId="@product.Id" class="link-primary text-decoration-none">
+                            <h5 class="card-title text-truncate" title="@product.Title @product.Feature" data-bs-toggle="tooltip" data-bs-placement="top">
+                                @product.Title @product.Feature
+                            </h5>
+                        </a>
+
+
+                        @{string visibility = "visible";
+
+                            @if (product.Discount == 0)
+                            {
+                                visibility = "invisible";
+                            }
+                        }
+                        <div class="@visibility mb-3">
+                            <del>@product.Price</del>&nbsp;&nbsp;<span class="bg-warning rounded-2 p-2">-@product.Discount</span>
+                        </div>
+
+                        <h2 class="">@(product.Price - product.Discount)</h2>
+                    </div>
+                    @*<div class="card-footer border-top border-dark bg-white">*@
+                    <div class="card-footer border-0 mb-3">
+                        <a href="#" class="bi bi-cart btn btn-lg btn-success w-100 text-center">
+                            <span>Bye</span>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+            }          
+        </div>
+    </div>
+}
+
+
+
+    @*<div class="container-fluid p-3 mb-5">
+        <div class="row d-flex flex-nowrap" style="overflow-x:auto">
+            @foreach (var product in Model)
+            {
+
+                <div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 border-2 border-info rounded-2 m-1 text-truncate">
+                    <div class="card p-0 h-100 border-0">
+                        <div class="border-top mb-3"></div>
+                        <div class="text-center">
+                            <a asp-action="Details" asp-route-productId="@product.Id">
+                                <img src="data:image/*;base64,@(Convert.ToBase64String(product.Image))" class="card-img-top" style="max-width:10rem" alt="@product.Image.ToString()">
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            <a asp-action="Details" asp-route-productId="@product.Id">
+                                <h5 class="card-title text-truncate" title="@product.Title @product.Feature" data-bs-toggle="tooltip" data-bs-placement="top">
+                                    @product.Title @product.Feature
+                                </h5>
+                            </a>
+                            <div class="row mb-3 ms-0 me-0">
+                                <div class="col-5 p-0">
+                                    <small class="bi bi-star-fill"></small>
+                                    <small class="bi bi-star-fill"></small>
+                                    <small class="bi bi-star-half"></small>
+                                    <small class="bi bi-star"></small>
+                                    <small class="bi bi-star"></small>
+                                    &nbsp;
+                                </div>
+                                <div class="col-3 p-0 text-center">
+                                    <small class="bi bi-chat-fill"></small>
+                                    <abbr class="initialism">555</abbr>
+                                </div>
+                                <div class="col-4 p-0 text-end">
+                                    <small class="text-muted">@product.CommodityCode</small>
+                                </div>
+                            </div>
+
+                            @{string visibility = "visible";
+
+                                @if (product.Discount == 0)
+                                {
+                                    visibility = "invisible";
+                                }
+                            }
+                            <div class="@visibility mb-3">
+                                <del>@product.Price</del>&nbsp;&nbsp;<span class="bg-warning rounded-2 p-2">-@product.Discount</span>
+                            </div>
+
+                            <h2 class="">@(product.Price - product.Discount)</h2>
+                        </div>
+                        <div class="card-footer border-0 mb-3">
+                            <a href="#" class="bi bi-cart btn btn-lg btn-success w-50">
+                                <span>Bye</span>
+                            </a>
+                        </div>
+                        <div class="border-bottom"></div>
+                    </div>
+
+                </div>
+            }
+        </div>
+    </div>*@

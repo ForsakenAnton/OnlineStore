@@ -1,0 +1,32 @@
+﻿@model double
+
+@*<h1>@Model</h1>*@
+
+
+@for (int i = 0; i < 5; i++)
+{
+    if (Math.Floor(Model) + 1 > i && Model - 1 >= i)
+    {
+        <small class="bi bi-star-fill text-warning"></small>
+    }
+
+    else if (Math.Floor(Model) + 1 == (i + 1) && (Model + 1) == (i + 1))
+    {
+        <small class="bi bi-star text-warning"></small>
+    }
+    else if (Math.Floor(Model) + 1 == (i + 1))
+    {
+        <small class="bi bi-star-half text-warning"></small>
+    }
+    else
+    {
+        <small class="bi bi-star text-warning"></small>
+    }
+}
+
+
+@*<small class="bi bi-star-fill"></small>
+    <small class="bi bi-star-fill"></small>
+    <small class="bi bi-star-half"></small>
+    <small class="bi bi-star"></small>
+    <small class="bi bi-star"></small>*@

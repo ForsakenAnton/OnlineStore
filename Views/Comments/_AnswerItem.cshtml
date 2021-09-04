@@ -1,0 +1,112 @@
+﻿@model OnlineStore.Models.Answer
+
+@{
+    string isModeratedColor = Model.IsModerated == false ? "bg-warning bg-gradient" : "bg-success bg-gradient";
+
+    string isUnauditedCommentBudge = Model.IsModerated == true ? "bi bi-check-circle text-success" : "bi bi-exclamation-triangle text-warning";
+    string isUnauditedCommentText = Model.IsModerated == true ? "Audited comment" : "Unaudited comment";
+
+    string disabledAllow = Model.IsModerated == true ? "disabled" : "";
+    string disabledProhibit = Model.IsModerated == false ? "disabled" : "";
+
+    string checkCircle = Model.IsModerated == true ? "bi bi-check-circle text-success fw-bolder" : "";
+    string exclamationTriangle = Model.IsModerated == false ? "bi bi-exclamation-triangle text-warning fw-bolder" : "";
+}
+
+<div id="loading@(Model.Id)" class="spinner-border position-relative top-50 start-50" style="display:none;width:10rem;height:10rem;" role="status"></div>
+<div id="modal@(Model.Id)"></div>
+
+<div id="answerItem@(Model.Id)">
+    <div class="accordion-item border border-2 border-info rounded-3 ms-lg-5 me-lg-5 ms-3 me-3 mb-3">
+        <h2 class="accordion-header" id="heading@(Model.Id)">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answers@(Model.Id)" aria-expanded="false" aria-controls="answers@(Model.Id)">
+                <i class="@isUnauditedCommentBudge"> @isUnauditedCommentText</i> &nbsp;&nbsp; <span class="align-bottom">@Model.Date</span>
+</button>
+        </h2>
+        <div id="answers@(Model.Id)" class="accordion-collapse collapse @ViewBag.showAccordionInnerClass" aria-labelledby="heading@(Model.Id)" data-bs-parent="#inner-accordion@(Model.Comment.Id)">
+            <div class="accordion-body">
+
+                <div class="container border border-5 rounded-3 border-dark p-3 mb-5 @isModeratedColor">
+                    <div class="row align-items-center mb-3">
+                        <div class="col-6 align-content-center">
+                            @Model.User.Email
+                        </div>
+                        <div class="col-6 text-end">
+                            <div>@Model.Date</div>
+                        </div>
+                    </div>
+
+                    <form asp-antiforgery="true" class="border border-2 rounded-3 border-dark bg-white p-3 mb-3"
+                          data-ajax="true"
+                          data-ajax-method="post"
+                          data-ajax-loading="#loading"
+                          data-ajax-mode="replace"
+                          data-ajax-update="#modal@(Model.Id)"
+                          data-ajax-url="@Url.Action("ModifiedAnswer", "Comments")">
+
+                        <div class="row align-items-center">
+                            <div class="col-lg-6 col-12 border border-2 rounded rounded-3">
+
+                                <input type="hidden" asp-for="@Model.Id" />
+                                <input type="hidden" asp-for="@Model.IsModerated" />
+                                <input type="hidden" asp-for="@Model.Date" />
+                                <input type="hidden" asp-for="@Model.UserId" />
+                                <input type="hidden" asp-for="@Model.User" />
+                                <input type="hidden" asp-for="@Model.CommentId" />
+                                <input type="hidden" asp-for="@Model.Comment" />
+
+                                <div class="mb-3">
+                                    <label class="form-label" asp-for="@Model.Message"></label>
+                                    <textarea asp-for="@Model.Message" class="form-control" rows="5"></textarea>
+                                    <div class="form-text">*You may change this field</div>
+                                </div>
+                                @*<div class="text-center">*@
+                                <button type="submit" class="btn btn-sm btn-primary mb-3 w-100">Save changes</button>
+                                @*</div>*@
+                            </div>
+
+                            <div class="col-lg-6 col-12 text-center">
+                                <div class="text-capitalize">
+                                    <a class=" d-block mb-1 btn btn-light w-75 text-success @disabledAllow"
+                                       data-ajax="true"
+                                       data-ajax-mode="replace"
+                                       data-ajax-update="#answerItem@(Model.Id)"
+                                       data-ajax-loading="#loading@(Model.Id)"
+                                       data-ajax-url="@Url.Action("AllowAnswer", "Comments", new { answerId = Model.Id })">
+                                        <i class="@checkCircle"> Allow</i>
+                                    </a>
+                                </div>
+                                <div class="text-capitalize">
+                                    <a class="d-block mb-1 btn btn-light w-75 text-warning @disabledProhibit"
+                                       data-ajax="true"
+                                       data-ajax-mode="replace"
+                                       data-ajax-update="#answerItem@(Model.Id)"
+                                       data-ajax-loading="#loading@(Model.Id)"
+                                       data-ajax-url="@Url.Action("ProhibitAnswer", "Comments", new { answerId = Model.Id })">
+                                        <i class="@exclamationTriangle"> Prohibit</i>
+                                    </a>
+                                </div>
+                                <div class="text-capitalize">
+                                    <a class="d-block mb-1 btn btn-light w-75 text-danger"
+                                       data-ajax="true"
+                                       data-ajax-mode="replace"
+                                       data-ajax-update="#answerItem@(Model.Id)"
+                                       data-ajax-loading="#loading@(Model.Id)"
+                                       data-ajax-url="@Url.Action("DeleteAnswer", "Comments", new { answerId = Model.Id })">
+                                        <i class="bi bi-trash"> Delete</i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                            
+                        
+                    </form>
+
+                    <div class="text-center">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

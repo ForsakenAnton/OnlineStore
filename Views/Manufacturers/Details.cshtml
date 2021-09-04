@@ -1,0 +1,36 @@
+﻿@model OnlineStore.Models.Manufacturer
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div class="card pt-3 ps-3" style="width: 18rem;">
+    <img src="data:image/*;base64,@(Convert.ToBase64String(Model.Image))" class="img-fluid rounded-start" style="max-width:5rem"  alt="Manufacturer image">
+    <div class="card-body">
+        <h5 class="card-title">@Html.DisplayFor(m => m.Title)</h5>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning m-2">Edit</a> |
+        <a asp-action="Index" class="btn btn-primary m-2">Back to List</a>
+    </div>
+</div>
+
+@*<div class="card mb-3 w-75 bg-light m-3 border-end-0">
+    <div class="ps-3 row g-0 align-items-center">
+        <div class="col-md-6">
+            <img src="data:image/*;base64,@(Convert.ToBase64String(Model.Image))" class="img-fluid rounded-start" style="max-width:5rem" alt="Category image">
+        </div>
+        <div class="col-md-6">
+            <div class="card-body">
+                <h5 class="card-title">@Html.DisplayNameForModel()</h5>
+                <p class="card-text"><span class="fw-bold">@Html.DisplayNameFor(m => m.Title)</span> : @Model.Title</p>
+                <hr />
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning m-2">Edit</a> |
+        <a asp-action="Index" class="btn btn-primary m-2">Back to List</a>
+    </div>
+</div>*@

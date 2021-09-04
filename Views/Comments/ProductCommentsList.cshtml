@@ -1,0 +1,20 @@
+﻿@model IEnumerable<OnlineStore.Models.Comment>
+
+@{
+    ViewData["Title"] = "ProductCommentsList";
+}
+
+@*<div id="loading" class="spinner-border position-relative top-50 start-50" style="display:none;width:10rem;height:10rem;" role="status"></div>*@
+
+
+<p><span class="fw-bold">Reviews of model: </span> @ViewBag.product.Title @ViewBag.product.Feature</p>
+<div class="text-muted">All of <span class="text-decoration-underline fw-bold">@Model.Count()</span> reviews</div>
+<div class="text-muted"><span class="text-decoration-underline fw-bold">@Model.Count(c => c.IsModerated == false)</span> of all is not moderated</div>
+
+<div class="accordion" id="accordion">
+    @foreach (var comment in Model)
+    {
+        @await Html.PartialAsync("_CommentItem", comment);
+    }
+</div>
+

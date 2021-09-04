@@ -1,0 +1,102 @@
+﻿@model IEnumerable<OnlineStore.Models.Category>
+@{
+    ViewData["Title"] = "Categories";
+    //Layout = "_Layout";
+}
+
+
+<div class="container">
+    <div class="row g-5">
+        @foreach (var category in Model)
+        {
+            <div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 main-box-shadow">
+                <div class="card h-100 text-center border-0">
+                    <div class="text-center">
+                        <img src="data:image/*;base64,@(Convert.ToBase64String(category.Image))" class="card-img-top" style="max-width:10rem" alt="@category.Image.ToString()">
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">@category.Title</h5>
+                    </div>
+                    <a class="stretched-link" asp-action="IndexCategories" asp-controller="Home" asp-route-categoryId="@category.Id"></a>
+                    @*<div class="card-footer"></div>*@
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*<div class="container-fluid">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 mb-3">
+        @foreach (var category in Model)
+        {
+            <div class="col">
+                <div class=" p-3 text-center border-0">
+                    <img src="data:image/*;base64,@(Convert.ToBase64String(category.Image))" class="card-img-top" alt="@category.Image.ToString()">
+                    <div class="card-body">
+                        <h5 class="card-title">@category.Title</h5>
+                        <h5 class="card-title">@category.Title</h5>
+                        <h5 class="card-title">@category.Title</h5>
+                        <h5 class="card-title">@category.Title</h5>
+                    </div>
+                    <div class="card-footer bg-white">
+                        <a class="stretched-link" asp-action="Index" asp-controller="Home" asp-route-categoryId="@category.Id"></a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>*@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*<div class="container">
+    <div class="row mb-3">
+        @foreach (var category in Model)
+        {
+            <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+                <div class="card p-3 h-100 text-center border-0">
+                    <img src="data:image/*;base64,@(Convert.ToBase64String(category.Image))" class="card-img-top" alt="@category.Image.ToString()">
+                    <div class="card-body">
+                        <a class="stretched-link" asp-action="Index" asp-controller="Home" asp-route-categoryId="@category.Id"></a>
+                    </div>
+                    <div class="card-footer bg-white">
+                        <h5 class="card-title">@category.Title</h5>
+                    </div>
+                </div>
+            </div>
+
+        }
+   </div>
+</div>*@

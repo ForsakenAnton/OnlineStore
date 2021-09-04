@@ -1,0 +1,25 @@
+﻿@model OnlineStore.Models.ViewModels.IndexViewModel
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@*<partial action="_TopProductsPartial.cshtml"></partial>*@
+
+@await Html.PartialAsync("_ManufacturersPartial", Model.Manufacturers)
+
+@await Html.PartialAsync("_TopProductsPartial", Model.ProductsGroupByCategoryViewModel)
+
+
+
+
+@*@await Html.PartialAsync("_TopProductsPartial", Model.Products)*@
+
+@*@foreach (Category category in Model.Products.Aggregate(new List<Category>(), (acc, prod) =>
+    {
+        acc.AddRange(prod.CategoryProducts.Select(t => t.Category));
+        return acc;
+    }).Distinct())
+    {
+
+    }*@

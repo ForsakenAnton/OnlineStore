@@ -1,0 +1,144 @@
+﻿@model IEnumerable<OnlineStore.Models.Product>
+
+@{
+    ViewData["Title"] = "Index";
+    int index = 1;
+}
+
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-lg btn-success mb-3">Create New Product</a>
+</p>
+<div class="table-responsive">
+    <table class="table table-sm align-middle text-dark altetnate-table-hover">
+        <thead>
+            <tr>
+                <th style="width:10rem">
+                    @Html.DisplayNameFor(model => model.Title)
+                </th>
+                <th style="width:10rem">
+                    @Html.DisplayNameFor(model => model.Feature)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Price)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IsTop)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Discount)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Count)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CommodityCode)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Image)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Manufacturer)
+                </th>
+
+
+                <th>
+                    @Html.DisplayNameFor(model => model.CategoryProducts.First().Category)
+                </th>
+
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td style="width:10rem">
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td style="width:10rem">
+                        @Html.DisplayFor(modelItem => item.Feature)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Price)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IsTop)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Discount)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Count)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CommodityCode)
+                    </td>
+                    <td>
+                        <img src="data:image/*;base64,@(Convert.ToBase64String(item.Image))" style="width:3rem" alt="Category image">
+                    </td>
+                    <td>
+                        @if (item.Manufacturer != null)
+                        {
+                            @Html.DisplayFor(modelItem => item.Manufacturer.Title)
+                        }
+                        else
+                        {
+                            <div class="alert alert-warning" role="alert">
+                                No manufacturer
+                            </div>
+                        }
+                    </td>
+
+                    <td>
+                        @*@if (item.CategoryProducts != null)*@
+                        @*{*@
+                        @if (item.CategoryProducts.Count() != 0)
+                        {
+                            @foreach (var category in item.CategoryProducts)
+                            {
+                                if (category.Category != null)
+                                {
+                                    @index<span>. </span> @(category.Category.Title)
+                                    @: <br />
+                                    index++;
+                                }
+                                @*else
+                                    {
+                                        <div class="alert alert-warning" role="alert">
+                                            No category
+                                        </div>
+                                    }*@
+                            }
+                        }
+                        @*}*@
+                        else
+                        {
+                            <div class="alert alert-warning" role="alert">
+                                No category
+                            </div>
+                        }
+                        @{index = 1;}
+                    </td>
+
+                    <td>
+                        @*<div class="btn-group btn-group-sm" role="group">*@
+                        <div><a asp-action="Details" asp-route-id="@item.Id" type="button" class="btn btn-sm btn-outline-primary w-100">Details</a></div>
+                        <div><a asp-action="Edit" asp-route-id="@item.Id" type="button" class="btn btn-sm btn-outline-warning w-100">Edit</a></div>
+                        <div><a asp-action="Delete" asp-route-id="@item.Id" type="button" class="btn btn-sm btn-outline-danger w-100">Delete</a></div>
+
+                        <div>
+                            <a asp-controller="Comments" asp-action="ProductCommentsList" asp-route-productId="@item.Id" type="button" class="btn btn-sm btn-outline-info w-100">
+                                Reviews
+                                <span class="badge bg-secondary"> @item.Comments.Count(c => c.IsModerated == false)</span>
+                            </a>
+                        </div>
+                        @*</div>*@
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

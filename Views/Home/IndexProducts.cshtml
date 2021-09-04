@@ -1,0 +1,119 @@
+﻿@using OnlineStore.Models.ViewModels;
+
+@model OnlineStore.Models.ViewModels.IndexProductsViewModel
+@{
+    ViewData["Title"] = "Products";
+}
+
+<div class="container mb-5">
+
+    <div class="text-center">
+        <div class="dropdown w-25">
+            <a class="btn btn-light dropdown-toggle w-100" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                @{ string Up = Model.SortViewModel.Current == SortState.PriceAsc ? "bi bi-arrow-up" : "bi bi-arrow-down";}
+                <i class="@Up"> prices</i>
+            </a>
+
+            <ul class="dropdown-menu w-100" aria-labelledby="dropdownMenuLink">
+                <li>
+                    <a class="dropdown-item" style="cursor:pointer"
+                       asp-action="IndexProducts"
+                       asp-route-page="@(Model.PageListViewModel.PageNumber)"
+                       asp-route-productId="@(Model.FilterViewModel.ProductId)"
+                       asp-route-categoryId="@(Model.FilterViewModel.CategoryId)"
+                       asp-route-searchString="@(Model.FilterViewModel.SelectedSearchString)"
+                       asp-route-sortOrder="@(SortState.PriceAsc)">
+                        <i class="bi bi-arrow-up"></i> prices
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" style="cursor:pointer"
+                       asp-action="IndexProducts"
+                        asp-route-page="@(Model.PageListViewModel.PageNumber)"
+                       asp-route-productId="@(Model.FilterViewModel.ProductId)"
+                       asp-route-categoryId="@(Model.FilterViewModel.CategoryId)"
+                       asp-route-searchString="@(Model.FilterViewModel.SelectedSearchString)"
+                       asp-route-sortOrder="@(SortState.PriceDesc)">
+                        <i class="bi bi-arrow-down"></i> prices
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="row g-0 ms-3 me-3 ">
+        @foreach (var product in Model.Products)
+        {
+            <div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 gy-5 main-box-shadow">
+                <div class="card p-0 h-100 border-0">
+                    <div class="border-top mb-3"></div>
+                    <div class="text-center">
+                        <a asp-action="Details" asp-route-productId="@product.Id">
+                            <img src="data:image/*;base64,@(Convert.ToBase64String(product.Image))" class="card-img-top" style="max-width:12rem" alt="@product.Image.ToString()">
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        <a asp-action="Details" asp-route-productId="@product.Id" class="link-primary text-decoration-none">
+                            <h5 class="card-title text-truncate" title="@product.Title @product.Feature" data-bs-toggle="tooltip" data-bs-placement="top">
+                                @product.Title @product.Feature
+                            </h5>
+                        </a>
+                        <div class="row mb-3 ms-0 me-0">
+                            <div class="col-8 p-0">
+                                @if (product.Comments.Count() != 0)
+                                {
+                                    @await Html.PartialAsync("_DrawStarsRating", product.Comments.Where(c => c.IsModerated == true).Average(c => c.Rating))
+                                }
+                                else
+                                {
+                                    @await Html.PartialAsync("_DrawStarsRating", 0.0)
+                                }
+                                &nbsp;
+                                &nbsp;
+                                <a class="link-primary text-decoration-none" asp-action="Details" asp-route-productId="@product.Id" asp-route-agaxPageId="3">
+                                    <small class="bi bi-chat-fill"></small>
+                                    <abbr class="initialism">@product.Comments.Count(c => c.IsModerated)</abbr>
+                                </a>
+
+                            </div>
+                                <div class="col-4 p-0 text-end">
+                                    <small class="text-muted">@product.CommodityCode</small>
+                                </div>
+                            </div>
+
+                            @{string visibility = "visible";
+
+                                @if (product.Discount == 0)
+                                {
+                                    visibility = "invisible";
+                                }
+                            }
+                            <div class="@visibility mb-3">
+                                <del>@product.Price</del>&nbsp;&nbsp;<span class="bg-warning rounded-2 p-2">-@product.Discount</span>
+                            </div>
+
+                            <h2 class="">@(product.Price - product.Discount)</h2>
+                        </div>
+                    @*<div class="card-footer border-top border-dark bg-white">*@
+                    <div class="card-footer border-0 mb-3">
+                        <a href="#" class="bi bi-cart btn btn-lg btn-success w-50">
+                            <span>Bye</span>
+                        </a>
+                    </div>
+                    <div class="border-bottom"></div>
+                </div>
+            </div>
+
+        }
+    </div>
+</div>
+
+<page-link page-list-model="Model.PageListViewModel" page-action="IndexProducts"
+           page-url-productId="@(Model.FilterViewModel.ProductId)"
+           page-url-categoryId="@(Model.FilterViewModel.CategoryId)"
+           page-url-searchString="@(Model.FilterViewModel.SelectedSearchString)"
+           page-url-sortOrder="@(Model.SortViewModel.Current)">
+           </page-link>
+
+
+<vc:last-viewed-products />

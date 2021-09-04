@@ -1,0 +1,69 @@
+﻿@model IEnumerable<OnlineStore.Models.Product>
+
+<hr class=" bg-primary mt-5 mb-5" style="height:4px; opacity:1" />
+@if (Model.Count() != 0)
+{
+    <div class="container mb-5">
+        <h2 class="mb-3">The last viewed</h2>
+        <hr />
+        <div class="row g-0">
+            @foreach (var product in Model)
+            {
+                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 main-box-shadow">
+                    <div class="card p-0 h-100 border-0">
+                        <a asp-action="Details" asp-route-productId="@product.Id">
+                            <img src="data:image/*;base64,@(Convert.ToBase64String(product.Image))" class="card-img-top" alt="@product.Image.ToString()">
+                        </a>
+                        <div class="card-body">
+                            <a class="link-primary text-decoration-none" asp-action="Details" asp-route-productId="@product.Id">
+                                <h5 class="card-title text-truncate" title="@product.Title @product.Feature" data-bs-toggle="tooltip" data-bs-placement="top">
+                                    @product.Title @product.Feature
+                                </h5>
+                            </a>
+                            <div class="row mb-3 ms-0 me-0">
+                                <div class="col-8 p-0">
+                                    @if (product.Comments.Count() != 0)
+                                    {
+                                        @await Html.PartialAsync("~/Views/Home/_DrawStarsRating.cshtml", (product.Comments.Average(c => c.Rating)));
+                                    }
+                                    else
+                                    {
+                                        @await Html.PartialAsync("~/Views/Home/_DrawStarsRating.cshtml", 0.0);
+                                    }
+                                    &nbsp;
+                                    &nbsp;
+                                    <a class="link-primary text-decoration-none" asp-action="Details" asp-route-productId="@product.Id" asp-route-agaxPageId="3">
+                                        <small class="bi bi-chat-fill"></small>
+                                        <abbr class="initialism">@product.Comments.Count()</abbr>
+                                    </a>
+                                </div>
+                                <div class="col-4 p-0 text-end">
+                                    <small class="text-muted">@product.CommodityCode</small>
+                                </div>
+                            </div>
+
+                            @{string visibility = "visible";
+
+                                @if (product.Discount == 0)
+                                {
+                                    visibility = "invisible";
+                                }
+                            }
+                            <div class="@visibility mb-3">
+                                <del>@product.Price</del>&nbsp;&nbsp;<span class="bg-warning rounded-2 p-2">-@product.Discount</span>
+                            </div>
+
+                            <h2 class="">@(product.Price - product.Discount)</h2>
+                        </div>
+                        <div class="card-footer bg-white">
+                            <a href="#" class="bi bi-cart btn btn-lg btn-success w-50">
+                                <span>Bye</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <hr />
+    </div>
+}

@@ -1,0 +1,74 @@
+﻿@model int
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<ul class="nav nav-pills nav-justified mb-5">
+    <li class="nav-item  ">
+        <a id="1" class="nav-link link-success active border-0 border-bottom border-3 border-success" style="cursor:pointer" aria-current="page"
+           data-ajax="true"
+           data-ajax-mode="replace"
+           data-ajax-update="#data-div"
+           data-ajax-loading="#loading"
+           data-ajax-url="@Url.Action("AllAboutProduct", "Home", new { id = Model })">
+            All about product
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a id="2" class="nav-link link-success border-0 border-bottom border-3 border-success" style="cursor:pointer"
+           data-ajax="true"
+           data-ajax-mode="replace"
+           data-ajax-update="#data-div"
+           data-ajax-loading="#loading"
+           data-ajax-url="@Url.Action("Сharacteristics", "Home", new { id = Model })">
+            Сharacteristics
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a id="3" class="nav-link link-success border-0 border-bottom border-3 border-success" style="cursor:pointer"
+           data-ajax="true"
+           data-ajax-model="@Model"
+           data-ajax-mode="replace"
+           data-ajax-update="#data-div"
+           data-ajax-loading="#loading"
+           data-ajax-url="@Url.Action("Comments", "Home", new { id = Model })">
+            Comments <span class="badge rounded rounded-pill bg-dark text-white">@ViewBag.commentsCount</span>
+        </a>
+    </li>
+</ul>
+
+<div id="data-div"></div>
+@*<span id="loading" style="display:none;"> <i class="spinner-border"></i></span>*@
+<div id="loading"  class="spinner-border position-relative top-50 start-50" style="display:none;width:10rem;height:10rem;" role="status"></div>
+
+@section Scripts {
+    <script>
+        //window.onload = function () {
+        //}
+        document.addEventListener("DOMContentLoaded", function () {
+            document.getElementById(@ViewBag.agaxPageId).click();
+        });
+
+        let links = [
+            document.getElementById("1"),
+            document.getElementById("2"),
+            document.getElementById("3")
+        ];
+
+        for (var i = 0; i < links.length; i++) {
+            links[i].addEventListener("click", setActive);
+        }
+
+        function setActive(e) {
+            for (var i = 0; i < links.length; i++) {
+                if (links[i].classList.contains("active")) {
+                    links[i].classList.remove("active");
+                }
+                e.target.classList.add("active");
+            }
+        }
+    </script>
+}

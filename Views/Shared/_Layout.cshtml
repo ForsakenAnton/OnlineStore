@@ -1,0 +1,179 @@
+﻿@inject OnlineStore.DB.OnlineStoreContext context
+@*@inject OnlineStore.Services.OrderCategoriesServise orderService*@
+
+@{ 
+//var categories = context.Categories;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - OnlineStore</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    @*<link rel="stylesheet" href="~/lib/bootstrap-5.0.1-dist/css/bootstrap.min.css" />*@
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/myStyles/myStyles.css" />
+    <link rel="stylesheet" href="~/css/myStyles/starRating.css" />
+    <link rel="stylesheet" href="~/css/darkModeSwitcher.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    @*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">*@
+    <script src="https://kit.fontawesome.com/172c096ffa.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+    <nav id="navbar" class="sticky-top navbar navbar-expand-lg navbar-light border-bottom border-2 border-dark mb-5 pt-0 pb-0">
+        <div class="container-fluid bg-light">
+            <button id="mainNavbarCollapseButton" class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Переключатель навигации">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse m-0 p-0" id="navbarToggler">
+
+                <div class="container d-flex flex-column mb-0">
+                    <div id="firstRowOfNavbar" class="row align-items-center mb-0 order-lg-1 order-2">
+                        <div class="col-lg-2">
+                            <a class="navbar-brand text-dark" asp-controller="Home" asp-action="Index">Online Shop</a>
+                        </div>
+
+
+                        @if (User.Identity.IsAuthenticated == false)
+                        {
+                            <div class="col-lg-2 text-lg-center mb-1">
+                                <a class="nav-link text-primary mb-0 border-0 border-bottom btn btn-outline-dark" asp-controller="Account" asp-action="Login">Log in</a>
+                            </div>
+                            <div class="col-lg-2 text-lg-center">
+                                <a class="nav-link text-primary mb-0 border-0 border-bottom btn btn-outline-dark" asp-controller="Account" asp-action="Register">Registration</a>
+                            </div>
+
+                            <div class="col-lg-3 text-lg-center">
+                                <a class="nav-link text-primary mb-0 border-0 border-bottom btn btn-outline-dark" asp-controller="Account" asp-action="ForgotPassword">Forgot password?</a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-lg-2 mb-lg-0 mb-3 text-center">
+                                <button class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#adminMenu">
+                                    Admin menu
+                                </button>
+                            </div>
+
+                            <div class="col-lg-3 mb-lg-0 mb-3 text-center text-start">
+                                @User.Identity.Name
+                            </div>
+                            <div class="col-lg-2 mb-lg-0 mb-3 text-lg-start text-center d-lg-inline">
+                                @*<a class="nav-link mb-0 border-bottom" asp-controller="Account" asp-action="Logout">Log out</a>*@
+                                <form method="post" asp-controller="Account" asp-action="Logout" class="mb-0 w-100">
+                                    @*<input type="submit" value="Log out" class="btn btn-outline-primary mb-0 rounded-0 border-0 border-bottom" />*@
+                                    <div class="clearfix">
+                                        <input type="submit" value="Log out" class="float-end nav-link text-primary mb-0 border-0 border-bottom btn btn-outline-dark m-1" />
+                                    </div>
+                                </form>
+                            </div>
+                        }
+
+                        <div class="col-lg-2 offset-lg-1 pt-lg-2">
+                            <div class="px-2 bg-dark text-white rounded-pill" style="z-index:1000">
+                                <div class="form-check form-switch pull-right">
+                                    <input class="form-check-input" type="checkbox" id="darkMode">
+                                    <label id="darkModeLabel" for="darkMode">Light</label>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="bg-primary mt-0" />
+                    </div>
+
+                    <div id="secondRowOfNavbar" class="row pt-3 order-lg-2 order-1">
+
+                            <vc:categories-list />
+
+                        <div class="col-lg-6 mb-1 mb-lg-0 text-lg-start order-lg-2 order-1">
+                            <div id="mainSearchBlock" class="position-relative">
+                                <form class="d-flex w-auto mb-2" asp-controller="Home" asp-action="IndexProducts">
+                                    <input id="mainSearchInput" class="form-control" name="searchString" type="search" autocomplete="off" placeholder="Search" aria-label="Search" required">
+                                    <button id="submitSearchButton" disabled class="btn btn-outline-success" type="submit">Search</button>
+                                </form>
+                                <div id="mainSearchAjaxResult" class="position-absolute w-100 border-1 rounded-2 bg-white text-dark" style="display:none; z-index:1000;">
+                                    @* AJAX result is here *@
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4 col-lg-1 text-center text-lg-end mb-3 mb-lg-0 order-3">
+                            <a href="#" class="h2 bi bi-suit-heart text-primary position-relative me-0">
+                                <span class="position-absolute top-0 start-50 translate-middle badge rounded-pill text-dark p-0 ms-3 fs-6">6</span>
+                            </a>
+                        </div>
+                        <div class="col-4 col-lg-1 text-center text-lg-end mb-3 mb-lg-0 order-4">
+                            <a href="#" class="h2 fas fa-balance-scale text-primary position-relative me-0">
+                                <span class="position-absolute top-0 start-50 translate-middle badge rounded-pill text-dark p-0 ms-3 fs-6">5</span>
+                            </a>
+                        </div>
+                        <div class="col-4 col-lg-1 text-center text-lg-end mb-3  mb-lg-0 order-5">
+                            <a href="#" class="h2 bi bi-cart text-primary position-relative me-0">
+                                <span class="position-absolute top-0 start-50 translate-middle badge rounded-pill text-dark p-0 ms-3 fs-6">4</span>
+                            </a>
+                        </div>
+                    </div>
+
+
+                    @if (User.IsInRole("admin") && User.Identity.IsAuthenticated == true)
+                    { 
+                        <div id="adminMenu" class="collapse container m-0 order-3">
+                            <hr class="bg-warning" style="height:4px; opacity:1" />
+
+                            <div class="clearfix">
+                                <button type="button" class="btn-close float-end" data-bs-toggle="collapse" data-bs-target="#adminMenu"></button>
+                            </div>
+
+                            <h2 class="text-info text-center">Admin menu</h2>
+                            <div class="row mb-0 ps-3 pe-3">
+                                <div class="col-lg-2 text-lg-center bg-gradient rounded ps-0 pe-0 ms-3 me-3">
+                                    <a class="mb-0 border-0 rounded btn btn-outline-primary  w-100 ms-0 me-0" asp-controller="Roles" asp-action="Index">Roles</a>
+                                </div>
+                                <div class="col-lg-2 text-lg-center bg-gradient rounded ps-0 pe-0 ms-3 me-3">
+                                    <a class="mb-0 border-0 rounded btn btn-outline-primary w-100 ms-0 me-0" asp-controller="Categories" asp-action="Index">Categories</a>
+                                </div>
+                                <div class="col-lg-2 text-lg-center bg-gradient rounded ps-0 pe-0 ms-3 me-3">
+                                    <a class="mb-0 border-0 rounded btn btn-outline-primary w-100 ms-0 me-0" asp-controller="Products" asp-action="Index">Products</a>
+                                </div>
+                                <div class="col-lg-2 text-lg-center bg-gradient rounded ps-0 pe-0 ms-3 me-3">
+                                    <a class="mb-0 border-0 rounded btn btn-outline-primary w-100 ms-0 me-0" asp-controller="Manufacturers" asp-action="Index">Manufacturers</a>
+                                </div>
+                            </div>
+
+                            <hr class=" bg-warning" style="height:4px; opacity:1" />
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </nav>
+
+
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2021 - OnlineStore - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @*<script src="~/lib/bootstrap-5.0.1-dist/js/bootstrap.bundle.min.js"></script>*@
+    @*<script src="https://kit.fontawesome.com/172c096ffa.js" crossorigin="anonymous"></script>*@
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/js/myJS/hiddenNavbar.js"></script>
+    <script src="~/js/myJS/ajaxMainSearch.js"></script>
+    <script src="~/js/darkModeSwitcher.js" asp-append-version="true"></script>
+    <script src="~/js/tooltipsInitialize.js"></script>
+    <script src="~/js/validateFormsInitialize.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

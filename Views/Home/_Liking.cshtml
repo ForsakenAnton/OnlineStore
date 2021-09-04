@@ -1,0 +1,45 @@
+﻿@model OnlineStore.Models.Comment
+@using OnlineStore.Models.IdentityModels
+@using Microsoft.AspNetCore.Identity
+
+@inject UserManager<User> userManager
+
+@{
+    var user = await userManager.GetUserAsync(User);
+    var userId = user?.Id;
+
+    string colorUp = "";
+    string colorDown = "";
+
+    foreach (var like in Model.Likes)
+    {
+        if (like.User != null && like.User.Id == userId)
+        {
+            colorUp = like.Liking ? "text-success" : "";
+            colorDown = like.Unliking ? "text-danger" : "";
+        }
+    }
+}
+
+<div id="data-like@(Model.Id)">
+    <a class="link-primary text-decoration-none" style="cursor:pointer"
+       data-ajax="true"
+       data-ajax-mode="replace-with"
+       data-ajax-update="#data-like@(Model.Id)"
+       data-ajax-url="@Url.Action("Liking", "Home", new { commentId = Model.Id, thumbsUp = true, thumbsDown = false })">
+        <i class="bi bi-hand-thumbs-up-fill fw-bold @colorUp"></i>
+    </a>
+    <span class="badge rounded-pill bg-primary">
+        @Model.Likes.Count(l => l.Liking)
+    </span> |
+    <a class="link-primary text-decoration-none" style="cursor:pointer"
+       data-ajax="true"
+       data-ajax-mode="replace-with"
+       data-ajax-update="#data-like@(Model.Id)"
+       data-ajax-url="@Url.Action("Liking", "Home", new { commentId = Model.Id, thumbsUp = false, thumbsDown = true })">
+        <i class="bi bi-hand-thumbs-down-fill fw-bold @colorDown"></i>
+    </a>
+    <span class="badge rounded-pill bg-primary">
+        @Model.Likes.Count(l => l.Unliking)
+    </span>
+</div>

@@ -1,0 +1,293 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="wwwroot\lib\bootstrap-5.0.1-dist\**" />
+    <Content Remove="wwwroot\lib\bootstrap-5.0.1-dist\**" />
+    <EmbeddedResource Remove="wwwroot\lib\bootstrap-5.0.1-dist\**" />
+    <None Remove="wwwroot\lib\bootstrap-5.0.1-dist\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Models\BankCredit.cs" />
+    <Compile Remove="Models\MainCategory.cs" />
+    <Compile Remove="Models\SubCategory.cs" />
+    <Compile Remove="Models\SubSubCategory.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\bootstrap-grid.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\bootstrap-reboot.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\bootstrap-utilities.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\bootstrap.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\forms\_floating-labels.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\forms\_form-check.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\forms\_form-control.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\forms\_form-range.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\forms\_form-select.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\forms\_form-text.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\forms\_input-group.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\forms\_labels.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\forms\_validation.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\helpers\_clearfix.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\helpers\_colored-links.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\helpers\_position.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\helpers\_ratio.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\helpers\_stretched-link.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\helpers\_text-truncation.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\helpers\_visually-hidden.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\mixins\_alert.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\mixins\_border-radius.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\mixins\_box-shadow.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\mixins\_breakpoints.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\mixins\_buttons.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\mixins\_caret.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\mixins\_clearfix.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\mixins\_color-scheme.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\mixins\_container.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\mixins\_deprecate.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\mixins\_forms.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\mixins\_gradients.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\mixins\_grid.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\mixins\_image.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\mixins\_list-group.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\mixins\_lists.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\mixins\_pagination.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\mixins\_reset-text.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\mixins\_resize.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\mixins\_table-variants.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\mixins\_text-truncate.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\mixins\_transition.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\mixins\_utilities.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\mixins\_visually-hidden.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\utilities\_api.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\vendor\_rfs.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\_accordion.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\_alert.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\_badge.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\_breadcrumb.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\_button-group.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\_buttons.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\_card.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\_carousel.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\_close.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\_containers.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\_dropdown.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\_forms.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\_functions.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\_grid.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\_helpers.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\_images.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\_list-group.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\_mixins.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\_modal.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\_nav.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\_navbar.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\_offcanvas.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\_pagination.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\_popover.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\_progress.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\_reboot.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\_root.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\_spinners.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\_tables.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\_toasts.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\_tooltip.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\_transitions.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\_type.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\_utilities.scss" />
+    <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\_variables.scss" />
+    <Content Remove="Views\Home\_LayoutDetails.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.js" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.js.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.min.js" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.min.js.map" />
+    <None Include="wwwroot\lib\bootstrap\js\dist\alert.js" />
+    <None Include="wwwroot\lib\bootstrap\js\dist\alert.js.map" />
+    <None Include="wwwroot\lib\bootstrap\js\dist\base-component.js" />
+    <None Include="wwwroot\lib\bootstrap\js\dist\base-component.js.map" />
+    <None Include="wwwroot\lib\bootstrap\js\dist\button.js" />
+    <None Include="wwwroot\lib\bootstrap\js\dist\button.js.map" />
+    <None Include="wwwroot\lib\bootstrap\js\dist\carousel.js" />
+    <None Include="wwwroot\lib\bootstrap\js\dist\carousel.js.map" />
+    <None Include="wwwroot\lib\bootstrap\js\dist\collapse.js" />
+    <None Include="wwwroot\lib\bootstrap\js\dist\collapse.js.map" />
+    <None Include="wwwroot\lib\bootstrap\js\dist\dom\data.js" />
+    <None Include="wwwroot\lib\bootstrap\js\dist\dom\data.js.map" />
+    <None Include="wwwroot\lib\bootstrap\js\dist\dom\event-handler.js" />
+    <None Include="wwwroot\lib\bootstrap\js\dist\dom\event-handler.js.map" />
+    <None Include="wwwroot\lib\bootstrap\js\dist\dom\manipulator.js" />
+    <None Include="wwwroot\lib\bootstrap\js\dist\dom\manipulator.js.map" />
+    <None Include="wwwroot\lib\bootstrap\js\dist\dom\selector-engine.js" />
+    <None Include="wwwroot\lib\bootstrap\js\dist\dom\selector-engine.js.map" />
+    <None Include="wwwroot\lib\bootstrap\js\dist\dropdown.js" />
+    <None Include="wwwroot\lib\bootstrap\js\dist\dropdown.js.map" />
+    <None Include="wwwroot\lib\bootstrap\js\dist\modal.js" />
+    <None Include="wwwroot\lib\bootstrap\js\dist\modal.js.map" />
+    <None Include="wwwroot\lib\bootstrap\js\dist\offcanvas.js" />
+    <None Include="wwwroot\lib\bootstrap\js\dist\offcanvas.js.map" />
+    <None Include="wwwroot\lib\bootstrap\js\dist\popover.js" />
+    <None Include="wwwroot\lib\bootstrap\js\dist\popover.js.map" />
+    <None Include="wwwroot\lib\bootstrap\js\dist\scrollspy.js" />
+    <None Include="wwwroot\lib\bootstrap\js\dist\scrollspy.js.map" />
+    <None Include="wwwroot\lib\bootstrap\js\dist\tab.js" />
+    <None Include="wwwroot\lib\bootstrap\js\dist\tab.js.map" />
+    <None Include="wwwroot\lib\bootstrap\js\dist\toast.js" />
+    <None Include="wwwroot\lib\bootstrap\js\dist\toast.js.map" />
+    <None Include="wwwroot\lib\bootstrap\js\dist\tooltip.js" />
+    <None Include="wwwroot\lib\bootstrap\js\dist\tooltip.js.map" />
+    <None Include="wwwroot\lib\bootstrap\js\src\alert.js" />
+    <None Include="wwwroot\lib\bootstrap\js\src\base-component.js" />
+    <None Include="wwwroot\lib\bootstrap\js\src\button.js" />
+    <None Include="wwwroot\lib\bootstrap\js\src\carousel.js" />
+    <None Include="wwwroot\lib\bootstrap\js\src\collapse.js" />
+    <None Include="wwwroot\lib\bootstrap\js\src\dom\data.js" />
+    <None Include="wwwroot\lib\bootstrap\js\src\dom\event-handler.js" />
+    <None Include="wwwroot\lib\bootstrap\js\src\dom\manipulator.js" />
+    <None Include="wwwroot\lib\bootstrap\js\src\dom\selector-engine.js" />
+    <None Include="wwwroot\lib\bootstrap\js\src\dropdown.js" />
+    <None Include="wwwroot\lib\bootstrap\js\src\modal.js" />
+    <None Include="wwwroot\lib\bootstrap\js\src\offcanvas.js" />
+    <None Include="wwwroot\lib\bootstrap\js\src\popover.js" />
+    <None Include="wwwroot\lib\bootstrap\js\src\scrollspy.js" />
+    <None Include="wwwroot\lib\bootstrap\js\src\tab.js" />
+    <None Include="wwwroot\lib\bootstrap\js\src\toast.js" />
+    <None Include="wwwroot\lib\bootstrap\js\src\tooltip.js" />
+    <None Include="wwwroot\lib\bootstrap\js\src\util\backdrop.js" />
+    <None Include="wwwroot\lib\bootstrap\js\src\util\index.js" />
+    <None Include="wwwroot\lib\bootstrap\js\src\util\sanitizer.js" />
+    <None Include="wwwroot\lib\bootstrap\js\src\util\scrollbar.js" />
+    <None Include="wwwroot\lib\bootstrap\LICENSE" />
+    <None Include="wwwroot\lib\bootstrap\README.md" />
+    <None Include="wwwroot\lib\bootstrap\scss\bootstrap-grid.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\bootstrap-reboot.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\bootstrap-utilities.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\bootstrap.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\forms\_floating-labels.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\forms\_form-check.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\forms\_form-control.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\forms\_form-range.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\forms\_form-select.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\forms\_form-text.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\forms\_input-group.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\forms\_labels.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\forms\_validation.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\helpers\_clearfix.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\helpers\_colored-links.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\helpers\_position.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\helpers\_ratio.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\helpers\_stretched-link.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\helpers\_text-truncation.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\helpers\_visually-hidden.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\mixins\_alert.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\mixins\_border-radius.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\mixins\_box-shadow.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\mixins\_breakpoints.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\mixins\_buttons.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\mixins\_caret.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\mixins\_clearfix.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\mixins\_color-scheme.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\mixins\_container.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\mixins\_deprecate.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\mixins\_forms.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\mixins\_gradients.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\mixins\_grid.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\mixins\_image.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\mixins\_list-group.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\mixins\_lists.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\mixins\_pagination.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\mixins\_reset-text.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\mixins\_resize.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\mixins\_table-variants.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\mixins\_text-truncate.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\mixins\_transition.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\mixins\_utilities.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\mixins\_visually-hidden.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\utilities\_api.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\vendor\_rfs.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\_accordion.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\_alert.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\_badge.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\_breadcrumb.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\_button-group.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\_buttons.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\_card.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\_carousel.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\_close.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\_containers.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\_dropdown.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\_forms.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\_functions.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\_grid.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\_helpers.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\_images.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\_list-group.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\_mixins.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\_modal.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\_nav.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\_navbar.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\_offcanvas.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\_pagination.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\_popover.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\_progress.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\_reboot.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\_root.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\_spinners.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\_tables.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\_toasts.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\_tooltip.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\_transitions.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\_type.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\_utilities.scss" />
+    <None Include="wwwroot\lib\bootstrap\scss\_variables.scss" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="bootstrap" Version="5.0.1" />
+    <PackageReference Include="bootstrap.sass" Version="5.0.1" />
+    <PackageReference Include="BuildWebCompiler" Version="1.12.405" />
+    <PackageReference Include="MailKit" Version="2.13.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.8">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.jQuery.Unobtrusive.Ajax" Version="3.2.6" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
+  </ItemGroup>
+
+</Project>

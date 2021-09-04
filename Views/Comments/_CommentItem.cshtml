@@ -1,0 +1,170 @@
+﻿@model OnlineStore.Models.Comment
+
+@{
+    string isModeratedColor = Model.IsModerated == false ? "bg-warning bg-gradient" : "bg-success bg-gradient";
+
+    string isUnauditedCommentBudge = Model.IsModerated == true ? "bi bi-check-circle text-success" : "bi bi-exclamation-triangle text-warning";
+    string isUnauditedCommentText = Model.IsModerated == true ? "Audited comment" : "Unaudited comment";
+
+    string disabledAllow = Model.IsModerated == true ? "disabled" : "";
+    string disabledUnaudited = Model.IsModerated == false ? "disabled" : "";
+
+    string checkCircle = Model.IsModerated == true ? "bi bi-check-circle text-success fw-bolder" : "";
+    string exclamationTriangle = Model.IsModerated == false ? "bi bi-exclamation-triangle text-warning fw-bolder" : "";
+
+    //string noModeratedAnswers = Model.Answers.Any(a => a.IsModerated == false) == true ? $"<span class=\"badge rounded rounded-pill bg-warning text-warning\">{Model.Answers.Count(a => a.IsModerated == false)}</span> no moderated answers" : "";
+}
+
+<div id="loading@(Model.Id)" class="spinner-border position-relative top-50 start-50" style="display:none;width:10rem;height:10rem;" role="status"></div>
+<div id="modal@(Model.Id)"></div>
+
+<div id="commentItem@(Model.Id)">
+
+        <div class="accordion-item border border-2 border-info rounded-3 ms-5 me-5 mb-3">
+            <h2 class="accordion-header" id="main-heading@(Model.Id)">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#comments@(Model.Id)" aria-expanded="false" aria-controls="comments@(Model.Id)">
+                    <i class="@isUnauditedCommentBudge small">@isUnauditedCommentText</i><small class="">&nbsp;&nbsp; @Model.Date</small>
+                    @if (Model.Answers.Any(a => a.IsModerated == false) == true)
+                    {
+                        @:&nbsp;&nbsp;&nbsp; <span title="no moderated answers" class="badge rounded rounded-pill bg-warning text-dark">@Model.Answers.Count(a => a.IsModerated == false)</span>&nbsp; answers @*no moderated answers*@
+                    }
+                </button>
+            </h2>
+            <div id="comments@(Model.Id)" class="accordion-collapse collapse @ViewBag.showAccordionClass" aria-labelledby="main-heading@(Model.Id)" data-bs-parent="#accordion">
+                <div class="accordion-body">
+
+
+                    <div class="container border border-5 rounded-3 border-dark p-3 mb-5 @isModeratedColor">
+                        <div class="row align-items-center mb-3">
+                            <div class="col-6 align-content-center">
+                                @Model.User.Email
+                                <h1>@ViewBag.accordionCollapseId</h1>
+                            </div>
+                            <div class="col-6 text-end">
+                                <div>@Model.Date</div>
+                                <div>
+                                    @await Html.PartialAsync("~/Views/Home/_DrawStarsRating.cshtml", Convert.ToDouble(Model.Rating))
+                                </div>
+                                <div>
+                                    <i class="bi bi-hand-thumbs-up-fill fw-bold"></i>
+                                    <span class="badge bg-primary rounded-pill">
+                                        @Model.Likes.Count(l => l.Liking)
+                                    </span> |
+                                    <i class="bi bi-hand-thumbs-down-fill fw-bold"></i>
+                                    <span class="badge bg-primary rounded-pill">
+                                        @Model.Likes.Count(l => l.Unliking)
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <form asp-antiforgery="true" class="border border-2 rounded-3 border-dark bg-light p-3 mb-3"
+                              data-ajax="true"
+                              data-ajax-method="post"
+                              data-ajax-loading="#loading"
+                              data-ajax-mode="replace"
+                              data-ajax-update="#modal@(Model.Id)"
+                              data-ajax-url="@Url.Action("ModifiedFeedback", "Comments")">
+
+                            <div class="row align-items-center">
+                                <div class="col-lg-6 col-12">
+
+                                    <input type="hidden" asp-for="@Model.Id" />
+                                    <input type="hidden" asp-for="@Model.Rating" />
+                                    <input type="hidden" asp-for="@Model.IsModerated" />
+                                    <input type="hidden" asp-for="@Model.Date" />
+                                    <input type="hidden" asp-for="@Model.UserId" />
+                                    <input type="hidden" asp-for="@Model.ProductId" />
+                                    <input type="hidden" asp-for="@Model.User" />
+                                    <input type="hidden" asp-for="@Model.Product" />
+
+                                    <input type="hidden" name="accordionCollapseId" value="comments@(Model.Id)" />
+
+                                    <div class="mb-3">
+                                        <label class="form-label" asp-for="@Model.Message"></label>
+                                        <textarea asp-for="@Model.Message" class="form-control" rows="5"></textarea>
+                                        <div class="form-text">*You may change this field</div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 col-12">
+                                    <div class="mb-3">
+                                        <label class="form-label" asp-for="@Model.Virtues"></label>
+                                        <textarea asp-for="@Model.Virtues" class="form-control" rows="2"></textarea>
+                                        <div class="form-text">*You may change this field</div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label" asp-for="@Model.Shortcomings"></label>
+                                        <textarea asp-for="@Model.Shortcomings" class="form-control" rows="2"></textarea>
+                                        <div class="form-text">*You may change this field</div>
+                                    </div>
+                                </div>
+
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-sm btn-primary w-75">Save changes</button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <div class="row mb-5 border-bottom pb-3">
+                            <div class="col-lg-4 col-12 text-center">
+                                <a class=" btn btn-light w-75 text-success @disabledAllow"
+                                   data-ajax="true"
+                                   data-ajax-mode="replace"
+                                   data-ajax-update="#commentItem@(Model.Id)"
+                                   data-ajax-loading="#loading@(Model.Id)"
+                                   data-ajax-url="@Url.Action("AllowComment", "Comments", new { commentId = Model.Id, accordionCollapseId = $"comments{Model.Id}" })">
+                                    <i class="@checkCircle"> Allow</i>
+                                </a>
+                            </div>
+                            <div class="col-lg-4 col-12 text-center">
+                                <a class=" btn btn-light w-75 text-warning @disabledUnaudited"
+                                   data-ajax="true"
+                                   data-ajax-mode="replace"
+                                   data-ajax-update="#commentItem@(Model.Id)"
+                                   data-ajax-loading="#loading@(Model.Id)"
+                                   data-ajax-url="@Url.Action("ProhibitComment", "Comments", new { commentId = Model.Id, accordionCollapseId = $"comments{Model.Id}" })">
+                                    <i class="@exclamationTriangle"> Prohibit</i>
+                                </a>
+                            </div>
+                            <div class="col-lg-4 col-12 text-center">
+                                <a class=" btn btn-light w-75 text-danger"
+                                   data-ajax="true"
+                                   data-ajax-mode="replace"
+                                   data-ajax-update="#commentItem@(Model.Id)"
+                                   data-ajax-loading="#loading@(Model.Id)"
+                                   data-ajax-url="@Url.Action("DeleteComment", "Comments", new { commentId = Model.Id })">
+                                    <i class="bi bi-trash"> Delete</i>
+                                </a>
+                            </div>
+                        </div>
+
+                            @if (Model.Answers.Count() != 0)
+                            {
+                                <h4 class="ms-5 mb-1">Answers for this review:</h4>
+                            }
+                            <div id="inner-accordion@(Model.Id)" class="inner-accordion">
+                                @foreach (var answer in Model.Answers)
+                                {
+                                    @await Html.PartialAsync("_AnswerItem", answer);
+                                }
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+
+</div>
+
+@*@section Scripts {*@
+    <script>
+        @*var bsCollapse = new bootstrap.Collapse(@ViewBag.accordionCollapseId, {
+            toggle: false
+        });
+        //if (bsCollapse)
+            bsCollapse.show();*@
+        //else
+            //console.log("No element");
+    </script>
+@*}*@

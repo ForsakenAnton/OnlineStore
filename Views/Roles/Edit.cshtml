@@ -1,0 +1,16 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model OnlineStore.Models.IdentityModels.ViewModels.ChangeRoleViewModel
+
+<h2>Changing rolls for user @Model.UserEmail</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" name="userId" value="@Model.UserId" />
+    @foreach (IdentityRole role in Model.AllRoles)
+    {
+        <div class="form-check">
+            <input type="checkbox" name="roles" value="@role.Name" class="form-check-input" @(Model.UserRoles.Contains(role.Name) ? "checked=\"checked\"" : "") />
+            <label asp-for="@role.Name" class="form-check-label">@role.Name</label>     
+        </div>
+    }
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+    </form>

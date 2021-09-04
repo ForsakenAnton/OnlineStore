@@ -1,0 +1,159 @@
+﻿@model OnlineStore.Models.ViewModels.ProductViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Product</h4>
+@*<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsTop" /> @Html.DisplayNameFor(model => model.IsTop)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="Discount" class="control-label"></label>
+                <input asp-for="Discount" class="form-control" />
+                <span asp-validation-for="Discount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Count" class="control-label"></label>
+                <input asp-for="Count" class="form-control" />
+                <span asp-validation-for="Count" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CommodityCode" class="control-label"></label>
+                <input asp-for="CommodityCode" class="form-control" />
+                <span asp-validation-for="CommodityCode" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label for="img" class="form-label"></label>
+                <input id="img" name="img" class="form-control" type="file" />
+            </div>
+
+            <input asp-for="Image" type="hidden" />
+
+            <div class="form-group">
+                <label asp-for="ManufacturerId" class="control-label"></label>
+                <select asp-for="ManufacturerId" class="form-control" asp-items="ViewBag.ManufacturerId"></select>
+                <span asp-validation-for="ManufacturerId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>*@
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <input type="hidden" asp-for="Product.Id" />
+
+            @foreach (var oldCategory in Model.oldCategoriesId)
+            {
+                <input type="hidden" asp-for="oldCategoriesId" value="@oldCategory" />
+            }
+
+            <div class="mb-3">
+                <span class="text-info">* </span>
+                <label asp-for="Product.Title" class="form-label"></label>
+                <input asp-for="Product.Title" class="form-control" />
+                <span asp-validation-for="Product.Title" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <span class="text-info">* </span>
+                <label asp-for="Product.Feature" class="form-label"></label>
+                <input asp-for="Product.Feature" class="form-control" />
+                <span asp-validation-for="Product.Feature" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <span class="text-info">* </span>
+                <label asp-for="Product.Price" class="form-label"></label>
+                <input asp-for="Product.Price" class="form-control" />
+                <span asp-validation-for="Product.Price" class="text-danger"></span>
+            </div>
+
+            <div class="form-check mb-3">
+                <input asp-for="Product.IsTop" class="form-check-input" type="checkbox">
+                <label asp-for="Product.IsTop" class="form-check-label">
+                    @Html.DisplayNameFor(model => model.Product.IsTop)
+                </label>
+            </div>
+
+            <div class="mb-3">
+                <span class="text-info">* </span>
+                <label asp-for="Product.Discount" class="form-label"></label>
+                <input asp-for="Product.Discount" class="form-control" />
+                <span asp-validation-for="Product.Discount" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <span class="text-info">* </span>
+                <label asp-for="Product.Count" class="form-label"></label>
+                <input asp-for="Product.Count" class="form-control" />
+                <span asp-validation-for="Product.Count" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <span class="text-info">* </span>
+                <label asp-for="Product.CommodityCode" class="form-label"></label>
+                <input asp-for="Product.CommodityCode" class="form-control" />
+                <span asp-validation-for="Product.CommodityCode" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <span class="text-info">* </span>
+                <label asp-for="Product.Manufacturer" class="form-label"></label>
+                <select asp-for="Product.ManufacturerId" class="form-select bg-light text-dark" asp-items="@Model.ManufacturersList">
+                    <option selected="selected" disabled="disabled"> Сhoose vendor</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="CategoriesList" class="form-label"></label>
+                <select asp-for="categoriesId" class="form-select bg-light text-dark" asp-items="@Model.CategoriesList" multiple>
+                    <option selected="selected" disabled="disabled"> Сhoose categories</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Image" class="form-label"></label>
+                <input asp-for="Image" class="form-control" type="file" />
+                <div class="form-text mb-5">Change image</div>
+                <figure class="figure text-center">
+                    <img src="data:image/*;base64,@(Convert.ToBase64String(Model.Product.Image))" class="figure-img img-fluid rounded" style="width:10rem" alt="Category image">
+                    <figcaption class="figure-caption">Current picture.</figcaption>
+                </figure>
+            </div>
+
+            @*<select asp-for="oldCategoriesId" hidden multiple></select>*@
+            <input asp-for="Product.Image" type="hidden" />
+
+            <div class="mb-3">
+                <input type="submit" value="Edit" class="btn btn-success" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

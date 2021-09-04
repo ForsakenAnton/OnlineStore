@@ -1,0 +1,164 @@
+﻿@using OnlineStore.Models
+@model IEnumerable<Category>
+
+
+
+
+    <div class="col-lg-3 mb-3 mb-lg-0 order-lg-1 order-2">
+        <div class="dropdown">
+            <a class="dropdown-toggle btn btn-outline-light text-dark border-0 mb-3" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                <i class="bi bi-grid-3x3-gap text-primary"></i> Catalogue of goods
+            </a>
+
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                @foreach (var category in Model)
+                {
+                    if (category.CategoryLevel == 1)
+                    {
+                        <li>
+                            <div class="dropdown dropend">
+                                <a class="dropdown-toggle btn border-0 ms-2 mt-2 text-start" href="#" role="button" id="dropdownMenuLink2" data-bs-toggle="dropdown" aria-expanded="false">
+                                    @category.Title 
+                                </a>
+
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink2">
+                                    <div class="grid">
+                                        @if (category.IsContainSubCategories)
+                                        {
+                                            foreach (var subcategory in category.Categories.OrderBy(c => c.Order))
+                                            {
+                                                <div><a class="dropdown-item fs-4 text-success" asp-route-categoryId="@subcategory.Id" asp-controller="Home" asp-action="IndexCategories">@subcategory.Title</a></div>
+
+                                                @if (subcategory.IsContainSubCategories)
+                                                {
+                                                    @foreach (var subsubcategory in subcategory.Categories.OrderBy(c => c.Order))
+                                                    {
+                                                        <div><a class="dropdown-item" asp-route-categoryId="@subsubcategory.Id" asp-controller="Home" asp-action="IndexCategories">@subsubcategory.Title</a></div>
+                                                    }
+                                                }
+
+                                                else if (subcategory.IsContainProducts)
+                                                {
+                                                    foreach (var product in subcategory.CategoryProducts.Where(p => p.Product.IsTop == true).Take(7).Distinct())
+                                                    {
+                                                        <div><a class="dropdown-item" asp-route-productId="@product.ProductId" asp-controller="Home" asp-action="IndexProducts">@product.Product.Title</a></div>
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        else if (category.IsContainProducts)
+                                        {
+                                            @*<li><a class="dropdown-item fs-4 text-success" asp-route-categoryId="@category.Id" asp-controller="Home" asp-action="Index">@category.Title</a></li>*@
+                                        
+                                            foreach (var product in category.CategoryProducts.Where(p => p.Product.IsTop == true).Take(5).Distinct())
+                                            {
+                                                <div><a class="dropdown-item" asp-route-productId="@product.ProductId" asp-controller="Home" asp-action="IndexProducts">@product.Product.Title</a></div>
+                                            }
+                                        }
+
+                                        else 
+                                        {
+                                            <div class="dropdown-item-text">No products...</div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    }
+                }
+                <li><a class="dropdown-item" asp-controller="Home" asp-action="GetAllCategories">All categories</a></li>
+            </ul>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*<div class="row">
+        <div class="col-lg-3 mb-3 mb-lg-0">
+            <div class="dropdown">
+                <a class="btn btn-outline-secondary dropdown-toggle mb-3" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                    <i class="bi bi-grid-3x3-gap text-primary"></i> Catalogue of goods
+                </a>
+
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    <li>
+                        <div class="dropdown dropend">
+                            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink2" data-bs-toggle="dropdown" aria-expanded="false">
+                                Ссылка выпадающего списка
+                            </a>
+
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink2">
+                                <li><a class="dropdown-item" href="#">Действие</a></li>
+                                <li><a class="dropdown-item" href="#">Другое действие</a></li>
+                                <li><a class="dropdown-item" href="#">Что-то еще здесь</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="dropdown dropend">
+                            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink2" data-bs-toggle="dropdown" aria-expanded="false">
+                                Ссылка выпадающего списка
+                            </a>
+
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink2">
+                                <li><a class="dropdown-item" href="#">Действие</a></li>
+                                <li><a class="dropdown-item" href="#">Другое действие</a></li>
+                                <li><a class="dropdown-item" href="#">Что-то еще здесь</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+
+                        <div class="dropdown dropend">
+                            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink3" data-bs-toggle="dropdown" aria-expanded="false">
+                                Ссылка выпадающего списка
+                            </a>
+
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink3">
+                                <li><a class="dropdown-item" href="#">Действие</a></li>
+                                <li><a class="dropdown-item" href="#">Другое действие</a></li>
+                                <li><a class="dropdown-item" href="#">Что-то еще здесь</a></li>
+                            </ul>
+                        </div>
+
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-lg-3 mb-5 mb-lg-0">
+            <form class="d-flex w-auto">
+                <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Поиск">
+                <button class="btn btn-outline-success" type="submit">Поиск</button>
+            </form>
+        </div>
+        <div class="col-lg-2 text-start text-lg-end mb-3 mb-lg-0">
+            <a href="#" class="h2 bi bi-suit-heart text-info position-relative me-0">
+                <span class="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-dark p-0 ms-3 fs-6">6</span>
+            </a>
+        </div>
+        <div class="col-lg-2 text-start text-lg-end mb-3 mb-lg-0">
+            <a href="#" class="h2 bi bi-cart text-info position-relative me-0">
+                <span class="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-dark p-0 ms-3 fs-6">5</span>
+            </a>
+        </div>
+        <div class="col-lg-2 text-start text-lg-end  mb-lg-0">
+            <a href="#" class="h2 bi bi-cart text-info position-relative me-0">
+                <span class="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-dark p-0 ms-3 fs-6">4</span>
+            </a>
+        </div>
+    </div>*@

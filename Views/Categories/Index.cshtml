@@ -1,0 +1,236 @@
+﻿@model IEnumerable<OnlineStore.Models.Category>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "_Layout";
+}
+
+<h1>Categories</h1>
+
+<a asp-action="Create" class="btn btn-success btn-lg m-3">Create new Main category</a>
+@if(@Model.Count() != 0)
+{
+@foreach (var model in Model)
+{
+    string isContainSubCategory = model.IsContainSubCategories ? "disabled" : "";
+    string isContainProducts = model.IsContainProducts ? "disabled" : "";
+    string isMaxCategoryLevel = model.CategoryLevel == 3 ? "disabled" : "";
+    string categoryLevel = model.CategoryLevel == 1 ? "Main category" : "Subcategory";
+    string isSubCategory = !model.IsContainSubCategories ? "disabled" : "";
+
+    string titleDelete = model.IsContainSubCategories ? "you cannot delete the category but it contain other subcategories" : "";
+
+    string titleCreateOrMaxCategoryLevel = ""; //= model.IsContainProducts ? "you cannot create the subcategory but it contain products" : "";
+    if (model.CategoryLevel == 3)
+    {
+        titleCreateOrMaxCategoryLevel = "you cannot create the subcategory but it is the max category level ";
+    }
+    else if(model.IsContainProducts)
+    {
+        titleCreateOrMaxCategoryLevel = "you cannot create the subcategory but it contain products";
+    }
+
+    string tabIndexDelete = model.IsContainSubCategories ? "-1" : "0";
+    string tabIndexCreate = model.IsContainProducts ? "-1" : "0";
+
+    string marginLeft = "0rem";
+    string marginTop = "mt-0";
+    string borderColor = "border-primary";
+
+    if (model.CategoryLevel == 1)
+    {
+        marginTop = "mt-5";
+    }
+    if (model.CategoryLevel == 2)
+    {
+
+        marginLeft = "5rem";
+        borderColor = "border-success";
+    }
+    if (model.CategoryLevel == 3)
+    {
+        marginLeft = "10rem";
+        borderColor = "border-warning";
+    }
+
+
+    <div class="container @marginTop mb-4">
+        <div class="row row-cols-2 row-cols-sm-2 row-cols-lg-4 align-items-center border-5 border-start @borderColor g-3 bg-light" style="margin-left:@marginLeft">
+            <div class="col">
+                <img src="data:image/*;base64,@(Convert.ToBase64String(model.Image))" style="width:5rem" alt="image of category">
+            </div>
+            <div class="col">
+                <h5 class="card-title">@(model.Title)</h5>
+                <p class="card-text">@categoryLevel</p>
+                <p class="card-text text-muted">Order: @(model.Order)</p>
+                @if(model.IsTop)
+                {
+                    <p class="card-text text-muted">Top category</p>
+                }
+            </div>
+            <div class="col">
+                <div class="btn-group btn-group-sm" role="group">
+                    <a asp-action="Details" asp-route-id="@(model.Id)" asp-route-parentCategoryId="@(model.ParentCategoryId)" type="button" class="btn btn btn-outline-primary">Details</a>
+                    <a asp-action="Edit" asp-route-id="@(model.Id)" type="button" class="btn btn-outline-warning">Edit</a>
+                    <span class="d-inline-block" title="@titleDelete" data-bs-toggle="tooltip" data-bs-placement="top">
+                        <a asp-action="Delete" asp-route-id="@(model.Id)" type="button" class="btn btn-outline-danger @isContainSubCategory" tabindex="@tabIndexDelete">Delete</a>
+                    </span>
+                </div>
+            </div>
+            <div class="col">
+                <div class="btn-group btn-group-sm d-inline-block" role="group">
+                    <span class="d-inline-block" title="@titleCreateOrMaxCategoryLevel" data-bs-toggle="tooltip" data-bs-placement="top">
+                        <a asp-action="Create" asp-route-id="@(model.Id)" asp-route-categoryLevel="@(model.CategoryLevel)" type="button" class="btn btn-success btn-sm @isContainProducts @isMaxCategoryLevel" tabindex="@tabIndexCreate">Create new subcategory</a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+@*@foreach (var model in Model)
+    {
+        string isDisabled = model.IsContainSubCategory ? "disabled" : "";
+        string categoryLevel = model.CategoryLevel == 1 ? "Main category" : "Subcategory";
+        string isSubCategory = !model.IsContainSubCategory ? "disabled" : "";
+
+        string isContainSubcategory = !model.IsContainSubCategory ? "No subcategories" : "Move to subcategories";
+        string titleDelete = !model.IsContainSubCategory ? "you cannot delete the category but it contain other subcategories" : "";
+        string tabIndexDelete = model.IsContainSubCategory ? "-1" : "0";
+        string tabIndexMoveToCat = !model.IsContainSubCategory ? "-1" : "0";
+
+        string marginLeft = "0rem";
+        if (model.CategoryLevel == 2) marginLeft = "10rem";
+        if (model.CategoryLevel == 3) marginLeft = "20rem";
+
+        //if (model.CategoryLevel == 1)
+        //{
+        <div class="container bg-light mb-3 p-3" style="margin-left:@marginLeft">
+            <div class="card" style="width:12rem">
+                <div class="card-header mb-0">
+                    <div class="btn-group btn-group-sm" role="group">
+                        <a asp-action="Details" asp-route-id="@(model.Id)" type="button" class="btn btn-primary">Details</a>
+                        <a asp-action="Edit" asp-route-id="@(model.Id)" type="button" class="btn btn-primary">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@(model.Id)" type="button" class="btn btn-primary @isDisabled" tabindex="@tabIndexDelete" title="@titleDelete">Delete</a>
+                    </div>
+                </div>
+                <img src="data:image/jpeg;base64,@(Convert.ToBase64String(model.Image))" class="card-img-top" alt="image of category">
+                <div class="card-body">
+                    <h5 class="card-title">@(model.Title)</h5>
+                    <p class="card-text">@categoryLevel</p>
+                    <a asp-action="Index" asp-route-id="@(model.Id)" asp-route-level="@(model.CategoryLevel + 1)" class="btn btn-primary btn-sm @isSubCategory" tabindex="@tabIndexMoveToCat">@isContainSubcategory</a>
+                </div>
+            </div>
+        </div>
+
+    }*@
+
+
+
+
+
+
+
+
+
+
+
+    @*string isContainSubCategory = model.IsContainSubCategory ? "disabled" : "";
+    string isContainProducts = model.IsContainProducts ? "disabled" : "";
+    string categoryLevel = model.CategoryLevel == 1 ? "Main category" : "Subcategory";
+    string isSubCategory = !model.IsContainSubCategory ? "disabled" : "";
+
+    string isContainSubcategory = !model.IsContainSubCategory ? "No subcategories" : "Move to subcategories";
+    string titleDelete = model.IsContainSubCategory ? "you cannot delete the category but it contain other subcategories" : "";
+    string titleCreate = model.IsContainProducts ? "you cannot create the subcategory but it contain products" : "";
+    string tabIndexDelete = model.IsContainSubCategory ? "-1" : "0";
+    string tabIndexCreate = model.IsContainProducts ? "-1" : "0";
+    string tabIndexMoveToCat = !model.IsContainSubCategory ? "-1" : "0";
+
+    string marginLeft = "0rem";
+    //string marginBottom = "mb-4";
+    string marginTop = "mt-0";
+    string borderColor = "border-primary";
+    if (model.CategoryLevel == 1)
+    {
+        marginTop = "mt-5";
+        /*marginBottom = "mb-2"*/
+        ;
+    }
+    if (model.CategoryLevel == 2)
+    {
+
+        marginLeft = "5rem";
+        borderColor = "border-success";
+        /*marginBottom = "mb-2"*/
+        ;
+    }
+    if (model.CategoryLevel == 3)
+    {
+        marginLeft = "10rem";
+        borderColor = "border-warning";
+        /*marginBottom = "mb-2";*/
+    }
+
+    if (model.Products != null)
+    {
+<h3>@(model.Products.Count())</h3>
+    }*@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*<h1>Index</h1>
+
+    @foreach (var model in Model)
+    {
+        string isDisabled = model.isContainSubCategory ? "disabled" : "";
+        string categoryLevel = model.CategoryLevel == 1 ? "Main category" : "Subcategory";
+        string isSubCategory = !model.isContainSubCategory ? "disabled" : "";
+
+        string isContainSubcategory = !model.isContainSubCategory ? "No subcategories" : "Move to subcategories";
+        string titleDelete = !model.isContainSubCategory ? "you cannot delete the category but it contain other subcategories" : "";
+        string tabIndexDelete = model.isContainSubCategory ? "-1" : "0";
+        string tabIndexMoveToCat = !model.isContainSubCategory ? "-1" : "0";
+
+        <div class="container bg-light mb-3 p-3">
+            <div class="card" style="width:15rem">
+                <div class="card-header">
+                    <div class="btn-group" role="group">
+                        <a asp-action="Details" asp-route-id="@(model.Id)" type="button" class="btn btn-primary">Details</a>
+                        <a asp-action="Edit" asp-route-id="@(model.Id)" type="button" class="btn btn-primary">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@(model.Id)" type="button" class="btn btn-primary @isDisabled" tabindex="@tabIndexDelete" title="@titleDelete">Delete</a>
+                    </div>
+                </div>
+                <img src="data:image/jpeg;base64,@(Convert.ToBase64String(model.Image))" class="card-img-top" alt="image of category">
+                <div class="card-body">
+                    <h5 class="card-title">@(model.Title)</h5>
+                    <p class="card-text">@categoryLevel</p>
+                    <a asp-action="Index" asp-route-id="@(model.Id)" asp-route-level="@(model.CategoryLevel + 1)" class="btn btn-primary @isSubCategory" tabindex="@tabIndexMoveToCat">@isContainSubcategory</a>
+                </div>
+            </div>
+        </div>
+    }*@
