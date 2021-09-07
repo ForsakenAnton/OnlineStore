@@ -52,13 +52,13 @@
                         }
                         else
                         {
-                            <div class="col-lg-2 mb-lg-0 mb-3 text-center">
+                            @*<div class="col-lg-2 mb-lg-0 mb-3 text-center">
                                 <button class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#adminMenu">
                                     Admin menu
                                 </button>
-                            </div>
+                            </div>*@
 
-                            <div class="col-lg-3 mb-lg-0 mb-3 text-center text-start">
+                            <div class="col-lg-3 offset-lg-2 mb-lg-0 mb-3 text-center text-start">
                                 @User.Identity.Name
                             </div>
                             <div class="col-lg-2 mb-lg-0 mb-3 text-lg-start text-center d-lg-inline">
@@ -85,9 +85,9 @@
 
                     <div id="secondRowOfNavbar" class="row pt-3 order-lg-2 order-1">
 
-                            <vc:categories-list />
+                        <vc:categories-list />
 
-                        <div class="col-lg-6 mb-1 mb-lg-0 text-lg-start order-lg-2 order-1">
+                        <div class="col-lg-4 mb-1 mb-lg-0 text-lg-start order-lg-2 order-1">
                             <div id="mainSearchBlock" class="position-relative">
                                 <form class="d-flex w-auto mb-2" asp-controller="Home" asp-action="IndexProducts">
                                     <input id="mainSearchInput" class="form-control" name="searchString" type="search" autocomplete="off" placeholder="Search" aria-label="Search" required">
@@ -112,6 +112,12 @@
                             <a href="#" class="h2 bi bi-cart text-primary position-relative me-0">
                                 <span class="position-absolute top-0 start-50 translate-middle badge rounded-pill text-dark p-0 ms-3 fs-6">4</span>
                             </a>
+                        </div>
+
+                        <div class="col-lg-2 mb-lg-0 mb-3 text-center">
+                            <button class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#adminMenu">
+                                Admin menu
+                            </button>
                         </div>
                     </div>
 

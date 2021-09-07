@@ -24,7 +24,9 @@ namespace OnlineStore.TagHelpers
         [ViewContext]
         [HtmlAttributeNotBound]
         public ViewContext ViewContext { get; set; }
-        public PageViewModel<Product> PageListModel { get; set; }
+        //public PageViewModel<Product> PageListModel { get; set; }
+        //public PageViewModel<Comment> PageCommentsModel { get; set; }
+        public PageViewModel PageListModel { get; set; }
         public string PageAction { get; set; }
 
         [HtmlAttributeName(DictionaryAttributePrefix = "page-url-")]
@@ -35,41 +37,83 @@ namespace OnlineStore.TagHelpers
             IUrlHelper urlHelper = urlHelperFactory.GetUrlHelper(ViewContext);
             output.TagName = "div";
 
-            // набор ссылок будет представлять список ul
             TagBuilder tag = new TagBuilder("ul");
-            tag.AddCssClass("pagination");
+            tag.AddCssClass("pagination justify-content-center");
 
-            // формируем три ссылки - на текущую, предыдущую и следующую
-            TagBuilder currentItem = CreateTag(PageListModel.PageNumber, urlHelper);
-
-            // создаем ссылку на предыдущую страницу, если она есть
-            if (PageListModel.HasPreviousPage)
+            TagBuilder back = CreateTag(" << ", urlHelper);
+            if (!PageListModel.HasPreviousPage)
             {
-                TagBuilder prevItem = CreateTag(PageListModel.PageNumber - 1, urlHelper);
-                tag.InnerHtml.AppendHtml(prevItem);
+                back.AddCssClass("disabled");
             }
+            tag.InnerHtml.AppendHtml(back);
 
-            tag.InnerHtml.AppendHtml(currentItem);
-            // создаем ссылку на следующую страницу, если она есть
-            if (PageListModel.HasNextPage)
+            //TagBuilder currentItem = CreateTag(PageListModel.PageNumber.ToString(), urlHelper);
+
+            ////////////////////////////////////////////////////
+            for (int i = 1; i <= PageListModel.PageNumber; i++)
             {
-                TagBuilder nextItem = CreateTag(PageListModel.PageNumber + 1, urlHelper);
-                tag.InnerHtml.AppendHtml(nextItem);
+                if ((PageListModel.PageNumber - 3 <= i) || (i == 1) || (PageListModel.PageNumber == i))
+                {
+                    TagBuilder Item = CreateTag(i.ToString(), urlHelper);
+                    tag.InnerHtml.AppendHtml(Item);
+                }
             }
+            //if (PageListModel.HasPreviousPage)
+            //{
+            //    TagBuilder prevItem = CreateTag((PageListModel.PageNumber - 1).ToString(), urlHelper);
+            //    tag.InnerHtml.AppendHtml(prevItem);
+            //}
+            ////////////////////////////////////////////////////
+
+            //tag.InnerHtml.AppendHtml(currentItem);
+
+            for (int i = PageListModel.PageNumber + 1; i <= PageListModel.TotalPages; i++)
+            {
+                if ((PageListModel.PageNumber + 3 >= i) || (i == PageListModel.TotalPages) || (PageListModel.PageNumber == i))
+                {
+                    TagBuilder nextItem = CreateTag(i.ToString(), urlHelper);
+                    tag.InnerHtml.AppendHtml(nextItem);
+                }
+            }
+            //if (PageListModel.HasNextPage)
+            //{
+            //    TagBuilder nextItem = CreateTag((PageListModel.PageNumber + 1).ToString(), urlHelper);
+            //    tag.InnerHtml.AppendHtml(nextItem);
+            //}
+
+            TagBuilder forward = CreateTag(" >> ", urlHelper);
+            if (!PageListModel.HasNextPage)
+            {
+                forward.AddCssClass("disabled");
+            }
+            tag.InnerHtml.AppendHtml(forward);
+
             output.Content.AppendHtml(tag);
         }
 
-        TagBuilder CreateTag(int pageNumber, IUrlHelper urlHelper)
+        TagBuilder CreateTag(string pageNumber, IUrlHelper urlHelper)
         {
             TagBuilder item = new TagBuilder("li");
             TagBuilder link = new TagBuilder("a");
-            if (pageNumber == this.PageListModel.PageNumber)
+            if (pageNumber == this.PageListModel.PageNumber.ToString())
             {
                 item.AddCssClass("active");
             }
             else
             {
-                PageUrlValues["page"] = pageNumber;
+                if(pageNumber == " << ")
+                {
+                    PageUrlValues["page"] = PageListModel.PageNumber - 1;
+                }
+                else if (pageNumber == " >> ")
+                {
+                    PageUrlValues["page"] = PageListModel.PageNumber + 1;
+                }
+                else
+                {
+                    PageUrlValues["page"] = pageNumber;
+                }
+
                 link.Attributes["href"] = urlHelper.Action(PageAction, PageUrlValues);
             }
             item.AddCssClass("page-item");

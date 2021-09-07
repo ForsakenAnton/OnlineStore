@@ -1,4 +1,6 @@
-﻿@model IEnumerable<OnlineStore.Models.Comment>
+﻿@using OnlineStore.Models.ViewModels;
+
+@model OnlineStore.Models.ViewModels.CommentsViewModel
 
 <div id="loading" class="spinner-border position-relative top-50 start-50" style="display:none;width:10rem;height:10rem;" role="status"></div>
 <div id="modal"></div>
@@ -10,11 +12,11 @@
             <div class="col-8 fs-3">
                 <span class="h1">Reviews</span>
                 &nbsp;
-                @if (Model.Count() != 0)
+                @if (Model.Comments.Count() != 0)
                 {
-                    @await Html.PartialAsync("_DrawStarsRating", Model.Average(c => c.Rating))
+                    @await Html.PartialAsync("_DrawStarsRating", Model.Comments.Average(c => c.Rating))
                     @:&nbsp;
-                    <span class="fs-3">@Math.Round(Model.Average(c => c.Rating), 1) from 5</span>
+                    <span class="fs-3">@Math.Round(Model.Comments.Average(c => c.Rating), 1) from 5</span>
                 }
                 else
                 {
@@ -27,7 +29,7 @@
             <div class="col-4 text-end">
                 <div class="dropdown">
                     <a class="btn btn-light dropdown-toggle w-100" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                        @ViewData["sortParams"]
+                        @(Model.SortViewModel.Current == @SortState.ByDate ? "By date" : "By useful")
                     </a>
 
                     <ul class="dropdown-menu w-100" aria-labelledby="dropdownMenuLink">
@@ -37,7 +39,7 @@
                                data-ajax-mode="replace"
                                data-ajax-update="#data-comments"
                                data-ajax-loading="#loading"
-                               data-ajax-url="@Url.Action("Comments", "Home", new { sort="byDate" })">
+                               data-ajax-url="@Url.Action("Comments", "Home", new { sortOrder = SortState.ByDate, page = Model.PageViewModel.PageNumber })">
                                 By date
                             </a>
                         </li>
@@ -47,7 +49,7 @@
                                data-ajax-mode="replace"
                                data-ajax-update="#data-comments"
                                data-ajax-loading="#loading"
-                               data-ajax-url="@Url.Action("Comments", "Home", new { sort="byUseful" })">
+                               data-ajax-url="@Url.Action("Comments", "Home", new { sortOrder = SortState.ByUseful, page = Model.PageViewModel.PageNumber })">
                                 By useful
                             </a>
                         </li>
@@ -116,7 +118,7 @@
                                         </div>
                                     </div>
 
-                                    <input type="hidden" name="productId" value="@ViewBag.product.Id" />
+                                    <input type="hidden" name="productId" value="@Model.Product.Id" />
 
                                     <div class="text-center">
                                         @*<button type="submit" class="btn btn-lg btn-outline-primary w-75 mb-3" data-bs-toggle="modal" data-bs-target="#confirmSentFeedback">Send feedback</button>*@
@@ -149,11 +151,11 @@
         }
 
 
-        <div class="text-muted">All of <span class="text-decoration-underline">@Model.Count()</span> reviews</div>
-        @foreach (var comment in Model)
+        <div class="text-muted">All of <span class="text-decoration-underline">@Model.Comments.Count()</span> reviews</div>
+        @foreach (var comment in Model.Comments)
         {
             <div class="p-3 border border-1 rounded-3 mb-5">
-                <p><span class="fw-bold">Reviews of model: </span> @ViewBag.product.Title @ViewBag.product.Feature</p>
+                <p><span class="fw-bold">Reviews of model: </span> @Model.Product.Title @Model.Product.Feature</p>
 
                 <div class="row align-items-center mb-5">
                     <div class="col-6">
@@ -179,11 +181,11 @@
 
                 <div class="row align-items-center mb-2">
                     <div class="col-6">
-                        <button class="btn" data-bs-toggle="collapse" data-bs-target="#show-answers">
+                        <button class="btn" data-bs-toggle="collapse" data-bs-target="#show-answers@(comment.Id)">
                             <span class="badge rounded-pill bg-primary">@comment.Answers.Count()</span> Show answers
                         </button>
                         &nbsp;|&nbsp;
-                        <button class="btn" data-bs-toggle="collapse" data-bs-target="#answer">
+                        <button class="btn" data-bs-toggle="collapse" data-bs-target="#answer@(comment.Id)">
                             <i class="bi bi-chat-square-dots"></i> Answer
                         </button>
 
@@ -194,10 +196,10 @@
                 </div>
 
                 @*  *@
-                <div class="collapse bg-light rounded rounded-3 p-3 mb-3" id="answer">
+                <div class="collapse bg-light rounded rounded-3 p-3 mb-3" id="answer@(comment.Id)">
                     <div id="loading3" class="spinner-border position-relative top-50 start-50" style="display:none;width:10rem;height:10rem;" role="status"></div>
                     <div class="clearfix mb-3 p-3">
-                        <button type="button" class="btn-close float-end" data-bs-toggle="collapse" data-bs-target="#answer"></button>
+                        <button type="button" class="btn-close float-end" data-bs-toggle="collapse" data-bs-target="#answer@(comment.Id)"></button>
                     </div>
                     <form asp-antiforgery="true"
                           method="post"
@@ -218,7 +220,7 @@
                         </div>
                     </form>
                 </div>
-                <div class="collapse" id="show-answers">
+                <div class="collapse" id="show-answers@(comment.Id)">
                     <dl class="ms-5 me-5 mb-5">
                         @foreach (var answer in comment.Answers)
                         {
@@ -230,7 +232,7 @@
                         }
                     </dl>
 
-                    <button type="button" class="btn btn-light ms-5" data-bs-toggle="collapse" data-bs-target="#show-answers">Hide answers</button>
+                    <button type="button" class="btn btn-light ms-5" data-bs-toggle="collapse" data-bs-target="#show-answers@(comment.Id)">Hide answers</button>
                 </div>
                 @*  *@
 
@@ -244,11 +246,11 @@
         <div class="card w-100 border-0">
             <div class="row mb-3">
                 <div class="col-3 text-center">
-                    <img src="data:image/*;base64,@(Convert.ToBase64String(ViewBag.product.Image))" class="img-fluid rounded-start" style="min-width:75%" alt="Category image">
+                    <img src="data:image/*;base64,@(Convert.ToBase64String(Model.Product.Image))" class="img-fluid rounded-start" style="min-width:75%" alt="Category image">
                 </div>
                 <div class="col-9">
                     <div class="card-body">
-                        <h5 class="card-title">@ViewBag.product.Title @ViewBag.product.Feature</h5>
+                        <h5 class="card-title">@Model.Product.Title @Model.Product.Feature</h5>
                     </div>
                 </div>
             </div>
@@ -258,16 +260,16 @@
                 <div class="col-6 mb-lg-0">
                     @{string display = "d-block";
 
-                        @if (ViewBag.product.Discount == 0)
+                        @if (Model.Product.Discount == 0)
                         {
                             display = "d-none";
                         }
                     }
                     <div class="@display mb-3">
-                        <del class="text-muted">@(ViewBag.product.Price)$</del>
+                        <del class="text-muted">@(Model.Product.Price)$</del>
                     </div>
 
-                    <h5 class="">@(ViewBag.product.Price - ViewBag.product.Discount)$</h5>
+                    <h5 class="">@(Model.Product.Price - Model.Product.Discount)$</h5>
                 </div>
 
                 <div class="col-3 mb-lg-0 mb-3 text-center">
@@ -284,6 +286,12 @@
             </div>
         </div>
     </div>
+
+    <page-link page-list-model="Model.PageViewModel" page-action="Details"
+               page-url-productId="Model.Product.Id"
+               page-url-sortOrder="Model.SortViewModel.Current"
+               page-url-ajaxPageId="3">
+    </page-link>
 </div>
 
 @section Scripts {

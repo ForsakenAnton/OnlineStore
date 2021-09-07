@@ -123,14 +123,14 @@ namespace OnlineStore.Controllers
                     //    .Aggregate(new List<Product>(), (acc, dest) => acc.add);
 
                     int count = await products.CountAsync();
-                    var items = await products.Skip(0).Take(4).ToListAsync();
+                    var items = await products.Skip(0).Take(1).ToListAsync();
 
                     IndexProductsViewModel viewModel = new IndexProductsViewModel
                     {
                         Products = items,
                         SortViewModel = new SortViewModel(SortState.PriceAsc),
-                        FilterViewModel = new FilterViewModel(null, categoryId, null),
-                        PageListViewModel = new PageViewModel<Product>(count, 1, 4),
+                        FilterViewModel = new FilterViewModel(null, null, categoryId, null, null, null),
+                        PageListViewModel = new PageViewModel(count, 1, 1),
                         ProductId = null,
                         User = await _userManager.GetUserAsync(User)
                     };
@@ -150,7 +150,7 @@ namespace OnlineStore.Controllers
 
         public async Task<IActionResult> IndexProducts(int? productId, int? categoryId, string searchString, int page = 1, SortState sortOrder = SortState.PriceAsc)
         {
-            int pageSize = 4;
+            int pageSize = 1;
 
             IQueryable<Product> products = _context.Products
                 .Include(p => p.Manufacturer)
@@ -214,8 +214,8 @@ namespace OnlineStore.Controllers
             {
                 Products = items,
                 SortViewModel = new SortViewModel(sortOrder),
-                FilterViewModel = new FilterViewModel(productId, categoryId, searchString),
-                PageListViewModel = new PageViewModel<Product>(count, page, pageSize),
+                FilterViewModel = new FilterViewModel(productId, searchString, categoryId, null, null, null),
+                PageListViewModel = new PageViewModel(count, page, pageSize),
                 ProductId = productId,
                 User = await _userManager.GetUserAsync(User)
             };
@@ -338,14 +338,16 @@ namespace OnlineStore.Controllers
 
 
 
-        public IActionResult Details(int? productId, int agaxPageId = 1)
+        public IActionResult Details(int? productId, int page = 1, SortState sortOrder = SortState.ByDate, int ajaxPageId = 1)
         {
             if (productId == null)
             {
                 return NotFound();
             }
 
-            ViewBag.agaxPageId = agaxPageId;
+            ViewBag.page = page;
+            ViewBag.sortOrder = sortOrder;
+            ViewBag.agaxPageId = ajaxPageId;
             ViewBag.commentsCount = _context.Comments.Count(c => c.ProductId == productId && c.IsModerated == true);
 
             return View(productId);
@@ -386,32 +388,33 @@ namespace OnlineStore.Controllers
             return PartialView("_Сharacteristics");
         }
 
-        public async Task<IActionResult> Comments(int? id, string sort)
+        public async Task<IActionResult> Comments(int? id, int page = 1, SortState sortOrder = SortState.ByDate)
         {
-            if (String.IsNullOrEmpty(sort))
-                sort = "byDate";
+            int pageSize = 4;
+            //if (String.IsNullOrEmpty(sort))
+            //    sort = "byDate";
 
-            ViewData["sortParams"] = sort == "byDate" ? "By date" : "By useful";
+            //ViewData["sortParams"] = sort == "byDate" ? "By date" : "By useful";
 
-            var comments = await _context.Comments
+            IQueryable<Comment> comments = _context.Comments
                 .Include(c => c.Likes)
                 .Include(c => c.User)
                 .Include(c => c.Product)
                 .Include(c => c.Answers)
                     .ThenInclude(a => a.User)
-                .Where(c => c.Product.Id == id && c.IsModerated)
-                .ToListAsync();
+                .Where(c => c.Product.Id == id && c.IsModerated);
 
-            switch (sort)
+            switch (sortOrder)
             {
-                case "byDate":
-                    comments = comments.OrderByDescending(c => c.Date).ToList();
+                case SortState.ByDate:
+                    comments = comments.OrderByDescending(c => c.Date);
                     break;
-                case "byUseful":
-                    comments = comments.OrderByDescending(c => c.Likes.Count(l => l.Liking) - c.Likes.Count(l => l.Unliking)).ToList();
-                    break;
-                default:
 
+                case SortState.ByUseful:
+                    comments = comments.OrderByDescending(c => c.Likes.Count(l => l.Liking) - c.Likes.Count(l => l.Unliking));
+                    break;
+
+                default:
                     break;
             }
 
@@ -423,11 +426,22 @@ namespace OnlineStore.Controllers
             var product = await _context.Products
                 .FirstOrDefaultAsync(p => p.Id == id);
 
-            ViewBag.product = product;
 
+            int count = await comments.CountAsync();
+            var items = await comments.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
 
-            return PartialView("_Comments", comments);
+            CommentsViewModel viewModel = new CommentsViewModel
+            {
+                Comments = items,
+                PageViewModel = new PageViewModel(count, page, pageSize),
+                SortViewModel = new SortViewModel(sortOrder),
+                Product = product
+            };
+
+            return PartialView("_Comments", viewModel);
         }
+
+
 
 
         [Authorize(Roles = "admin,user")]

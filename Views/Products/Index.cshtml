@@ -1,59 +1,233 @@
-﻿@model IEnumerable<OnlineStore.Models.Product>
+﻿@using OnlineStore.Models.ViewModels
+
+@model OnlineStore.Models.ViewModels.IndexProductsViewModel
 
 @{
     ViewData["Title"] = "Index";
     int index = 1;
 }
 
-
-<h1>Index</h1>
-
 <p>
     <a asp-action="Create" class="btn btn-lg btn-success mb-3">Create New Product</a>
 </p>
-<div class="table-responsive">
-    <table class="table table-sm align-middle text-dark altetnate-table-hover">
+
+<form asp-action="Index" method="get" class="row align-items-lg-end">
+    <div class="col-lg-3 mb-3 border-start ">
+        <input name="searchString" value="@Model.FilterViewModel.SelectedSearchString" class="form-control" type="search" placeholder="search" />
+    </div>
+    <div class="col-lg-2 mb-3 border-start border-end">
+        <label asp-for="@Model.FilterViewModel.Categories" class="form-label"></label>
+        <select name="categoryId" asp-items="@Model.FilterViewModel.Categories" class="form-select bg-light text-dark"></select>
+    </div>
+    <div class="col-lg-2 mb-3 border-end">
+        <label asp-for="@Model.FilterViewModel.Manufacturers" class="form-label"></label>
+        <select name="manufacturerId" asp-items="@Model.FilterViewModel.Manufacturers" class="form-select bg-light text-dark"></select>
+    </div>
+    <div class="col-lg-3 mb-3 text-center">
+        <input type="submit" value="Filter" class="btn btn-success w-100" />
+    </div>
+
+    <div class="col-lg-2 mb-3 border-start border-end">
+        <div class="text-center">
+            <div>Sort</div>
+            <div class="dropdown">
+
+                @{
+                    string Up = Model.SortViewModel.Current.ToString().Contains("Asc") ? "bi bi-arrow-up" : "bi bi-arrow-down";
+                    string nameSort = Model.SortViewModel.Current switch
+                    {
+                        SortState.PriceAsc => "price",
+                        SortState.PriceDesc => "price",
+                        SortState.TopAsc => "top",
+                        SortState.TopDesc => "top",
+                        SortState.DiscountAsc => "discount",
+                        SortState.DiscountDesc => "discount",
+                        SortState.CountAsc => "count",
+                        SortState.CountDesc => "count",
+                        _ => "price"
+                    };
+                }
+
+                <a class="btn dropdown-toggle w-100" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="@Up"> @nameSort</i>
+                </a>
+
+                <ul class="dropdown-menu w-100" aria-labelledby="dropdownMenuLink">
+                    @foreach (SortState state in (SortState[])Enum.GetValues(typeof(SortState)))
+                    {
+                        nameSort = state.ToString();
+
+                        if (!nameSort.Contains("Asc") && !nameSort.Contains("Desc"))
+                        {
+                            continue;
+                        }
+
+                        if(nameSort.Contains("Asc"))
+                        {
+                            nameSort = nameSort.Substring(0, nameSort.Length - 3);
+                            Up = "bi bi-arrow-up";
+                        }
+                        else
+                        {
+                            nameSort = nameSort.Substring(0, nameSort.Length - 4);
+                            Up = "bi bi-arrow-down";
+                        }
+
+                        <li>
+                            <a class="dropdown-item" style="cursor:pointer"
+                               asp-action="Index"
+                               asp-route-page="@(Model.PageListViewModel.PageNumber)"
+                               asp-route-categoryId="@(Model.FilterViewModel.CategoryId)"
+                               asp-route-manufacturerId="@(Model.FilterViewModel.ManufacturerId)"
+                               asp-route-searchString="@(Model.FilterViewModel.SelectedSearchString)"
+                               asp-route-sortOrder="@state">
+                                <i class="@Up"></i> @nameSort
+                            </a>
+                        </li>
+                    }
+                </ul>
+
+                @*<ul class="dropdown-menu w-100" aria-labelledby="dropdownMenuLink">
+            <li>
+                <a class="dropdown-item" style="cursor:pointer"
+                   asp-action="Index"
+                   asp-route-page="@(Model.PageListViewModel.PageNumber)"
+                   asp-route-categoryId="@(Model.FilterViewModel.CategoryId)"
+                   asp-route-manufacturerId="@(Model.FilterViewModel.ManufacturerId)"
+                   asp-route-searchString="@(Model.FilterViewModel.SelectedSearchString)"
+                   asp-route-sortOrder="@(SortState.PriceAsc)">
+                    <i class="bi bi-arrow-up"></i> price
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item" style="cursor:pointer"
+                   asp-action="Index"
+                   asp-route-page="@(Model.PageListViewModel.PageNumber)"
+                   asp-route-categoryId="@(Model.FilterViewModel.CategoryId)"
+                   asp-route-manufacturerId="@(Model.FilterViewModel.ManufacturerId)"
+                   asp-route-searchString="@(Model.FilterViewModel.SelectedSearchString)"
+                   asp-route-sortOrder="@(SortState.PriceDesc)">
+                    <i class="bi bi-arrow-down"></i> price
+                </a>
+            </li>
+
+            <li>
+                <a class="dropdown-item" style="cursor:pointer"
+                   asp-action="Index"
+                   asp-route-page="@(Model.PageListViewModel.PageNumber)"
+                   asp-route-categoryId="@(Model.FilterViewModel.CategoryId)"
+                   asp-route-manufacturerId="@(Model.FilterViewModel.ManufacturerId)"
+                   asp-route-searchString="@(Model.FilterViewModel.SelectedSearchString)"
+                   asp-route-sortOrder="@(SortState.TopAsc)">
+                    <i class="bi bi-arrow-up"></i> top
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item" style="cursor:pointer"
+                   asp-action="Index"
+                   asp-route-page="@(Model.PageListViewModel.PageNumber)"
+                   asp-route-categoryId="@(Model.FilterViewModel.CategoryId)"
+                   asp-route-manufacturerId="@(Model.FilterViewModel.ManufacturerId)"
+                   asp-route-searchString="@(Model.FilterViewModel.SelectedSearchString)"
+                   asp-route-sortOrder="@(SortState.TopDesc)">
+                    <i class="bi bi-arrow-down"></i> top
+                </a>
+            </li>
+
+            <li>
+                <a class="dropdown-item" style="cursor:pointer"
+                   asp-action="Index"
+                   asp-route-page="@(Model.PageListViewModel.PageNumber)"
+                   asp-route-categoryId="@(Model.FilterViewModel.CategoryId)"
+                   asp-route-manufacturerId="@(Model.FilterViewModel.ManufacturerId)"
+                   asp-route-searchString="@(Model.FilterViewModel.SelectedSearchString)"
+                   asp-route-sortOrder="@(SortState.DiscountAsc)">
+                    <i class="bi bi-arrow-up"></i> discount
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item" style="cursor:pointer"
+                   asp-action="Index"
+                   asp-route-page="@(Model.PageListViewModel.PageNumber)"
+                   asp-route-categoryId="@(Model.FilterViewModel.CategoryId)"
+                   asp-route-manufacturerId="@(Model.FilterViewModel.ManufacturerId)"
+                   asp-route-searchString="@(Model.FilterViewModel.SelectedSearchString)"
+                   asp-route-sortOrder="@(SortState.DiscountDesc)">
+                    <i class="bi bi-arrow-down"></i> discount
+                </a>
+            </li>
+
+            <li>
+                <a class="dropdown-item" style="cursor:pointer"
+                   asp-action="Index"
+                   asp-route-page="@(Model.PageListViewModel.PageNumber)"
+                   asp-route-categoryId="@(Model.FilterViewModel.CategoryId)"
+                   asp-route-manufacturerId="@(Model.FilterViewModel.ManufacturerId)"
+                   asp-route-searchString="@(Model.FilterViewModel.SelectedSearchString)"
+                   asp-route-sortOrder="@(SortState.CountAsc)">
+                    <i class="bi bi-arrow-up"></i> count
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item" style="cursor:pointer"
+                   asp-action="Index"
+                   asp-route-page="@(Model.PageListViewModel.PageNumber)"
+                   asp-route-categoryId="@(Model.FilterViewModel.CategoryId)"
+                   asp-route-manufacturerId="@(Model.FilterViewModel.ManufacturerId)"
+                   asp-route-searchString="@(Model.FilterViewModel.SelectedSearchString)"
+                   asp-route-sortOrder="@(SortState.CountDesc)">
+                    <i class="bi bi-arrow-down"></i> count
+                </a>
+            </li>
+        </ul>*@
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="table-responsive-md">
+    <table class="table table-sm table-bordered align-middle text-dark altetnate-table-hover">
         <thead>
             <tr>
                 <th style="width:10rem">
-                    @Html.DisplayNameFor(model => model.Title)
+                    @Html.DisplayNameFor(m => m.Products.FirstOrDefault().Title)
                 </th>
                 <th style="width:10rem">
-                    @Html.DisplayNameFor(model => model.Feature)
+                    @Html.DisplayNameFor(m => m.Products.FirstOrDefault().Feature)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Price)
+                    @Html.DisplayNameFor(m => m.Products.FirstOrDefault().Price)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.IsTop)
+                    @Html.DisplayNameFor(m => m.Products.FirstOrDefault().IsTop)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Discount)
+                    @Html.DisplayNameFor(m => m.Products.FirstOrDefault().Discount)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Count)
+                    @Html.DisplayNameFor(m => m.Products.FirstOrDefault().Count)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.CommodityCode)
+                    @Html.DisplayNameFor(m => m.Products.FirstOrDefault().CommodityCode)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Image)
+                    @Html.DisplayNameFor(m => m.Products.FirstOrDefault().Image)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Manufacturer)
+                    @Html.DisplayNameFor(m => m.Products.FirstOrDefault().Manufacturer)
                 </th>
 
 
                 <th>
-                    @Html.DisplayNameFor(model => model.CategoryProducts.First().Category)
+                    @Html.DisplayNameFor(m => m.Products.FirstOrDefault().CategoryProducts.FirstOrDefault().Category)
                 </th>
 
                 <th></th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model)
-            {
+            @foreach (var item in Model.Products)
+                    {
                 <tr>
                     <td style="width:10rem">
                         @Html.DisplayFor(modelItem => item.Title)
@@ -142,3 +316,10 @@
         </tbody>
     </table>
 </div>
+
+<page-link page-list-model="Model.PageListViewModel" page-action="Index"
+           page-url-categoryId="@(Model.FilterViewModel.CategoryId)"
+           page-url-manufacturerId="@(Model.FilterViewModel.ManufacturerId)"
+           page-url-searchString="@(Model.FilterViewModel.SelectedSearchString)"
+           page-url-sortOrder="@(Model.SortViewModel.Current)">
+</page-link>

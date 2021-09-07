@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OnlineStore.Models.ViewModels
 {
-    public class PageViewModel<T>// : List<T>
+    public class PageViewModel//<T>// : List<T>
     {
         public int PageNumber { get; private set; }
         public int TotalPages { get; private set; }

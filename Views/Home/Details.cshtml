@@ -34,7 +34,7 @@
            data-ajax-mode="replace"
            data-ajax-update="#data-div"
            data-ajax-loading="#loading"
-           data-ajax-url="@Url.Action("Comments", "Home", new { id = Model })">
+           data-ajax-url="@Url.Action("Comments", "Home", new { id = Model, page = ViewBag.page, sortOrder = ViewBag.sortOrder })">
             Comments <span class="badge rounded rounded-pill bg-dark text-white">@ViewBag.commentsCount</span>
         </a>
     </li>

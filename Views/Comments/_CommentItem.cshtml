@@ -145,7 +145,7 @@
                                 <h4 class="ms-5 mb-1">Answers for this review:</h4>
                             }
                             <div id="inner-accordion@(Model.Id)" class="inner-accordion">
-                                @foreach (var answer in Model.Answers)
+                                @foreach (var answer in Model.Answers.OrderByDescending(a => a.Date))
                                 {
                                     @await Html.PartialAsync("_AnswerItem", answer);
                                 }

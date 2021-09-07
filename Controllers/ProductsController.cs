@@ -28,19 +28,80 @@ namespace OnlineStore.Controllers
         }
 
         // GET: Products
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? categoryId, int? manufacturerId, string searchString, int page = 1, SortState sortOrder = SortState.PriceAsc)
         {
-            var products = await _context.Products
+            int pageSize = 3;
+
+            IQueryable<Product> products = _context.Products
                 .Include(p => p.Manufacturer)
                 .Include(cp => cp.CategoryProducts)
                     .ThenInclude(c => c.Category)
                 .Include(p => p.Comments)
                     .ThenInclude(c => c.User)
                 .Include(p => p.Comments)
-                        .ThenInclude(l => l.Likes)
+                        .ThenInclude(l => l.Likes);
+
+
+            if (categoryId != null && categoryId != 0)
+            {
+                var selectIenumerableProducts = _context.CategoryProducts
+                        .Where(cp => cp.CategoryId == categoryId)
+                        .Select(p => p.Product);
+
+                products = products.Where(p => selectIenumerableProducts.Contains(p));
+            }
+
+            if (manufacturerId != null && manufacturerId != 0)
+            {
+                products = products.Where(p => p.ManufacturerId == manufacturerId);
+            }
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                products = products
+                    .Where(p => p.Title.ToLower().Trim().Contains(searchString) ||
+                                p.Feature.ToLower().Trim().Contains(searchString));
+            }
+
+            // Sort /////////////////////////////////////////////
+
+            products = sortOrder switch
+            {
+                SortState.PriceAsc => products.OrderBy(p => p.Price),
+                SortState.PriceDesc => products.OrderByDescending(p => p.Price),
+                SortState.TopAsc => products.OrderBy(p => p.IsTop),
+                SortState.TopDesc => products.OrderByDescending(p => p.IsTop),
+                SortState.DiscountAsc => products.OrderBy(p => p.Discount),
+                SortState.DiscountDesc => products.OrderByDescending(p => p.Discount),
+                SortState.CountAsc => products.OrderBy(p => p.Count),
+                SortState.CountDesc => products.OrderByDescending(p => p.Count),
+                _ => products.OrderBy(p => p.Price)
+            };
+
+            // Pagination ///////////////////////////////////////
+
+            //PageViewModel<Product> pageListViewModel = await PageViewModel<Product>.CreateAsync(products, page, pageSize);
+            int count = await products.CountAsync();
+            var items = await products.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+
+            // SelectListCategories
+            var categories = await _context.Categories
+                .Where(c => c.Categories.Count == 0)
                 .ToListAsync();
 
-            return View(products);
+            // SelectListManufacturers
+            var manufacturers = await _context.Manufacturers.ToListAsync();
+
+
+            IndexProductsViewModel viewModel = new IndexProductsViewModel
+            {
+                Products = items,
+                SortViewModel = new SortViewModel(sortOrder),
+                FilterViewModel = new FilterViewModel(null, searchString, categoryId, categories, manufacturerId, manufacturers),
+                PageListViewModel = new PageViewModel(count, page, pageSize)
+            };
+
+            return View(viewModel);
         }
 
 

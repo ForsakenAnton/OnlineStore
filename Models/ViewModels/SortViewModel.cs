@@ -8,17 +8,26 @@ namespace OnlineStore.Models.ViewModels
     public enum SortState
     {
         PriceAsc,
-        PriceDesc
+        PriceDesc,
+        TopAsc,
+        TopDesc,
+        DiscountAsc,
+        DiscountDesc,
+        CountAsc,
+        CountDesc,
+
+        ByDate,
+        ByUseful
     }
 
     public class SortViewModel
     {
-        public SortState PriceSort { get; private set; }
+        //public SortState PriceSort { get; private set; }
         public SortState Current { get; private set; }
 
         public SortViewModel(SortState sortOrder)
         {
-            PriceSort = sortOrder; //== SortState.PriceAsc ? SortState.PriceDesc : SortState.PriceAsc;
+            //PriceSort = sortOrder; //== SortState.PriceAsc ? SortState.PriceDesc : SortState.PriceAsc;
             Current = sortOrder;
         }
     }
