@@ -1,8 +1,23 @@
-﻿@inject OnlineStore.DB.OnlineStoreContext context
-@*@inject OnlineStore.Services.OrderCategoriesServise orderService*@
+﻿
+@using OnlineStore.Models.IdentityModels
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
+@*@using System.Security*@
 
-@{ 
-//var categories = context.Categories;
+@inject OnlineStore.DB.OnlineStoreContext context
+@inject UserManager<User> userManager
+
+@{
+
+   // var currentUser = await userManager.GetUserAsync(User);
+    string userId = userManager.GetUserId(User);
+    User user = null;
+    if (!String.IsNullOrEmpty(userId))
+    {
+        user = context.Users
+            .Include(u => u.FavoriteProducts)
+            .FirstOrDefault(u => u.Id == userId);
+    }
 }
 
 <!DOCTYPE html>
@@ -53,10 +68,10 @@
                         else
                         {
                             @*<div class="col-lg-2 mb-lg-0 mb-3 text-center">
-                                <button class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#adminMenu">
-                                    Admin menu
-                                </button>
-                            </div>*@
+                                    <button class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#adminMenu">
+                                        Admin menu
+                                    </button>
+                                </div>*@
 
                             <div class="col-lg-3 offset-lg-2 mb-lg-0 mb-3 text-center text-start">
                                 @User.Identity.Name
@@ -100,7 +115,7 @@
                         </div>
                         <div class="col-4 col-lg-1 text-center text-lg-end mb-3 mb-lg-0 order-3">
                             <a href="#" class="h2 bi bi-suit-heart text-primary position-relative me-0">
-                                <span class="position-absolute top-0 start-50 translate-middle badge rounded-pill text-dark p-0 ms-3 fs-6">6</span>
+                                <span id="favoriteProductsCount" class="position-absolute top-0 start-50 translate-middle badge rounded-pill text-dark p-0 ms-3 fs-6">@user?.FavoriteProducts?.Count</span>
                             </a>
                         </div>
                         <div class="col-4 col-lg-1 text-center text-lg-end mb-3 mb-lg-0 order-4">
@@ -114,16 +129,19 @@
                             </a>
                         </div>
 
-                        <div class="col-lg-2 mb-lg-0 mb-3 text-center">
-                            <button class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#adminMenu">
-                                Admin menu
-                            </button>
-                        </div>
+                        @if (User.IsInRole("admin") && User.Identity.IsAuthenticated == true)
+                        {
+                            <div class="col-lg-2 mb-lg-0 mb-3 text-center">
+                                <button class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#adminMenu">
+                                    Admin menu
+                                </button>
+                            </div>
+                        }
                     </div>
 
 
                     @if (User.IsInRole("admin") && User.Identity.IsAuthenticated == true)
-                    { 
+                    {
                         <div id="adminMenu" class="collapse container m-0 order-3">
                             <hr class="bg-warning" style="height:4px; opacity:1" />
 
@@ -177,6 +195,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/js/myJS/hiddenNavbar.js"></script>
     <script src="~/js/myJS/ajaxMainSearch.js"></script>
+    <script src="~/js/myJS/ajaxAddOrDeleteFavorite.js"></script>
     <script src="~/js/darkModeSwitcher.js" asp-append-version="true"></script>
     <script src="~/js/tooltipsInitialize.js"></script>
     <script src="~/js/validateFormsInitialize.js"></script>

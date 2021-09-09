@@ -12,9 +12,9 @@
             <div class="col-8 fs-3">
                 <span class="h1">Reviews</span>
                 &nbsp;
-                @if (Model.Comments.Count() != 0)
+                @if (Model.Comments.Any(c => c.IsModerated == true))
                 {
-                    @await Html.PartialAsync("_DrawStarsRating", Model.Comments.Average(c => c.Rating))
+                    @await Html.PartialAsync("_DrawStarsRating", Model.Comments.Where(c => c.IsModerated == true).Average(c => c.Rating))
                     @:&nbsp;
                     <span class="fs-3">@Math.Round(Model.Comments.Average(c => c.Rating), 1) from 5</span>
                 }
@@ -273,10 +273,17 @@
                 </div>
 
                 <div class="col-3 mb-lg-0 mb-3 text-center">
-                    <a href="#" class="h4 fas fa-balance-scale text-info me-0"></a>
+                    <a href="#" class="h4 fas fa-balance-scale text-secondary me-0"></a>
                 </div>
                 <div class="col-3 mb-lg-0 mb-3 text-center">
-                    <a href="#" class="h4 bi bi-suit-heart text-info me-0"></a>
+                    @{
+                        string containsFavorite = "text-secondary";
+                        @if (Model.User != null)
+                        {
+                            containsFavorite = Model.FavoriteProducts.Any(fp => fp.Product.Id == Model.Product.Id) ? "h4 bi bi-suit-heart-fill text-success" : "h4 bi bi-suit-heart fw-bolder text-secondary";
+                        }
+                    }
+                    <a id="favorite@(Model.Product.Id)" onclick="ajaxAddOrDeleteFavorite(@Model.Product.Id, favorite@(Model.Product.Id))" class="@containsFavorite" style="cursor:pointer"></a>
                 </div>
                 <div class="col-12">
                     <a href="#" class="bi bi-cart btn btn-lg btn-success w-100">

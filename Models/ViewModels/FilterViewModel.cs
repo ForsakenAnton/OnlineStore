@@ -17,11 +17,17 @@ namespace OnlineStore.Models.ViewModels
 
         public FilterViewModel(int? productId, string searchString, int? categoryId, List<Category> categories, int? manufacturerId, List<Manufacturer> manufacturers)
         {
-            manufacturers.Insert(0, new Manufacturer { Title = "All manufacturers", Id = 0 });
-            Manufacturers = new SelectList(manufacturers, "Id", "Title", manufacturerId);
+            if (manufacturers != null)
+            {
+                manufacturers.Insert(0, new Manufacturer { Title = "All manufacturers", Id = 0 });
+                Manufacturers = new SelectList(manufacturers, "Id", "Title", manufacturerId);
+            }
 
-            Categories = new SelectList(categories, "Id", "Title", categoryId);
-            categories.Insert(0, new Category { Title = "All categories", Id = 0 });
+            if (categories != null)
+            {
+                categories.Insert(0, new Category { Title = "All categories", Id = 0 });
+                Categories = new SelectList(categories, "Id", "Title", categoryId);
+            }
 
             ProductId = productId;
             CategoryId = categoryId;

@@ -123,16 +123,27 @@ namespace OnlineStore.Controllers
                     //    .Aggregate(new List<Product>(), (acc, dest) => acc.add);
 
                     int count = await products.CountAsync();
-                    var items = await products.Skip(0).Take(1).ToListAsync();
+                    var items = await products.Skip(0).Take(4).ToListAsync();
+
+                    var user = await _userManager.GetUserAsync(User);
+                    IEnumerable<FavoriteProduct> favoriteProducts = null; // = user != null ? await _context.FavoriteProducts.Where(fp => fp.User.Id == user.Id).ToListAsync() : new List<FavoriteProduct>(0);
+                    if (user != null)
+                    {
+                        favoriteProducts = await _context.FavoriteProducts
+                           .Include(fp => fp.Product)
+                           .Include(fp => fp.User)
+                           .Where(fp => fp.User.Id == user.Id).ToListAsync();
+                    }
 
                     IndexProductsViewModel viewModel = new IndexProductsViewModel
                     {
                         Products = items,
                         SortViewModel = new SortViewModel(SortState.PriceAsc),
                         FilterViewModel = new FilterViewModel(null, null, categoryId, null, null, null),
-                        PageListViewModel = new PageViewModel(count, 1, 1),
+                        PageListViewModel = new PageViewModel(count, 1, 4),
                         ProductId = null,
-                        User = await _userManager.GetUserAsync(User)
+                        User = user,
+                        FavoriteProducts = favoriteProducts
                     };
 
 
@@ -150,7 +161,7 @@ namespace OnlineStore.Controllers
 
         public async Task<IActionResult> IndexProducts(int? productId, int? categoryId, string searchString, int page = 1, SortState sortOrder = SortState.PriceAsc)
         {
-            int pageSize = 1;
+            int pageSize = 4;
 
             IQueryable<Product> products = _context.Products
                 .Include(p => p.Manufacturer)
@@ -210,6 +221,16 @@ namespace OnlineStore.Controllers
             int count = await products.CountAsync();
             var items = await products.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
 
+            var user = await _userManager.GetUserAsync(User);
+            IEnumerable<FavoriteProduct> favoriteProducts = null; // = user != null ? await _context.FavoriteProducts.Where(fp => fp.User.Id == user.Id).ToListAsync() : new List<FavoriteProduct>(0);
+            if (user != null)
+            {
+                favoriteProducts = await _context.FavoriteProducts
+                   .Include(fp => fp.Product)
+                   .Include(fp => fp.User)
+                   .Where(fp => fp.User.Id == user.Id).ToListAsync();
+            }
+
             IndexProductsViewModel viewModel = new IndexProductsViewModel
             {
                 Products = items,
@@ -217,7 +238,8 @@ namespace OnlineStore.Controllers
                 FilterViewModel = new FilterViewModel(productId, searchString, categoryId, null, null, null),
                 PageListViewModel = new PageViewModel(count, page, pageSize),
                 ProductId = productId,
-                User = await _userManager.GetUserAsync(User)
+                User = user,
+                FavoriteProducts = favoriteProducts
             };
 
             return View("IndexProducts", viewModel);
@@ -345,10 +367,12 @@ namespace OnlineStore.Controllers
                 return NotFound();
             }
 
+            // Dynamic types for view ////////////////////////////////////////////////////
             ViewBag.page = page;
             ViewBag.sortOrder = sortOrder;
             ViewBag.agaxPageId = ajaxPageId;
             ViewBag.commentsCount = _context.Comments.Count(c => c.ProductId == productId && c.IsModerated == true);
+            //////////////////////////////////////////////////////
 
             return View(productId);
         }
@@ -374,8 +398,23 @@ namespace OnlineStore.Controllers
                 return NotFound();
             }
 
+            var user = await _userManager.GetUserAsync(User);
+            IEnumerable<FavoriteProduct> favoriteProducts = null;
+            if (user != null)
+            {
+                favoriteProducts = await _context.FavoriteProducts
+                   .Include(fp => fp.Product)
+                   .Include(fp => fp.User)
+                   .Where(fp => fp.User.Id == user.Id).ToListAsync();
+            }
+
 
             HttpContext.Session.Set<Product>("haveBeenViewedProducts" + product.Id, product);
+
+            // Dynamic types for view ////////////////////////////////////////////////////
+            ViewBag.user = user;
+            ViewBag.favoriteProducts = favoriteProducts;
+            /////////////////////////////////////////////////////////////////////
 
             return PartialView("_AllAboutProduct", product);
         }
@@ -430,12 +469,25 @@ namespace OnlineStore.Controllers
             int count = await comments.CountAsync();
             var items = await comments.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
 
+            var user = await _userManager.GetUserAsync(User);
+            IEnumerable<FavoriteProduct> favoriteProducts = null;
+            if (user != null)
+            {
+                favoriteProducts = await _context.FavoriteProducts
+                   .Include(fp => fp.Product)
+                   .Include(fp => fp.User)
+                   .Where(fp => fp.User.Id == user.Id).ToListAsync();
+            }
+
+
             CommentsViewModel viewModel = new CommentsViewModel
             {
                 Comments = items,
                 PageViewModel = new PageViewModel(count, page, pageSize),
                 SortViewModel = new SortViewModel(sortOrder),
-                Product = product
+                Product = product,
+                FavoriteProducts = favoriteProducts,
+                User = user
             };
 
             return PartialView("_Comments", viewModel);
@@ -546,6 +598,21 @@ namespace OnlineStore.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        [Authorize]
+        public async Task<IActionResult> FavoriteAsync(int? productId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == productId);
+            FavoriteProduct favorite = new FavoriteProduct
+            {
+                Product = product,
+                User = user
+            };
+            _context.FavoriteProducts.Add(favorite);
+            await _context.SaveChangesAsync();
+            return NoContent();
         }
     }
 }

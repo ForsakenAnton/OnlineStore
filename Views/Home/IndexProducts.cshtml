@@ -60,7 +60,7 @@
                         </a>
                         <div class="row mb-3 ms-0 me-0">
                             <div class="col-8 p-0">
-                                @if (product.Comments.Count() != 0)
+                                @if (product.Comments.Any(c => c.IsModerated == true))
                                 {
                                     @await Html.PartialAsync("_DrawStarsRating", product.Comments.Where(c => c.IsModerated == true).Average(c => c.Rating))
                                 }
@@ -70,30 +70,46 @@
                                 }
                                 &nbsp;
                                 &nbsp;
-                                <a class="link-primary text-decoration-none" asp-action="Details" asp-route-productId="@product.Id" asp-route-agaxPageId="3">
+                                <a class="link-primary text-decoration-none" asp-action="Details" asp-route-productId="@product.Id" asp-route-ajaxPageId="3">
                                     <small class="bi bi-chat-fill"></small>
                                     <abbr class="initialism">@product.Comments.Count(c => c.IsModerated)</abbr>
                                 </a>
 
                             </div>
-                                <div class="col-4 p-0 text-end">
-                                    <small class="text-muted">@product.CommodityCode</small>
-                                </div>
+                            <div class="col-4 p-0 text-end">
+                                <small class="text-muted">@product.CommodityCode</small>
                             </div>
-
-                            @{string visibility = "visible";
-
-                                @if (product.Discount == 0)
-                                {
-                                    visibility = "invisible";
-                                }
-                            }
-                            <div class="@visibility mb-3">
-                                <del>@product.Price</del>&nbsp;&nbsp;<span class="bg-warning rounded-2 p-2">-@product.Discount</span>
-                            </div>
-
-                            <h2 class="">@(product.Price - product.Discount)</h2>
                         </div>
+
+                        @{string visibility = "visible";
+
+                            @if (product.Discount == 0)
+                            {
+                                visibility = "invisible";
+                            }
+                        }
+                        <div class="@visibility mb-3">
+                            <del>@product.Price</del>&nbsp;&nbsp;<span class="bg-warning rounded-2 p-2">-@product.Discount</span>
+                        </div>
+
+                        <h2 class="mb-3">@(product.Price - product.Discount)</h2>
+
+                        <div class="row">
+                            <div class="col-6 mb-lg-0 mb-3 text-start">
+                                <a href="#" class="h4 fas fa-balance-scale text-secondary me-0"></a>
+                            </div>
+                            <div class="col-6 mb-lg-0 mb-3 text-end">
+                                @{
+                                    string containsFavorite = "text-secondary";
+                                    @if (Model.User != null)
+                                    {
+                                        containsFavorite = Model.FavoriteProducts.Any(fp => fp.Product.Id == product.Id) ? "h4 bi bi-suit-heart-fill text-success" : "h4 bi bi-suit-heart fw-bolder text-secondary";
+                                    }
+                                }
+                                <a id="favorite@(product.Id)" onclick="ajaxAddOrDeleteFavorite(@product.Id, favorite@(product.Id))" class="@containsFavorite" style="cursor:pointer"></a>
+                            </div>
+                        </div>
+                    </div>
                     @*<div class="card-footer border-top border-dark bg-white">*@
                     <div class="card-footer border-0 mb-3">
                         <a href="#" class="bi bi-cart btn btn-lg btn-success w-50">
@@ -117,3 +133,10 @@
 
 
 <vc:last-viewed-products />
+
+
+@*@section Scripts {
+    <script>
+
+    </script>
+}*@

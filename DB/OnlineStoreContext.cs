@@ -14,8 +14,8 @@ namespace OnlineStore.DB
     {
         public OnlineStoreContext(DbContextOptions<OnlineStoreContext> options) : base(options)
         {
-           // Database.EnsureDeleted();
-           // Database.EnsureCreated();
+            //Database.EnsureDeleted();
+            //Database.EnsureCreated();
         }
 
         public DbSet<Product> Products { get; set; }
@@ -25,6 +25,7 @@ namespace OnlineStore.DB
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Like> Likes { get; set; }
         public DbSet<Answer> Answers { get; set; }
+        public DbSet<FavoriteProduct> FavoriteProducts { get; set; }
         //public DbSet<BankCredit> BankCredits { get; set; }
 
 
@@ -38,6 +39,7 @@ namespace OnlineStore.DB
             builder.Entity<Comment>().ToTable("Comment");
             builder.Entity<Like>().ToTable("Like");
             builder.Entity<Answer>().ToTable("Answer");
+            builder.Entity<FavoriteProduct>().ToTable("FavoriteProduct");
             //builder.Entity<BankCredit>().ToTable("BankCredit");
 
 

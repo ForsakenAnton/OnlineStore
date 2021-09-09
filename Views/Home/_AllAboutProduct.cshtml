@@ -4,75 +4,85 @@
     }*@
 
 
-    <div class="card mb-3 w-100 m-3 border-0">
-        <div class="row">
-            <div class="col-lg-6 text-center border border-3 border-light">
-                <img src="data:image/*;base64,@(Convert.ToBase64String(Model.Image))" class="img-fluid rounded-start" style="min-width:75%" alt="Category image">
-            </div>
-            <div class="col-lg-6 border border-3 border-light">
-                <div class="card-body">
-                    <h3 class="card-title">@Model.Title @Model.Feature</h3>
+<div class="card mb-3 w-100 m-3 border-0">
+    <div class="row">
+        <div class="col-lg-6 text-center border border-3 border-light">
+            <img src="data:image/*;base64,@(Convert.ToBase64String(Model.Image))" class="img-fluid rounded-start" style="min-width:75%" alt="Category image">
+        </div>
+        <div class="col-lg-6 border border-3 border-light">
+            <div class="card-body">
+                <h3 class="card-title">@Model.Title @Model.Feature</h3>
 
-                    <div class="row mb-3 ms-0 me-0">
-                        <div class="col-8 p-0">
+                <div class="row mb-3 ms-0 me-0">
+                    <div class="col-8 p-0">
 
-                            @if (Model.Comments.Count() != 0)
-                            {
-                                @await Html.PartialAsync("_DrawStarsRating", Model.Comments.Average(c => c.Rating))
-                            }
-                            else
-                            {
-                                @await Html.PartialAsync("_DrawStarsRating", 0.0)
-                            }
-                            &nbsp;
-                            &nbsp;
-                            <a asp-action="Details" asp-route-productId="@Model.Id" asp-route-agaxPageId="3">
-                                <small class="bi bi-chat-fill"></small>
-                                <abbr class="initialism">@Model.Comments.Count()</abbr>
-                            </a>
-                        </div>
-
-                        <div class="col-4 p-0 text-end">
-                            <small class="text-muted">Code: @Model.CommodityCode</small>
-                        </div>
+                        @if (Model.Comments.Any(c => c.IsModerated == true))
+                        {
+                            @await Html.PartialAsync("_DrawStarsRating", Model.Comments.Where(c => c.IsModerated == true).Average(c => c.Rating))
+                            @*@await Html.PartialAsync("_DrawStarsRating", Model.Comments.Average(c => c.Rating))*@
+                        }
+                        else
+                        {
+                            @await Html.PartialAsync("_DrawStarsRating", 0.0)
+                        }
+                        &nbsp;
+                        &nbsp;
+                        <a asp-action="Details" asp-route-productId="@Model.Id" asp-route-ajaxPageId="3">
+                            <small class="bi bi-chat-fill"></small>
+                            <abbr class="initialism">@Model.Comments.Count()</abbr>
+                        </a>
                     </div>
 
-                    <hr class="bg-light" style="height:4px;opacity:1" />
+                    <div class="col-4 p-0 text-end">
+                        <small class="text-muted">Code: @Model.CommodityCode</small>
+                    </div>
+                </div>
 
-                    <div class="row align-items-center">
-                        <div class="col-lg-4 order-1 mb-lg-0 mb-3">
-                            @{string display = "d-block";
+                <hr class="bg-light" style="height:4px;opacity:1" />
 
-                                @if (Model.Discount == 0)
-                                {
-                                    display = "d-none";
-                                }
+                <div class="row align-items-center">
+                    <div class="col-lg-4 order-1 mb-lg-0 mb-3">
+                        @{string display = "d-block";
+
+                            @if (Model.Discount == 0)
+                            {
+                                display = "d-none";
                             }
-                            <div class="@display mb-3">
-                                <del class="text-muted">@(Model.Price)$</del>
-                            </div>
+                        }
+                        <div class="@display mb-3">
+                            <del class="text-muted">@(Model.Price)$</del>
+                        </div>
 
-                            <h3 class="">@(Model.Price - Model.Discount)$</h3>
-                        </div>
-                        <div class="col-lg-4 col-12 order-lg-2 order-4">
-                            <a href="#" class="bi bi-cart btn btn-lg btn-success w-100">
-                                <span>Bye</span>
-                            </a>
-                        </div>
-                        <div class="col-2 order-lg-3 order-2 mb-lg-0 mb-3 text-center">
-                            <a href="#" class="h4 fas fa-balance-scale text-info me-0">
-                                @*<span class="position-absolute top-0 start-50 translate-middle badge rounded-pill text-dark p-0 ms-3 fs-6">5</span>*@
-                            </a>
-                        </div>
-                        <div class="col-2 order-lg-4 order-3 mb-lg-0 mb-3 text-center">
-                            <a href="#" class="h4 bi bi-suit-heart text-info me-0">
-                                @*<span class="position-absolute top-0 start-50 translate-middle badge rounded-pill text-dark p-0 ms-3 fs-6">6</span>*@
-                            </a>
-                        </div>
+                        <h3 class="">@(Model.Price - Model.Discount)$</h3>
+                    </div>
+                    <div class="col-lg-4 col-12 order-lg-2 order-4">
+                        <a href="#" class="bi bi-cart btn btn-lg btn-success w-100">
+                            <span>Bye</span>
+                        </a>
+                    </div>
+                    <div class="col-2 order-lg-3 order-2 mb-lg-0 mb-3 text-center">
+                        <a href="#" class="h4 fas fa-balance-scale text-secondary me-0">
+                            @*<span class="position-absolute top-0 start-50 translate-middle badge rounded-pill text-dark p-0 ms-3 fs-6">5</span>*@
+                        </a>
+                    </div>
+                    <div class="col-2 order-lg-4 order-3 mb-lg-0 mb-3 text-center">
+                        <!--<a href="#" class="h4 bi bi-suit-heart text-secondary me-0">-->
+                        @*<span class="position-absolute top-0 start-50 translate-middle badge rounded-pill text-dark p-0 ms-3 fs-6">6</span>*@
+                        <!--</a>-->
+                        @{
+                            string containsFavorite = "text-secondary";
+                            @if (ViewBag.user != null)
+                            {
+                                IEnumerable<FavoriteProduct> favoriteProducts = ViewBag.favoriteProducts;
+                                containsFavorite = favoriteProducts.Any(fp => fp.Product.Id == Model.Id) ? "h4 bi bi-suit-heart-fill text-success" : "h4 bi bi-suit-heart fw-bolder text-secondary";
+                            }
+                        }
+                        <a id="favorite@(Model.Id)" onclick="ajaxAddOrDeleteFavorite(@Model.Id, favorite@(Model.Id))" class="@containsFavorite" style="cursor:pointer"></a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
 @*<a asp-action="AllAboutProduct" asp-route-id="@Model.Id">qwerty</a>*@
