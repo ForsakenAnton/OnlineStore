@@ -1,0 +1,97 @@
+﻿
+@model OnlineStore.Models.IdentityModels.User
+
+@{
+    ViewData["Title"] = "PersonalInformation";
+    Layout = "~/Views/MyCabinet/_LayoutMyCabinet.cshtml";
+}
+
+<div id="personalInfoId" class="bg-white rounded rounded-3 p-3">
+    <div id="loading" class="spinner-border position-relative top-50 start-50" style="display:none;width:10rem;height:10rem;" role="status"></div>
+
+
+    @if (ViewBag.failedChanges != null)
+    {
+        <div class="alert alert-danger text-danger text-center alert-dismissible fade show" role="alert">
+            @foreach (string line in ViewBag.failedChanges)
+            {
+                <div>@line</div>
+            }
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (!String.IsNullOrEmpty(ViewBag.successChanges))
+    {
+        <div class="alert alert-success text-success text-center alert-dismissible fade show" role="alert">
+            @ViewBag.successChanges
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <table class="table mb-3 text-dark">
+        <tbody>
+            <tr>
+                <th class="text-muted" scope="row">@Html.DisplayNameFor(u => u.UserName)</th>
+                <td>@Model.UserName</td>
+            </tr>
+            <tr>
+                <th class="text-muted" scope="row">@Html.DisplayNameFor(u => u.Name)</th>
+                <td>@Model.Name</td>
+            </tr>
+            <tr>
+                <th class="text-muted" scope="row">@Html.DisplayNameFor(u => u.Surname)</th>
+                <td>@Model.Surname</td>
+            </tr>
+            <tr>
+                <th class="text-muted" scope="row">@Html.DisplayNameFor(u => u.Lastname)</th>
+                <td>@Model.Lastname</td>
+            </tr>
+            <tr>
+                <th class="text-muted" scope="row">@Html.DisplayNameFor(u => u.DateOfBirth)</th>
+                <td>@Model.DateOfBirth</td>
+            </tr>
+            <tr>
+                <th class="text-muted" scope="row">@Html.DisplayNameFor(u => u.Email)</th>
+                <td>@Model.Email</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="ms-2">
+        <a class="link-dark" style="cursor:pointer"
+           data-ajax="true"
+           data-ajax-mode="replace"
+           data-ajax-update="#personalInfoId"
+           data-ajax-loading="#loading"
+           data-ajax-url="@Url.Action("EditProfile", new { userId = Model.Id })">
+            <i class="bi bi-pencil"></i> Edit profile
+        </a>
+    </p>
+</div>
+
+
+@*<div class="row">
+        <div class="col-lg-3 col-6">
+            Nick
+        </div>
+        <div class="col-lg-3 col-6">
+            @Model.UserName
+        </div>
+        <div class="w-100"></div>
+        <div class="col-lg-3 col-6">
+            Name
+        </div>
+        <div class="col-lg-3 col-6">
+            @Model.Name
+        </div>
+        <div class="w-100"></div>
+        <div class="col-lg-3 col-6">
+            Surname
+        </div>
+        <div class="col-lg-3 col-6">
+            @Model.Surname
+        </div>
+        <div class="w-100"></div>
+    </div>*@
+

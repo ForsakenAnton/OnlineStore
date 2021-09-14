@@ -28,14 +28,15 @@ namespace OnlineStore
                     OnlineStoreContext context = services.GetRequiredService<OnlineStoreContext>();
                     IWebHostEnvironment environment = services.GetRequiredService<IWebHostEnvironment>();
 
-                    var userManager = services.GetRequiredService<UserManager<User>>();
-                    var rolesManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+                    //var userManager = services.GetRequiredService<UserManager<User>>();
+                    //var rolesManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
-                    await InitializeData.InitializeAsync(context, environment, userManager, rolesManager);
+                    await InitializeData.InitializeAsync(context, environment/*, userManager, rolesManager*/);
 
                     //var userManager = services.GetRequiredService<UserManager<User>>();
                     //var rolesManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-                    //await RoleInitializer.InitializeAsync(userManager, rolesManager);
+                    //IConfiguration configuration = services.GetRequiredService<IConfiguration>();
+                    //await RoleInitializer.InitializeAsync(userManager, rolesManager, configuration);
                 }
                 catch(Exception ex)
                 {

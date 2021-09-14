@@ -1,0 +1,87 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using OnlineStore.Models.IdentityModels
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
+
+@inject OnlineStore.DB.OnlineStoreContext context
+@inject UserManager<User> userManager
+
+@{
+    string userId = userManager.GetUserId(User);
+    User user = null;
+    if (!String.IsNullOrEmpty(userId))
+    {
+        user = context.Users
+            .Include(u => u.FavoriteProducts)
+            .FirstOrDefault(u => u.Id == userId);
+    }
+}
+
+@*<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+</head>
+<body>*@
+
+<div class="container-fluid bg-light rounded rounded-3">
+    <div class="row g-0">
+        <h4 class="bg-light mb-0 p-3">Welcome to your personal cabinet, @user.UserName</h4>
+        <div class="col-lg-3 col-12 bg-light position-relative">
+            <nav id="navbarMyCabinet" class="nav nav-pills nav-fill nav-justified flex-lg-column overflow-auto position-sticky"  style="top:65px;">
+                <a id="1" asp-action="Index" class="nav-link text-dark" aria-current="true">
+                    My cabinet
+                </a>
+                <a id="2" asp-action="PersonalInformation" asp-route-userId="@user.Id" class="nav-link text-dark">Personal information</a>
+                <a id="3" asp-action="MyOrders" class="nav-link text-dark">My orders</a>
+                <a id="4" asp-action="ViewedProducts" class="nav-link text-dark">Viewed products</a>
+                <a id="5" asp-action="FavoriteProducts" asp-route-userId="@user.Id" class="nav-link text-dark">Favorite products</a>
+            </nav>
+        </div>
+
+        <div class="col-lg-9 p-3">
+            @RenderBody()
+        </div>
+    </div>
+</div>
+
+    @section Scripts {
+        <script>
+        //window.onload = function () {
+        //}
+            document.addEventListener("DOMContentLoaded", function () {
+                document.getElementById(@ViewBag.PageId).classList.add("active");
+        });
+
+        //let links = [
+        //    document.getElementById("1"),
+        //    document.getElementById("2"),
+        //    document.getElementById("3"),
+        //    document.getElementById("4"),
+        //    document.getElementById("5")
+        //];
+
+        //for (var i = 0; i < links.length; i++) {
+        //    links[i].addEventListener("click", setActive);
+        //}
+
+        //function setActive(e) {
+        //    for (var i = 0; i < links.length; i++) {
+        //        if (links[i].classList.contains("active")) {
+        //            links[i].classList.remove("active");
+        //            break;
+        //        }
+        //        /*//e.target.classList.add("active");*/
+        //    }
+        //    e.target.classList.add("active");
+        //}
+        </script>
+    }
+
+    @*</body>
+</html>*@

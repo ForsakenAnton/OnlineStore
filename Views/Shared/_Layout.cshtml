@@ -67,13 +67,11 @@
                         }
                         else
                         {
-                            @*<div class="col-lg-2 mb-lg-0 mb-3 text-center">
-                                    <button class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#adminMenu">
-                                        Admin menu
-                                    </button>
-                                </div>*@
+                            <div class="col-lg-2 text-lg-center">
+                                <a class="nav-link text-success mb-0 p-1 border border-3 border-primary bg-gradient btn btn-outline-dark" asp-controller="MyCabinet" asp-action="Index">My cabinet</a>
+                            </div>
 
-                            <div class="col-lg-3 offset-lg-2 mb-lg-0 mb-3 text-center text-start">
+                            <div class="col-lg-3  mb-lg-0 mb-3 text-center text-start">
                                 @User.Identity.Name
                             </div>
                             <div class="col-lg-2 mb-lg-0 mb-3 text-lg-start text-center d-lg-inline">

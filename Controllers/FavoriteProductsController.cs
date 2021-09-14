@@ -25,23 +25,24 @@ namespace OnlineStore.Controllers
         }
 
         [Authorize]
-        public async Task<JsonResult> AddOrDeleteFavorite(int? productId)
+        public async Task<IActionResult> AddOrDeleteFavorite(int? productId)
         {
             if (productId == null)
-                return Json("");
+                return NoContent();
 
             string userId = _userManager.GetUserId(User);
 
             if (String.IsNullOrEmpty(userId))
-                return Json("");
+                return NoContent();
 
             var currentUser = await _context.Users
                 .Include(u => u.FavoriteProducts)
+                    .ThenInclude(fp => fp.Product)
                 .FirstOrDefaultAsync(u => u.Id == userId);
 
             var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == productId);
 
-            if (currentUser.FavoriteProducts.Select(fp => fp.ProductId as Nullable<int>).Contains(productId))
+            if (currentUser.FavoriteProducts.Any( fp => fp.Product.Id == productId))
             {
                 var favorite = await _context.FavoriteProducts.FirstOrDefaultAsync(fp => fp.Product.Id == productId);
                 _context.FavoriteProducts.Remove(favorite);

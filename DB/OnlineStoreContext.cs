@@ -15,7 +15,7 @@ namespace OnlineStore.DB
         public OnlineStoreContext(DbContextOptions<OnlineStoreContext> options) : base(options)
         {
             //Database.EnsureDeleted();
-            //Database.EnsureCreated();
+            Database.EnsureCreated();
         }
 
         public DbSet<Product> Products { get; set; }

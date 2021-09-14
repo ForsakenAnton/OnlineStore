@@ -22,7 +22,7 @@
             </div>
             <div class="mb-3">
                 <label asp-for="Category.Order" class="form-label"></label>
-                <input asp-for="Category.Order" class="form-control" value="@Model.Category.Order" />
+                <input type="number" asp-for="Category.Order" class="form-control" value="@Model.Category.Order" />
                 <span asp-validation-for="Category.Order" class="text-danger"></span>
             </div>
             <div class="form-check mb-3">

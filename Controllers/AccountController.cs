@@ -41,23 +41,22 @@ namespace OnlineStore.Controllers
                     UserName = model.Email
                 };
                 IdentityResult createdResult = await _userManager.CreateAsync(user: user, password: model.Password);
-
                 if (createdResult.Succeeded)
                 {
                     await _signInManager.SignInAsync(user: user, isPersistent: false);
-                    return RedirectToAction("Index", "Home");
-                    //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    //var callbackUrl = Url.Action(
-                    //    "ConfirmEmail",
-                    //    "Account",
-                    //    new { userId = user.Id, code = code },
-                    //    protocol: HttpContext.Request.Scheme);
+                    //return RedirectToAction("Index", "Home");
+                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    var callbackUrl = Url.Action(
+                        "ConfirmEmail",
+                        "Account",
+                        new { userId = user.Id, code = code },
+                        protocol: HttpContext.Request.Scheme);
 
-                    //EmailService emailService = new EmailService(_configuration);
-                    //await emailService.SendAsync("from_address@example.com", model.Email, "Confirm your account",
-                    //    $"For confirm registration <a href='{callbackUrl}'>follow the link</a>");
+                    EmailService emailService = new EmailService(_configuration);
+                    await emailService.SendAsync("from_address@example.com", model.Email, "Confirm your account",
+                        $"For confirm registration <a href='{callbackUrl}'>follow the link</a>");
 
-                    //return Content("To confirm registration see email message on your Email");
+                    return View("ConfirmRegistration");
                 }
                 else
                 {
@@ -72,43 +71,43 @@ namespace OnlineStore.Controllers
 
 
 
-        //[HttpGet]
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmail(string userId, string code)
+        {
+            if (userId == null || code == null)
+            {
+                return View("Error");
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return View("Error");
+            }
+
+            IdentityResult result = await _userManager.ConfirmEmailAsync(user, code);
+            if (result.Succeeded)
+                return RedirectToAction("ConfirmedAccount", "Account"/*, new {userId = userId }*/);
+            else
+                return View("Error");
+        }
+
+        [HttpGet]
         //[AllowAnonymous]
-        //public async Task<IActionResult> ConfirmEmail(string userId, string code)
-        //{
-        //    if (userId == null || code == null)
-        //    {
-        //        return View("Error");
-        //    }
+        public IActionResult /*async Task<IActionResult>*/ ConfirmedAccount(/*string userId = null*/)
+        {
+            //if (userId == null)
+            //    return View("Error");
 
-        //    var user = await _userManager.FindByIdAsync(userId);
-        //    if (user == null)
-        //    {
-        //        return View("Error");
-        //    }
+            //var user = await _userManager.FindByIdAsync(userId);
+            //if (user == null)
+            //{
+            //    return View("Error");
+            //}
 
-        //    IdentityResult result = await _userManager.ConfirmEmailAsync(user, code);
-        //    if (result.Succeeded)
-        //        return RedirectToAction("ConfirmedAccount", "Account"/*, new {userId = userId }*/);
-        //    else
-        //        return View("Error");
-        //}
-
-        //[HttpGet]
-        ////[AllowAnonymous]
-        //public IActionResult /*async Task<IActionResult>*/ ConfirmedAccount(/*string userId = null*/)
-        //{
-        //    //if (userId == null)
-        //    //    return View("Error");
-
-        //    //var user = await _userManager.FindByIdAsync(userId);
-        //    //if (user == null)
-        //    //{
-        //    //    return View("Error");
-        //    //}
-
-        //    return View(/*user*/);
-        //}
+            return View(/*user*/);
+        }
 
 
 
@@ -125,19 +124,19 @@ namespace OnlineStore.Controllers
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByNameAsync(model.Email);
-                if(user == null)
-                {
-                    return NotFound();
-                }
-                //if (user != null)
+                //if(user == null)
                 //{
-                //     //проверяем, подтвержден ли email
-                //    if (!await _userManager.IsEmailConfirmedAsync(user))
-                //    {
-                //        ModelState.AddModelError(string.Empty, "You are not confirmed your Email");
-                //        return View(model);
-                //    }
+                //    return NotFound();
                 //}
+                if (user != null)
+                {
+                    //проверяем, подтвержден ли email
+                    if (!await _userManager.IsEmailConfirmedAsync(user))
+                    {
+                        ModelState.AddModelError(string.Empty, "You are not confirmed your Email");
+                        return View(model);
+                    }
+                }
 
 
                 Microsoft.AspNetCore.Identity.SignInResult signInResult = await _signInManager.PasswordSignInAsync(
@@ -148,6 +147,8 @@ namespace OnlineStore.Controllers
 
                 if (signInResult.Succeeded)
                 {
+                    await _userManager.AddToRoleAsync(user, "user");
+
                     //избегагаем перенаправления на нежелательные сайты
                     if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
                     {

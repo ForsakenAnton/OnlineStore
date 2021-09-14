@@ -13,7 +13,7 @@ namespace OnlineStore.DB
 {
     public static class InitializeData
     {
-        public static async Task InitializeAsync(OnlineStoreContext context, IWebHostEnvironment environment, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+        public static async Task InitializeAsync(OnlineStoreContext context, IWebHostEnvironment environment/*, UserManager<User> userManager, RoleManager<IdentityRole> roleManager*/)
         {
             //context.Database.EnsureDeleted();
             //context.Database.EnsureCreated();
@@ -729,76 +729,76 @@ namespace OnlineStore.DB
 
 
 
-                string adminEmail = "admin@gmail.com";
-                string password = "a";
+                //string adminEmail = "admin@gmail.com";
+                //string password = "a";
 
-                string[] usersEmails =
-                {
-                    "u1@gmail.com", "u2@gmail.com", "u3@gmail.com", "u4@gmail.com", "u5@gmail.com", "u6@gmail.com"
-                };
+                //string[] usersEmails =
+                //{
+                //    "u1@gmail.com", "u2@gmail.com", "u3@gmail.com", "u4@gmail.com", "u5@gmail.com", "u6@gmail.com"
+                //};
 
-                string[] usersPasswords =
-                {
-                    "1",  "2", "3", "4", "5", "6",
-                };
-
-
-                if (await roleManager.FindByNameAsync("admin") == null)
-                {
-                    await roleManager.CreateAsync(new IdentityRole("admin"));
-                }
-                if (await roleManager.FindByNameAsync("user") == null)
-                {
-                    await roleManager.CreateAsync(new IdentityRole("user"));
-                }
-                if (await userManager.FindByNameAsync(adminEmail) == null)
-                {
-                    User admin = new User { Email = adminEmail, UserName = adminEmail };
-
-                    IdentityResult result = await userManager.CreateAsync(admin, password);
-                    if (result.Succeeded)
-                    {
-                        await userManager.AddToRoleAsync(admin, "admin");
-                    }
+                //string[] usersPasswords =
+                //{
+                //    "1",  "2", "3", "4", "5", "6",
+                //};
 
 
-                    for (int i = 0; i < 6; i++)
-                    {
-                        User user = new User { Email = usersEmails[i], UserName = usersEmails[i] };
+                //if (await roleManager.FindByNameAsync("admin") == null)
+                //{
+                //    await roleManager.CreateAsync(new IdentityRole("admin"));
+                //}
+                //if (await roleManager.FindByNameAsync("user") == null)
+                //{
+                //    await roleManager.CreateAsync(new IdentityRole("user"));
+                //}
+                //if (await userManager.FindByNameAsync(adminEmail) == null)
+                //{
+                //    User admin = new User { Email = adminEmail, UserName = adminEmail };
 
-                        IdentityResult res = await userManager.CreateAsync(user, usersPasswords[i]);
-                        if (res.Succeeded)
-                        {
-                            await userManager.AddToRoleAsync(user, "user");
-                        }
+                //    IdentityResult result = await userManager.CreateAsync(admin, password);
+                //    if (result.Succeeded)
+                //    {
+                //        await userManager.AddToRoleAsync(admin, "admin");
+                //    }
 
 
-                        Comment comment = new Comment
-                        {
-                            Message = (i + 1) + " Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum",
-                            Virtues = "Lorem Ipsum",
-                            Shortcomings = "Lorem Ipsum",
-                            Rating = i,
-                            IsModerated = true,
-                            Date = new DateTime(2021, 7, 20, 18, 30, 25),
-                            User = user,
-                            Product = productXiaomiRedmiNote10Pro,
-                        };
+                //    for (int i = 0; i < 6; i++)
+                //    {
+                //        User user = new User { Email = usersEmails[i], UserName = usersEmails[i] };
 
-                        Like like = new Like
-                        {
-                            Liking = i % 2 == 0,
-                            Unliking = i % 1 == 0,
-                            Comment = comment,
-                            User = user
-                        };
+                //        IdentityResult res = await userManager.CreateAsync(user, usersPasswords[i]);
+                //        if (res.Succeeded)
+                //        {
+                //            await userManager.AddToRoleAsync(user, "user");
+                //        }
 
-                        context.Likes.Add(like);
-                        context.Comments.Add(comment);
-                    }
-                }
 
-                await context.SaveChangesAsync();
+                //        //Comment comment = new Comment
+                //        //{
+                //        //    Message = (i + 1) + " Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum",
+                //        //    Virtues = "Lorem Ipsum",
+                //        //    Shortcomings = "Lorem Ipsum",
+                //        //    Rating = i,
+                //        //    IsModerated = true,
+                //        //    Date = new DateTime(2021, 7, 20, 18, 30, 25),
+                //        //    User = user,
+                //        //    Product = productXiaomiRedmiNote10Pro,
+                //        //};
+
+                //        //Like like = new Like
+                //        //{
+                //        //    Liking = i % 2 == 0,
+                //        //    Unliking = i % 1 == 0,
+                //        //    Comment = comment,
+                //        //    User = user
+                //        //};
+
+                //        //context.Likes.Add(like);
+                //        //context.Comments.Add(comment);
+                //    }
+                //}
+
+                //await context.SaveChangesAsync();
             }
         }
     }

@@ -117,13 +117,15 @@ namespace OnlineStore.Controllers
                     // to IQueryable
                     IQueryable<Product> products = _context.Products
                         .Where(p => selectIenumerableProducts.Contains(p))
-                        .OrderBy(p => p.Price);
+                        .OrderBy(p => (p.Price - p.Discount));
 
                     //IQueryable<Product> products = _context.Products
                     //    .Aggregate(new List<Product>(), (acc, dest) => acc.add);
 
+
+
                     int count = await products.CountAsync();
-                    var items = await products.Skip(0).Take(4).ToListAsync();
+                    var items = await products.Skip(0).Take(8).ToListAsync();
 
                     var user = await _userManager.GetUserAsync(User);
                     IEnumerable<FavoriteProduct> favoriteProducts = null; // = user != null ? await _context.FavoriteProducts.Where(fp => fp.User.Id == user.Id).ToListAsync() : new List<FavoriteProduct>(0);
@@ -140,7 +142,7 @@ namespace OnlineStore.Controllers
                         Products = items,
                         SortViewModel = new SortViewModel(SortState.PriceAsc),
                         FilterViewModel = new FilterViewModel(null, null, categoryId, null, null, null),
-                        PageListViewModel = new PageViewModel(count, 1, 4),
+                        PageListViewModel = new PageViewModel(count, 1, 8),
                         ProductId = null,
                         User = user,
                         FavoriteProducts = favoriteProducts
@@ -161,7 +163,7 @@ namespace OnlineStore.Controllers
 
         public async Task<IActionResult> IndexProducts(int? productId, int? categoryId, string searchString, int page = 1, SortState sortOrder = SortState.PriceAsc)
         {
-            int pageSize = 4;
+            int pageSize = 8;
 
             IQueryable<Product> products = _context.Products
                 .Include(p => p.Manufacturer)

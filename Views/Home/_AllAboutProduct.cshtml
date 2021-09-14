@@ -29,7 +29,7 @@
                         &nbsp;
                         <a asp-action="Details" asp-route-productId="@Model.Id" asp-route-ajaxPageId="3">
                             <small class="bi bi-chat-fill"></small>
-                            <abbr class="initialism">@Model.Comments.Count()</abbr>
+                            <abbr class="initialism">@Model.Comments.Count(c => c.IsModerated)</abbr>
                         </a>
                     </div>
 
@@ -84,5 +84,7 @@
         </div>
     </div>
 </div>
+
+@*<vc:last-viewed-products />*@
 
 @*<a asp-action="AllAboutProduct" asp-route-id="@Model.Id">qwerty</a>*@
