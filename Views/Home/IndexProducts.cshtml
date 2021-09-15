@@ -111,10 +111,14 @@
                         </div>
                     </div>
                     @*<div class="card-footer border-top border-dark bg-white">*@
-                    <div class="card-footer border-0 mb-3">
-                        <a href="#" class="bi bi-cart btn btn-lg btn-success w-50">
-                            <span>Bye</span>
-                        </a>
+                    <div class="card-footer text-center border-0 mb-3">
+                        @{
+                            string textButton = Model.ShopCart == null ? "Bye" : "Added to cart";
+                            string isAddedToCart = Model.ShopCart == null ? "bi bi-cart btn btn-lg btn-secondary w-100" : "bi bi-cart btn btn-lg btn-success w-100";
+                         }
+                        <button id="addToShopCartButtonId@(product.Id)" onclick="ajaxAddToShopCart(@product.Id, addToShopCartButtonId@(product.Id))" class="@isAddedToCart">
+                            <span id="ByeButtonId@(product.Id)">@textButton</span>
+                        </button>
                     </div>
                     <div class="border-bottom"></div>
                 </div>

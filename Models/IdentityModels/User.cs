@@ -10,9 +10,9 @@ namespace OnlineStore.Models.IdentityModels
 {
     public class User: IdentityUser
     {
-        public string Name { get; set; } = "not set";
-        public string Surname { get; set; } = "not set";
-        public string Lastname { get; set; } = "not set";
+        public string Name { get; set; }
+        public string Surname { get; set; }
+        public string Lastname { get; set; }
 
         [Display(Name = "Date of Birth")]
         [DataType(DataType.Date)]

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using OnlineStore.DB;
+using OnlineStore.Models;
 using OnlineStore.Models.IdentityModels;
 using OnlineStore.Services;
 using System;
@@ -35,11 +37,17 @@ namespace OnlineStore
             services.AddDbContext<OnlineStoreContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
+            /////////////////////////////////////////////////////////////////////
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            //services.AddMemoryCache();
+            /////////////////////////////////////////////////////////////////////
+
             services.AddRazorPages()
                 .AddRazorRuntimeCompilation();
 
             services.AddIdentity<User, IdentityRole>(options =>
             {
+                options.User.RequireUniqueEmail = true;
                 options.Password.RequiredLength = 1;  
                 options.Password.RequireNonAlphanumeric = false;  
                 options.Password.RequireLowercase = false; 

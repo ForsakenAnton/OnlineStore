@@ -126,7 +126,7 @@ namespace OnlineStore.Controllers
             return View();
         }
 
-        public async Task<IActionResult> FavoriteProductsAsync(string userId)
+        public async Task<IActionResult> FavoriteProducts(string userId)
         {
             if(String.IsNullOrEmpty(userId))
             {

@@ -26,6 +26,7 @@ namespace OnlineStore.DB
         public DbSet<Like> Likes { get; set; }
         public DbSet<Answer> Answers { get; set; }
         public DbSet<FavoriteProduct> FavoriteProducts { get; set; }
+
         //public DbSet<BankCredit> BankCredits { get; set; }
 
 
@@ -40,6 +41,7 @@ namespace OnlineStore.DB
             builder.Entity<Like>().ToTable("Like");
             builder.Entity<Answer>().ToTable("Answer");
             builder.Entity<FavoriteProduct>().ToTable("FavoriteProduct");
+
             //builder.Entity<BankCredit>().ToTable("BankCredit");
 
 

@@ -1,4 +1,5 @@
 ﻿function ajaxAddOrDeleteFavorite(productId, element) {
+
     fetch('/FavoriteProducts/AddOrDeleteFavorite?productId=' + productId)
         .then((response) => {
             //console.log(response.status == 204);

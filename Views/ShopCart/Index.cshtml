@@ -1,0 +1,11 @@
+﻿@model OnlineStore.Models.ShopCart
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+@foreach (var item in Model.GetCartItems)
+{
+    <p>@item.Product.Title - @item.Quantity</p>
+}
+

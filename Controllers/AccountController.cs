@@ -123,7 +123,7 @@ namespace OnlineStore.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByNameAsync(model.Email);
+                var user = await _userManager.FindByEmailAsync(model.Email);
                 //if(user == null)
                 //{
                 //    return NotFound();
@@ -140,7 +140,7 @@ namespace OnlineStore.Controllers
 
 
                 Microsoft.AspNetCore.Identity.SignInResult signInResult = await _signInManager.PasswordSignInAsync(
-                    model.Email,
+                    user.UserName,
                     model.Password,
                     isPersistent: model.RememberMe, // Флаг, указывающий, должен ли файл cookie для входа сохраняться после закрытия браузера.
                     lockoutOnFailure: false); // Флаг, указывающий, следует ли блокировать учетную запись пользователя в случае сбоя входа.

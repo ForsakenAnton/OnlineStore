@@ -3,13 +3,18 @@
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.EntityFrameworkCore
 @*@using System.Security*@
+@using Microsoft.AspNetCore.Http;
+@using OnlineStore.Sessions
+@using OnlineStore.Models
+
 
 @inject OnlineStore.DB.OnlineStoreContext context
 @inject UserManager<User> userManager
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor accessor
 
 @{
 
-   // var currentUser = await userManager.GetUserAsync(User);
+    // var currentUser = await userManager.GetUserAsync(User);
     string userId = userManager.GetUserId(User);
     User user = null;
     if (!String.IsNullOrEmpty(userId))
@@ -17,6 +22,13 @@
         user = context.Users
             .Include(u => u.FavoriteProducts)
             .FirstOrDefault(u => u.Id == userId);
+    }
+
+    int countProducts = 0;
+    ShopCart cart = accessor.HttpContext.Session.Get<ShopCart>("ShopCart");
+    if(cart != null)
+    {
+        countProducts = cart.GetCartItems.Count();
     }
 }
 
@@ -72,7 +84,7 @@
                             </div>
 
                             <div class="col-lg-3  mb-lg-0 mb-3 text-center text-start">
-                                @User.Identity.Name
+                                @user.UserName
                             </div>
                             <div class="col-lg-2 mb-lg-0 mb-3 text-lg-start text-center d-lg-inline">
                                 @*<a class="nav-link mb-0 border-bottom" asp-controller="Account" asp-action="Logout">Log out</a>*@
@@ -112,7 +124,7 @@
                             </div>
                         </div>
                         <div class="col-4 col-lg-1 text-center text-lg-end mb-3 mb-lg-0 order-3">
-                            <a href="#" class="h2 bi bi-suit-heart text-primary position-relative me-0">
+                            <a asp-action="FavoriteProducts" asp-controller="MyCabinet" asp-route-userId="@userId" class="h2 bi bi-suit-heart text-primary position-relative me-0">
                                 <span id="favoriteProductsCount" class="position-absolute top-0 start-50 translate-middle badge rounded-pill text-dark p-0 ms-3 fs-6">@user?.FavoriteProducts?.Count</span>
                             </a>
                         </div>
@@ -122,8 +134,8 @@
                             </a>
                         </div>
                         <div class="col-4 col-lg-1 text-center text-lg-end mb-3  mb-lg-0 order-5">
-                            <a href="#" class="h2 bi bi-cart text-primary position-relative me-0">
-                                <span class="position-absolute top-0 start-50 translate-middle badge rounded-pill text-dark p-0 ms-3 fs-6">4</span>
+                            <a asp-action="Index" asp-controller="ShopCart" class="h2 bi bi-cart text-primary position-relative me-0">
+                                <span id="shopCartProductsCount" class="position-absolute top-0 start-50 translate-middle badge rounded-pill text-dark p-0 ms-3 fs-6">@countProducts</span>
                             </a>
                         </div>
 
@@ -194,6 +206,7 @@
     <script src="~/js/myJS/hiddenNavbar.js"></script>
     <script src="~/js/myJS/ajaxMainSearch.js"></script>
     <script src="~/js/myJS/ajaxAddOrDeleteFavorite.js"></script>
+    <script src="~/js/myJS/ajaxAddToShopCart.js"></script>
     <script src="~/js/darkModeSwitcher.js" asp-append-version="true"></script>
     <script src="~/js/tooltipsInitialize.js"></script>
     <script src="~/js/validateFormsInitialize.js"></script>

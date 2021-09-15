@@ -145,7 +145,8 @@ namespace OnlineStore.Controllers
                         PageListViewModel = new PageViewModel(count, 1, 8),
                         ProductId = null,
                         User = user,
-                        FavoriteProducts = favoriteProducts
+                        FavoriteProducts = favoriteProducts,
+                        ShopCart = HttpContext.Session.Get<ShopCart>("ShopCart")
                     };
 
 
@@ -241,7 +242,8 @@ namespace OnlineStore.Controllers
                 PageListViewModel = new PageViewModel(count, page, pageSize),
                 ProductId = productId,
                 User = user,
-                FavoriteProducts = favoriteProducts
+                FavoriteProducts = favoriteProducts,
+                ShopCart = HttpContext.Session.Get<ShopCart>("ShopCart")
             };
 
             return View("IndexProducts", viewModel);
