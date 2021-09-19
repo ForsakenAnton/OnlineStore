@@ -37,7 +37,19 @@ namespace OnlineStore.Models
             }
         }
 
-        public void RemoveItem(Product product)
+        public void RemoveItem(Product product, int quantity)
+        {
+            CartItem cartItem = CartItems
+                .Where(item => item.Product.Id == product.Id)
+                .FirstOrDefault();
+
+            if(cartItem != null && cartItem.Quantity > 1)
+            {
+                cartItem.Quantity -= quantity;
+            }
+        }
+
+        public void RemoveAllSameItems(Product product)
         {
             CartItems.RemoveAll(item => item.Product.Id == product.Id);
         }

@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using OnlineStore.DB;
+using OnlineStore.Models;
 using OnlineStore.Models.IdentityModels;
 using OnlineStore.Models.IdentityModels.ViewModels;
+using OnlineStore.Sessions;
 using System;
 using System.Collections.Generic;
 using System.Linq;

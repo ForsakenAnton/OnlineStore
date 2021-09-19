@@ -14,8 +14,8 @@ namespace OnlineStore.Models.ViewModels
         public SortViewModel SortViewModel { get; set; }
         public PageViewModel PageListViewModel { get; set; }
         public int? ProductId { get; set; }
-        public IEnumerable<FavoriteProduct> FavoriteProducts { get; set; }
-        public User User { get; set; }
-        public ShopCart ShopCart { get; set; }
+        //public IEnumerable<FavoriteProduct> FavoriteProducts { get; set; }
+        //public User User { get; set; }
+        //public ShopCart ShopCart { get; set; }
     }
 }

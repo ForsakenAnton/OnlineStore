@@ -3,9 +3,10 @@
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.EntityFrameworkCore
 @*@using System.Security*@
-@using Microsoft.AspNetCore.Http;
+@using Microsoft.AspNetCore.Http
 @using OnlineStore.Sessions
 @using OnlineStore.Models
+@using System.IO
 
 
 @inject OnlineStore.DB.OnlineStoreContext context
@@ -26,9 +27,9 @@
 
     int countProducts = 0;
     ShopCart cart = accessor.HttpContext.Session.Get<ShopCart>("ShopCart");
-    if(cart != null)
+    if (cart != null)
     {
-        countProducts = cart.GetCartItems.Count();
+        countProducts = cart.GetCartItems.Sum(p => p.Quantity);
     }
 }
 
@@ -39,11 +40,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - OnlineStore</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/darkModeSwitcher.css" />
     @*<link rel="stylesheet" href="~/lib/bootstrap-5.0.1-dist/css/bootstrap.min.css" />*@
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="~/css/myStyles/myStyles.css" />
     <link rel="stylesheet" href="~/css/myStyles/starRating.css" />
-    <link rel="stylesheet" href="~/css/darkModeSwitcher.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
     @*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">*@
     <script src="https://kit.fontawesome.com/172c096ffa.js" crossorigin="anonymous"></script>
@@ -133,8 +134,18 @@
                                 <span class="position-absolute top-0 start-50 translate-middle badge rounded-pill text-dark p-0 ms-3 fs-6">5</span>
                             </a>
                         </div>
+                        @{
+                            string path = Context.Request.Path;
+                            string query = "";
+                            @foreach (var item in Context.Request.Query)
+                            {
+                                query += query == "" ? "?" : "&";
+                                query += item.Key + "=" + item.Value;
+                            }
+                        }
+
                         <div class="col-4 col-lg-1 text-center text-lg-end mb-3  mb-lg-0 order-5">
-                            <a asp-action="Index" asp-controller="ShopCart" class="h2 bi bi-cart text-primary position-relative me-0">
+                            <a asp-action="Index" asp-controller="ShopCart" asp-route-returnUrl="@(path + query) " class="h2 bi bi-cart text-primary position-relative me-0">
                                 <span id="shopCartProductsCount" class="position-absolute top-0 start-50 translate-middle badge rounded-pill text-dark p-0 ms-3 fs-6">@countProducts</span>
                             </a>
                         </div>
@@ -183,7 +194,7 @@
         </div>
     </nav>
 
-
+    <p> @(path + query)</p>
 
     <div class="container">
         <main role="main" class="pb-3">
@@ -198,6 +209,7 @@
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/darkModeSwitcher.js" asp-append-version="true"></script>
     @*<script src="~/lib/bootstrap-5.0.1-dist/js/bootstrap.bundle.min.js"></script>*@
     @*<script src="https://kit.fontawesome.com/172c096ffa.js" crossorigin="anonymous"></script>*@
     <script src="~/js/site.js" asp-append-version="true"></script>
@@ -207,7 +219,7 @@
     <script src="~/js/myJS/ajaxMainSearch.js"></script>
     <script src="~/js/myJS/ajaxAddOrDeleteFavorite.js"></script>
     <script src="~/js/myJS/ajaxAddToShopCart.js"></script>
-    <script src="~/js/darkModeSwitcher.js" asp-append-version="true"></script>
+    <script src="~/js/myJS/ajaxRemoveFromShopCart.js"></script>
     <script src="~/js/tooltipsInitialize.js"></script>
     <script src="~/js/validateFormsInitialize.js"></script>
     @await RenderSectionAsync("Scripts", required: false)

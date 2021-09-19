@@ -59,7 +59,8 @@ namespace OnlineStore.Controllers
                 .GroupBy(cp => cp.Category.Title)
                 .Select(g => new ProductsGroupByCategoryViewModel
                 {
-                    CategoryTitle = new Tuple<int, string>(_context.Categories.FirstOrDefault(c => c.Title == g.Key).Id, g.Key)
+                    CategoryTitle = new Tuple<int, string>(_context.Categories.FirstOrDefault(c => c.Title == g.Key).Id, g.Key),
+                    
                     //Products = g.
                     //AsEnumerable()
                     //.Select(cp => cp.Product)
@@ -127,16 +128,6 @@ namespace OnlineStore.Controllers
                     int count = await products.CountAsync();
                     var items = await products.Skip(0).Take(8).ToListAsync();
 
-                    var user = await _userManager.GetUserAsync(User);
-                    IEnumerable<FavoriteProduct> favoriteProducts = null; // = user != null ? await _context.FavoriteProducts.Where(fp => fp.User.Id == user.Id).ToListAsync() : new List<FavoriteProduct>(0);
-                    if (user != null)
-                    {
-                        favoriteProducts = await _context.FavoriteProducts
-                           .Include(fp => fp.Product)
-                           .Include(fp => fp.User)
-                           .Where(fp => fp.User.Id == user.Id).ToListAsync();
-                    }
-
                     IndexProductsViewModel viewModel = new IndexProductsViewModel
                     {
                         Products = items,
@@ -144,9 +135,8 @@ namespace OnlineStore.Controllers
                         FilterViewModel = new FilterViewModel(null, null, categoryId, null, null, null),
                         PageListViewModel = new PageViewModel(count, 1, 8),
                         ProductId = null,
-                        User = user,
-                        FavoriteProducts = favoriteProducts,
-                        ShopCart = HttpContext.Session.Get<ShopCart>("ShopCart")
+                        //User = user,
+                        //FavoriteProducts = favoriteProducts
                     };
 
 
@@ -224,16 +214,6 @@ namespace OnlineStore.Controllers
             int count = await products.CountAsync();
             var items = await products.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
 
-            var user = await _userManager.GetUserAsync(User);
-            IEnumerable<FavoriteProduct> favoriteProducts = null; // = user != null ? await _context.FavoriteProducts.Where(fp => fp.User.Id == user.Id).ToListAsync() : new List<FavoriteProduct>(0);
-            if (user != null)
-            {
-                favoriteProducts = await _context.FavoriteProducts
-                   .Include(fp => fp.Product)
-                   .Include(fp => fp.User)
-                   .Where(fp => fp.User.Id == user.Id).ToListAsync();
-            }
-
             IndexProductsViewModel viewModel = new IndexProductsViewModel
             {
                 Products = items,
@@ -241,9 +221,8 @@ namespace OnlineStore.Controllers
                 FilterViewModel = new FilterViewModel(productId, searchString, categoryId, null, null, null),
                 PageListViewModel = new PageViewModel(count, page, pageSize),
                 ProductId = productId,
-                User = user,
-                FavoriteProducts = favoriteProducts,
-                ShopCart = HttpContext.Session.Get<ShopCart>("ShopCart")
+                //User = user,
+                //FavoriteProducts = favoriteProducts
             };
 
             return View("IndexProducts", viewModel);
@@ -402,23 +381,7 @@ namespace OnlineStore.Controllers
                 return NotFound();
             }
 
-            var user = await _userManager.GetUserAsync(User);
-            IEnumerable<FavoriteProduct> favoriteProducts = null;
-            if (user != null)
-            {
-                favoriteProducts = await _context.FavoriteProducts
-                   .Include(fp => fp.Product)
-                   .Include(fp => fp.User)
-                   .Where(fp => fp.User.Id == user.Id).ToListAsync();
-            }
-
-
             HttpContext.Session.Set<Product>("haveBeenViewedProducts" + product.Id, product);
-
-            // Dynamic types for view ////////////////////////////////////////////////////
-            ViewBag.user = user;
-            ViewBag.favoriteProducts = favoriteProducts;
-            /////////////////////////////////////////////////////////////////////
 
             return PartialView("_AllAboutProduct", product);
         }
@@ -433,11 +396,12 @@ namespace OnlineStore.Controllers
 
         public async Task<IActionResult> Comments(int? id, int page = 1, SortState sortOrder = SortState.ByDate)
         {
-            int pageSize = 4;
-            //if (String.IsNullOrEmpty(sort))
-            //    sort = "byDate";
+            if(id == null)
+            {
+                return NotFound();
+            }
 
-            //ViewData["sortParams"] = sort == "byDate" ? "By date" : "By useful";
+            int pageSize = 4;
 
             IQueryable<Comment> comments = _context.Comments
                 .Include(c => c.Likes)
@@ -473,25 +437,14 @@ namespace OnlineStore.Controllers
             int count = await comments.CountAsync();
             var items = await comments.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
 
-            var user = await _userManager.GetUserAsync(User);
-            IEnumerable<FavoriteProduct> favoriteProducts = null;
-            if (user != null)
-            {
-                favoriteProducts = await _context.FavoriteProducts
-                   .Include(fp => fp.Product)
-                   .Include(fp => fp.User)
-                   .Where(fp => fp.User.Id == user.Id).ToListAsync();
-            }
-
-
             CommentsViewModel viewModel = new CommentsViewModel
             {
                 Comments = items,
                 PageViewModel = new PageViewModel(count, page, pageSize),
                 SortViewModel = new SortViewModel(sortOrder),
                 Product = product,
-                FavoriteProducts = favoriteProducts,
-                User = user
+                //FavoriteProducts = favoriteProducts,
+                //User = user
             };
 
             return PartialView("_Comments", viewModel);

@@ -124,24 +124,6 @@
                                         @*<button type="submit" class="btn btn-lg btn-outline-primary w-75 mb-3" data-bs-toggle="modal" data-bs-target="#confirmSentFeedback">Send feedback</button>*@
                                         <button type="submit" class="btn btn-lg btn-outline-primary w-75 mb-3">Send feedback</button>
                                     </div>
-
-                                    @*<div class="modal fade" id="confirmSentFeedback" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog modal-dialog-centered ">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="exampleModalLabel">Thank you for your feedback!</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <p>Reviews are moderated for a maximum of one day, blablabla</p>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>*@
-
                                 </div>
                             </form>
                         </div>
@@ -276,19 +258,14 @@
                     <a href="#" class="h4 fas fa-balance-scale text-secondary me-0"></a>
                 </div>
                 <div class="col-3 mb-lg-0 mb-3 text-center">
-                    @{
-                        string containsFavorite = "text-secondary";
-                        @if (Model.User != null)
-                        {
-                            containsFavorite = Model.FavoriteProducts.Any(fp => fp.Product.Id == Model.Product.Id) ? "h4 bi bi-suit-heart-fill text-success" : "h4 bi bi-suit-heart fw-bolder text-secondary";
-                        }
-                    }
-                    <a id="favorite@(Model.Product.Id)" onclick="ajaxAddOrDeleteFavorite(@Model.Product.Id, favorite@(Model.Product.Id))" class="@containsFavorite" style="cursor:pointer"></a>
+
+                    @await Html.PartialAsync("_FavoriteHeart", Model.Product)
+
                 </div>
                 <div class="col-12">
-                    <a href="#" class="bi bi-cart btn btn-lg btn-success w-100">
-                        <span>Bye</span>
-                    </a>
+
+                    @await Html.PartialAsync("_ByeButton", Model.Product)
+
                 </div>
             </div>
         </div>

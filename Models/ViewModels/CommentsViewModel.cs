@@ -13,7 +13,8 @@ namespace OnlineStore.Models.ViewModels
         public SortViewModel SortViewModel { get; set; }
         public Product Product { get; set; }
         //public int? ProductId { get; set; }
-        public IEnumerable<FavoriteProduct> FavoriteProducts { get; set; }
-        public User User { get; set; }
+        //public IEnumerable<FavoriteProduct> FavoriteProducts { get; set; }
+        //public User User { get; set; }
+        //public ShopCart ShopCart { get; set; }
     }
 }

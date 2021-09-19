@@ -1,0 +1,27 @@
+﻿@using OnlineStore.Models.IdentityModels
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
+
+@inject UserManager<User> userManager
+@inject OnlineStore.DB.OnlineStoreContext context
+
+@model OnlineStore.Models.Product
+
+@{
+    var user = await userManager.GetUserAsync(User);
+    IEnumerable<FavoriteProduct> favoriteProducts = null; // = user != null ? await _context.FavoriteProducts.Where(fp => fp.User.Id == user.Id).ToListAsync() : new List<FavoriteProduct>(0);
+    if (user != null)
+    {
+        favoriteProducts = await context.FavoriteProducts
+           .Include(fp => fp.Product)
+           .Include(fp => fp.User)
+           .Where(fp => fp.User.Id == user.Id).ToListAsync();
+    }
+
+    string containsFavorite = "h4 bi bi-suit-heart fw-bolder text-secondary";
+    @if (user != null)
+    {
+        containsFavorite = favoriteProducts.Any(fp => fp.Product.Id == Model.Id) ? "h4 bi bi-suit-heart-fill text-success" : "h4 bi bi-suit-heart fw-bolder text-secondary";
+    }
+}
+<a id="favoriteId@(Model.Id)" onclick="ajaxAddOrDeleteFavorite(@Model.Id)" class="@containsFavorite" style="cursor:pointer"></a>

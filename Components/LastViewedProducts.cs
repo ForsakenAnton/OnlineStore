@@ -42,6 +42,7 @@ namespace OnlineStore.Components.LastViewedProducts
 
             ViewBag.user = user;
             ViewBag.favoriteProducts = favoriteProducts;
+            ViewBag.ShopCart = HttpContext.Session.Get<ShopCart>("ShopCart");
 
             return View("_LastViewedProducts", sessionProducts);
         }

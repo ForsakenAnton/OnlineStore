@@ -56,9 +56,9 @@
                         <h3 class="">@(Model.Price - Model.Discount)$</h3>
                     </div>
                     <div class="col-lg-4 col-12 order-lg-2 order-4">
-                        <a href="#" class="bi bi-cart btn btn-lg btn-success w-100">
-                            <span>Bye</span>
-                        </a>
+
+                        @await Html.PartialAsync("_ByeButton", Model)
+
                     </div>
                     <div class="col-2 order-lg-3 order-2 mb-lg-0 mb-3 text-center">
                         <a href="#" class="h4 fas fa-balance-scale text-secondary me-0">
@@ -66,18 +66,9 @@
                         </a>
                     </div>
                     <div class="col-2 order-lg-4 order-3 mb-lg-0 mb-3 text-center">
-                        <!--<a href="#" class="h4 bi bi-suit-heart text-secondary me-0">-->
-                        @*<span class="position-absolute top-0 start-50 translate-middle badge rounded-pill text-dark p-0 ms-3 fs-6">6</span>*@
-                        <!--</a>-->
-                        @{
-                            string containsFavorite = "text-secondary";
-                            @if (ViewBag.user != null)
-                            {
-                                IEnumerable<FavoriteProduct> favoriteProducts = ViewBag.favoriteProducts;
-                                containsFavorite = favoriteProducts.Any(fp => fp.Product.Id == Model.Id) ? "h4 bi bi-suit-heart-fill text-success" : "h4 bi bi-suit-heart fw-bolder text-secondary";
-                            }
-                        }
-                        <a id="favorite@(Model.Id)" onclick="ajaxAddOrDeleteFavorite(@Model.Id, favorite@(Model.Id))" class="@containsFavorite" style="cursor:pointer"></a>
+
+                        @await Html.PartialAsync("_FavoriteHeart", Model)
+
                     </div>
                 </div>
             </div>

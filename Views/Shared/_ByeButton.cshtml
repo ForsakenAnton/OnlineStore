@@ -1,0 +1,31 @@
+﻿@using OnlineStore.Sessions
+@using OnlineStore.Models
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor accessor
+
+@model OnlineStore.Models.Product
+
+@{
+    ShopCart shopCart = accessor.HttpContext.Session.Get<ShopCart>("ShopCart");
+
+
+    string textButton = "Bye";
+    string isAddedToCart = "bi bi-cart btn btn-lg btn-secondary w-100";
+
+    if (shopCart != null && shopCart.GetCartItems.Any(p => p.Product.Id == Model.Id))
+    {
+        textButton = "Added to cart";
+        isAddedToCart = "bi bi-cart btn btn-lg btn-success w-100";
+    }
+}
+<button id="addToShopCartButtonId@(Model.Id)" onclick="ajaxAddToShopCart(@Model.Id)" class="@isAddedToCart">
+    <span id="byeButtonId@(Model.Id)">@textButton</span>
+    &nbsp;&nbsp;
+    @if (shopCart != null && shopCart.GetCartItems.Any(p => p.Product.Id == Model.Id))
+    {
+        <span id="countCurrentProductId@(Model.Id)" class="badge rounded-pill bg-dark text-white text-end">@shopCart.GetCartItems.Where(p => p.Product.Id == Model.Id).Sum(p => p.Quantity)</span>
+    }
+    else
+    {
+        <span id="countCurrentProductId@(Model.Id)" class="badge rounded-pill bg-dark text-white text-end"></span>
+    }
+</button>

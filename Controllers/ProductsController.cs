@@ -13,6 +13,7 @@ using OnlineStore.Models.ViewModels;
 using OnlineStore.Services;
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Authorization;
+using OnlineStore.Sessions;
 
 namespace OnlineStore.Controllers
 {
@@ -21,6 +22,9 @@ namespace OnlineStore.Controllers
     {
         private readonly OnlineStoreContext _context;
         IOrderCategoriesServise _orderCategoriesServise;
+
+        public ShopCart ShopCart { get; private set; }
+
         public ProductsController(OnlineStoreContext context, IOrderCategoriesServise orderCategoriesServise)
         {
             _context = context;
@@ -363,8 +367,14 @@ namespace OnlineStore.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var product = await _context.Products.FindAsync(id);
+
+            HttpContext.Session.Remove("haveBeenViewedProducts" + id);
+            ShopCart shopCart = HttpContext.Session.Get<ShopCart>("ShopCart");
+            shopCart.RemoveAllSameItems(product);
+
             _context.Products.Remove(product);
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 

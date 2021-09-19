@@ -20,8 +20,10 @@ namespace OnlineStore.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index(string emptyShopCart, string returnUrl)
         {
+            ViewBag.emptyShopCart = emptyShopCart;
+            ViewBag.returnUrl = returnUrl;
             return View(GetShopCart());
         }
 
@@ -39,14 +41,35 @@ namespace OnlineStore.Controllers
             {
                 GetShopCart().AddItem(product, 1);
 
-                int countProducts = GetShopCart().GetCartItems.Sum(i => i.Quantity);
-                return Json(new { isAdded = true, countProducts });
+                return GetJson((int)productId);
+                //int countAllProducts = GetShopCart().GetCartItems.Sum(i => i.Quantity);
+                //int countCurrentProduct = GetShopCart().GetCartItems.Where(i => i.Product.Id == productId).Sum(i => i.Quantity);
+                //decimal price = GetShopCart().GetCartItems.Where(i => i.Product.Id == productId).Sum(i => i.Product.Price * i.Quantity);
+                //decimal discount = GetShopCart().GetCartItems.Where(i => i.Product.Id == productId).Sum(i => i.Product.Discount * i.Quantity);
+                //decimal priceWithDiscount = price - discount;
+
+                //decimal priceTotal = GetShopCart().GetCartItems.Sum(i => i.Product.Price * i.Quantity);
+                //decimal discountTotal = GetShopCart().GetCartItems.Sum(i => i.Product.Discount * i.Quantity);
+                //decimal priceWithDiscountTotal = priceTotal - discountTotal;
+
+                //return Json(new 
+                //{ 
+                //    isAdded = true,
+                //    countAllProducts,
+                //    countCurrentProduct,
+                //    price,
+                //    discount,
+                //    priceWithDiscount,
+                //    priceTotal,
+                //    discountTotal,
+                //    priceWithDiscountTotal
+                //});
             }
 
             return NoContent();
         }
 
-        public async Task<IActionResult> AjaxRemoveFromCart(int? productId)
+        public async Task<IActionResult> AjaxRemoveFromCart(int? productId, int? quantity)
         {
             if (productId == null)
             {
@@ -56,14 +79,31 @@ namespace OnlineStore.Controllers
             Product product = await _context.Products
                 .FirstOrDefaultAsync(p => p.Id == productId);
 
-            if (product != null)
+            if (product != null && quantity != null)
             {
-                GetShopCart().RemoveItem(product);
+                GetShopCart().RemoveItem(product, (int)quantity);
 
-                return Json(new { isRemoved = true });
+                return GetJson((int)productId);
+            }
+
+            else if (product != null)
+            {
+                GetShopCart().RemoveAllSameItems(product);
+
+                return GetJson((int)productId);
             }
 
             return NoContent();
+        }
+
+        public async Task<IActionResult> OrderPlacement()
+        {
+            if(GetShopCart().GetCartItems.Count() == 0)
+            {
+                ViewBag.emptyShopCart = "Your shop cart is empty!";
+                return RedirectToAction("Index", new { emptyShopCart = ViewBag.emptyShopCart });
+            }
+            return View();
         }
 
 
@@ -79,7 +119,36 @@ namespace OnlineStore.Controllers
 
             return shopCart;
         }
+
+
+
+        private JsonResult GetJson(int productId)
+        {
+            int countAllProducts = GetShopCart().GetCartItems.Sum(i => i.Quantity);
+            int countCurrentProduct = GetShopCart().GetCartItems.Where(i => i.Product.Id == productId).Sum(i => i.Quantity);
+            decimal price = GetShopCart().GetCartItems.Where(i => i.Product.Id == productId).Sum(i => i.Product.Price * i.Quantity);
+            decimal discount = GetShopCart().GetCartItems.Where(i => i.Product.Id == productId).Sum(i => i.Product.Discount * i.Quantity);
+            decimal priceWithDiscount = price - discount;
+
+            decimal priceTotal = GetShopCart().GetCartItems.Sum(i => i.Product.Price * i.Quantity);
+            decimal discountTotal = GetShopCart().GetCartItems.Sum(i => i.Product.Discount * i.Quantity);
+            decimal priceWithDiscountTotal = priceTotal - discountTotal;
+
+            return Json(new
+            {
+                isSuccess = true,
+                countAllProducts,
+                countCurrentProduct,
+                price,
+                discount,
+                priceWithDiscount,
+                priceTotal,
+                discountTotal,
+                priceWithDiscountTotal
+            });
+        }
     }
+
 
     //public class ShopCartController : Controller
     //{
