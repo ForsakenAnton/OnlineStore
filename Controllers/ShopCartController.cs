@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OnlineStore.DB;
 using OnlineStore.Models;
+using OnlineStore.Models.IdentityModels;
 using OnlineStore.Models.ViewModels;
 using OnlineStore.Sessions;
 using System;
@@ -15,9 +18,11 @@ namespace OnlineStore.Controllers
     public class ShopCartController : Controller
     {
         private readonly OnlineStoreContext _context;
-        public ShopCartController(OnlineStoreContext context)
+        private readonly UserManager<User> _userManager;
+        public ShopCartController(OnlineStoreContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public IActionResult Index(string emptyShopCart, string returnUrl)
@@ -42,28 +47,6 @@ namespace OnlineStore.Controllers
                 GetShopCart().AddItem(product, 1);
 
                 return GetJson((int)productId);
-                //int countAllProducts = GetShopCart().GetCartItems.Sum(i => i.Quantity);
-                //int countCurrentProduct = GetShopCart().GetCartItems.Where(i => i.Product.Id == productId).Sum(i => i.Quantity);
-                //decimal price = GetShopCart().GetCartItems.Where(i => i.Product.Id == productId).Sum(i => i.Product.Price * i.Quantity);
-                //decimal discount = GetShopCart().GetCartItems.Where(i => i.Product.Id == productId).Sum(i => i.Product.Discount * i.Quantity);
-                //decimal priceWithDiscount = price - discount;
-
-                //decimal priceTotal = GetShopCart().GetCartItems.Sum(i => i.Product.Price * i.Quantity);
-                //decimal discountTotal = GetShopCart().GetCartItems.Sum(i => i.Product.Discount * i.Quantity);
-                //decimal priceWithDiscountTotal = priceTotal - discountTotal;
-
-                //return Json(new 
-                //{ 
-                //    isAdded = true,
-                //    countAllProducts,
-                //    countCurrentProduct,
-                //    price,
-                //    discount,
-                //    priceWithDiscount,
-                //    priceTotal,
-                //    discountTotal,
-                //    priceWithDiscountTotal
-                //});
             }
 
             return NoContent();
@@ -96,6 +79,8 @@ namespace OnlineStore.Controllers
             return NoContent();
         }
 
+
+        [Authorize]
         public async Task<IActionResult> OrderPlacement()
         {
             if(GetShopCart().GetCartItems.Count() == 0)
@@ -103,15 +88,90 @@ namespace OnlineStore.Controllers
                 ViewBag.emptyShopCart = "Your shop cart is empty!";
                 return RedirectToAction("Index", new { emptyShopCart = ViewBag.emptyShopCart });
             }
-            return View();
+
+            User user = await _userManager.GetUserAsync(User);
+
+            OrderDataUserAndDeliveryViewModel orderDataViewModel = new()
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Surname = user.Surname,
+                Email = user.Email
+            };
+            ShopCart shopCart = GetShopCart();
+
+            OrderPlacementViewModel viewModel = new()
+            {
+                ShopCart = shopCart,
+                OrderData = orderDataViewModel
+            };
+
+            return View(viewModel);
         }
 
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> OrderPlacement(OrderPlacementViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+
+            }
+
+            viewModel.ShopCart = GetShopCart();
+            return View(viewModel);
+        }
+
+            //[Authorize]
+            //public async Task<IActionResult> AjaxEditOrderDataUser(string userId)
+            //{
+            //    User user = await _userManager.GetUserAsync(User);
+            //    if(userId != user.Id)
+            //    {
+            //        return NoContent();
+            //    }
+
+            //    OrderDataUserViewModel viewModel = new()
+            //    {
+            //        Id = user.Id,
+            //        Name = user.Name,
+            //        Surname = user.Surname,
+            //        Email = user.Email
+            //    };
+
+            //    return PartialView("_EditOrderDataUser", viewModel);
+            //}
+
+            //[Authorize]
+            //[HttpPost]
+            //public async Task<PartialViewResult> AjaxPostEditOrderDataUser([FromBody] OrderDataUserViewModel viewModel)
+            //{
+            //    User user = await _userManager.GetUserAsync(User);
+
+            //    if (ModelState.IsValid)
+            //    {
+            //        user.Name = viewModel.Name;
+            //        user.Surname = viewModel.Surname;
+            //        user.Email = user.Email;
+
+            //        await _userManager.UpdateAsync(user);
+
+            //        ViewBag.successChangesDataUser = "The changes have been saved";
+
+            //        return PartialView("_OrderDataUserInfo", viewModel);
+            //    }
+
+            //    ViewBag.failedChangesDataUser = "The changes have not been saved!";
+            //    return PartialView("_EditOrderDataUser", viewModel);
+            //}
 
 
-        public ShopCart GetShopCart()
+
+
+            public ShopCart GetShopCart()
         {
             ShopCart shopCart = HttpContext.Session.Get<ShopCart>("ShopCart");
-            if(shopCart == null)
+            if (shopCart == null)
             {
                 shopCart = new ShopCart();
                 HttpContext.Session.Set<ShopCart>("ShopCart", shopCart);

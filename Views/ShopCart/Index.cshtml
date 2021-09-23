@@ -4,7 +4,7 @@
 }
 
 <div class="container bg-light rounded rounded-3 p-5">
-    <h1><i class="bi bi-bag-fill"></i> Shop cart</h1>
+    <h1 class="mb-3"><i class="bi bi-bag-fill"></i> Shop cart</h1>
     <div class="row rounded rounded-3">
         @if (!String.IsNullOrEmpty(ViewBag.emptyShopCart))
         {
@@ -13,72 +13,72 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Закрыть"></button>
             </div>
         }
-    <div class="col-lg-9 col-12 mb-lg-0 mb-5">
-        @foreach (var item in Model.GetCartItems)
-        {
+        <div class="col-lg-9 col-12 mb-lg-0 mb-5">
+            @foreach (var item in Model.GetCartItems)
+            {
 
-            <div id="shopCartItemId@(item.Product.Id)" class="card mb-3 w-100 mb-3 bg-white">
-                <div class="row g-0 align-items-center">
-                    <div class="col-2">
-                        <img src="data:image/*;base64,@(Convert.ToBase64String(item.Product.Image))" class="img-fluid rounded-start" alt="Product image">
-                    </div>
-                    <div class="col-10">
-                        <div class="card-body">
-                            <div class="row align-items-center">
-                                <div class="col-lg-3 col-12 mb-1">
-                                    <p class="card-subtitle">@item.Product.Title @item.Product.Feature</p>
-                                </div>
-                                <div class="col-lg-4 col-12 fs-4 text-lg-center mb-3 align-self-center">
-                                    @{
-                                        string disabled = item.Quantity <= 1 ? "disabled" : "";
-                                    }
-                                    <a id="minusSameProductId@(item.Product.Id)" onclick="ajaxRemoveFromShopCart(@item.Product.Id, 1)" class="@disabled btn text-warning text-decoration-none p-0" role="button" aria-disabled="true" style="cursor:pointer">
-                                        <i class="fs-4 bi bi-dash-square"></i>
-                                    </a>
-                                    &nbsp;&nbsp;&nbsp;
-                                    <span id="countSameProductsId@(item.Product.Id)">@item.Quantity</span>
-                                    &nbsp;&nbsp;&nbsp;
-                                    <a id="plusSameProductId@(item.Product.Id)" onclick="ajaxAddToShopCart(@item.Product.Id)" class="btn text-warning text-decoration-none p-0" style="cursor:pointer">
-                                        <i class="fs-4 bi bi-plus-square"></i>
-                                    </a>
-                                </div>
-                                <div class="col-lg-5 col-12 mb-3">
-                                    @{string visibility = "visible";
-
-                                        @if (item.Product.Discount == 0)
-                                        {
-                                            visibility = "invisible";
-                                        }
-                                    }
-                                    <div class="@visibility text-lg-end mb-1">
-                                        <del id="priceId@(item.Product.Id)" class="fs-5 text-muted">@(item.Product.Price * item.Quantity)</del>
-                                        &nbsp;&nbsp;
-                                        <span id="discountId@(item.Product.Id)" class="fs-6 text-dark bg-warning rounded-2 p-2">-@(item.Product.Discount * item.Quantity)</span>
+                <div id="shopCartItemId@(item.Product.Id)" class="card mb-3 w-100 mb-3 bg-white">
+                    <div class="row g-0 align-items-center">
+                        <div class="col-2">
+                            <img src="data:image/*;base64,@(Convert.ToBase64String(item.Product.Image))" class="img-fluid rounded-start" alt="Product image">
+                        </div>
+                        <div class="col-10">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-lg-3 col-12 mb-1">
+                                        <p class="card-subtitle">@item.Product.Title @item.Product.Feature</p>
                                     </div>
-
-                                    <h3 id="priceWithDiscountId@(item.Product.Id)" class="text-lg-end mb-1">@(item.Product.Price * item.Quantity - item.Product.Discount * item.Quantity)</h3>
-                                    <div class="text-lg-end mb-1">
-                                        @await Html.PartialAsync("_FavoriteHeart", item.Product)
-                                        <span class="fs-6 text-secondary">Save for latter</span>
-                                        &nbsp;&nbsp;
-                                        <a onclick="ajaxRemoveFromShopCart(@item.Product.Id)" class="fs-4 text-decoration-none text-secondary" style="cursor:pointer">
-                                            <i class="bi bi-trash"></i>
-                                            @*<span class="fs-6">Delete</span>*@
+                                    <div class="col-lg-4 col-12 fs-4 text-lg-center mb-3 align-self-center">
+                                        @{
+                                            string disabled = item.Quantity <= 1 ? "disabled" : "";
+                                        }
+                                        <a id="minusSameProductId@(item.Product.Id)" onclick="ajaxRemoveFromShopCart(@item.Product.Id, 1)" class="@disabled btn text-warning text-decoration-none p-0" role="button" aria-disabled="true" style="cursor:pointer">
+                                            <i class="fs-4 bi bi-dash-square"></i>
                                         </a>
+                                        &nbsp;&nbsp;&nbsp;
+                                        <span id="countSameProductsId@(item.Product.Id)">@item.Quantity</span>
+                                        &nbsp;&nbsp;&nbsp;
+                                        <a id="plusSameProductId@(item.Product.Id)" onclick="ajaxAddToShopCart(@item.Product.Id)" class="btn text-warning text-decoration-none p-0" style="cursor:pointer">
+                                            <i class="fs-4 bi bi-plus-square"></i>
+                                        </a>
+                                    </div>
+                                    <div class="col-lg-5 col-12 mb-3">
+                                        @{string visibility = "visible";
+
+                                            @if (item.Product.Discount == 0)
+                                            {
+                                                visibility = "invisible";
+                                            }
+                                        }
+                                        <div class="@visibility text-lg-end mb-1">
+                                            <del id="priceId@(item.Product.Id)" class="fs-5 text-muted">@(item.Product.Price * item.Quantity)</del>
+                                            &nbsp;
+                                            <span id="discountId@(item.Product.Id)" class="fs-6 text-dark bg-warning rounded-2 p-2">-@(item.Product.Discount * item.Quantity)</span>
+                                        </div>
+
+                                        <h3 id="priceWithDiscountId@(item.Product.Id)" class="text-lg-end mb-1">@(item.Product.Price * item.Quantity - item.Product.Discount * item.Quantity)</h3>
+                                        <div class="text-lg-end mb-1">
+                                            @await Html.PartialAsync("_FavoriteHeart", item.Product)
+                                            <span class="fs-6 text-secondary">Save for latter</span>
+                                            &nbsp;
+                                            <a onclick="ajaxRemoveFromShopCart(@item.Product.Id)" class="fs-4 text-decoration-none text-secondary" style="cursor:pointer">
+                                                <i class="bi bi-trash"></i>
+                                                @*<span class="fs-6">Delete</span>*@
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
+                        </div>
                     </div>
                 </div>
+            }
+            <div class="mb-lg-0 mb-5">
+                <a href="@ViewBag.returnUrl" class="btn btn-lg btn-outline-primary text-center w-100"><i class="fs-4 text-dark bi bi-arrow-bar-left"></i> Back to previous</a>
             </div>
-        }
-        <div class="mb-lg-0 mb-5">
-            <a href="@ViewBag.returnUrl" class="btn btn-lg btn-outline-primary text-center w-100"><i class="fs-4 text-dark bi bi-arrow-bar-left"></i> Back to previous</a>
         </div>
-    </div>
-        
+
         <div class="col-lg-3 col-12 position-relative bg-white text-center rounded rounded-3 p-3">
             <div class="position-sticky" style="top:65px;">
                 <h5>
@@ -93,7 +93,7 @@
                 }
                 <div class="@visibilityForAllDiscount mb-3">
                     <del id="priceId" class="fs-5 text-muted">@Model.GetCartItems.Sum(i => i.Product.Price * i.Quantity)</del>
-                    &nbsp;&nbsp;
+                    &nbsp;
                     <span id="discountId" class="fs-6 text-dark bg-warning rounded-2 p-2">-@Model.GetCartItems.Sum(i => i.Product.Discount * i.Quantity)</span>
                 </div>
 

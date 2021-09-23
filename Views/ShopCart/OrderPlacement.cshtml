@@ -1,7 +1,97 @@
-﻿
+﻿@model OnlineStore.Models.ViewModels.OrderPlacementViewModel
+
 @{
     ViewData["Title"] = "OrderPlacement";
 }
 
-<h1>OrderPlacement</h1>
+<div class="container-fluid bg-light rounded rounded-3 p-5">
+    <h2 class="mb-3">Order confirmation</h2>
+    <hr />
+    <div class="row rounded rounded-3">
+        <div class="col-lg-8 col-12 mb-lg-0 mb-5">
+            <form id="confirmOrderForm" asp-antiforgery="true" method="post">
+                <div asp-validation-summary="ModelOnly" class="is-invalid"></div>
+
+                <fieldset class="bg-white p-3 mb-3">
+                    <span class="fs-3">Your personal information</span>
+                    <input id="id" asp-for="OrderData.Id" type="hidden" />
+
+                    <div class="mb-3">
+                        <label asp-for="OrderData.Name" class="form-label"></label>
+                        <input id="name" asp-for="OrderData.Name" class="form-control" />
+                        <span asp-validation-for="OrderData.Name" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="OrderData.Surname" class="form-label"></label>
+                        <input id="surname" asp-for="OrderData.Surname" class="form-control" />
+                        <span asp-validation-for="OrderData.Surname" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="OrderData.Email" class="form-label"></label>
+                        <input id="email" asp-for="OrderData.Email" class="form-control" />
+                        <span asp-validation-for="OrderData.Email" class="text-danger"></span>
+                    </div>
+                </fieldset>
+
+                <fieldset class="bg-white p-3 mb-3">
+                    <span class="fs-3">Delivery information</span>
+                    <div class="mb-3">
+                        <label asp-for="OrderData.Line1" class="form-label"></label>
+                        <input id="line1" asp-for="OrderData.Line1" class="form-control" />
+                        <span asp-validation-for="OrderData.Line1" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="OrderData.Line2" class="form-label"></label>
+                        <input id="line2" asp-for="OrderData.Line2" class="form-control" />
+                        <span asp-validation-for="OrderData.Line2" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="OrderData.Line3" class="form-label"></label>
+                        <input id="line3" asp-for="OrderData.Line3" class="form-control" />
+                        <span asp-validation-for="OrderData.Line3" class="text-danger"></span>
+                        <div class="mb-3">
+                            <label asp-for="OrderData.City" class="form-label"></label>
+                            <input id="city" asp-for="OrderData.City" class="form-control" />
+                            <span asp-validation-for="OrderData.City" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="OrderData.Country" class="form-label"></label>
+                            <input id="country" asp-for="OrderData.Country" class="form-control" />
+                            <span asp-validation-for="OrderData.Country" class="text-danger"></span>
+                        </div>
+                    </div>
+                </fieldset>
+
+
+            </form>
+        </div>
+
+        <div class="col-lg-4 col-12 position-relative bg-white text-center rounded rounded-3 p-3">
+            <div class="position-sticky" style="top:65px;">
+                <h5>
+                    <span id="countAllProductsId">@Model.ShopCart.GetCartItems.Sum(i => i.Quantity)</span> item(s) in the basket
+                </h5>
+                @{string visibilityForAllDiscount = "invisible";
+
+                    @if (Model.ShopCart.GetCartItems.Any(i => i.Product.Discount != 0))
+                    {
+                        visibilityForAllDiscount = "visible";
+                    }
+                }
+                <div class="@visibilityForAllDiscount mb-3">
+                    <del id="priceId" class="fs-5 text-muted">@Model.ShopCart.GetCartItems.Sum(i => i.Product.Price * i.Quantity)</del>
+                    &nbsp;&nbsp;
+                    <span id="discountId" class="fs-6 text-dark bg-warning rounded-2 p-2">-@Model.ShopCart.GetCartItems.Sum(i => i.Product.Discount * i.Quantity)</span>
+                </div>
+
+                <h2 id="priceWithDiscountId" class="mb-5">@(Model.ShopCart.GetCartItems.Sum(i => i.Product.Price * i.Quantity) - Model.ShopCart.GetCartItems.Sum(i => i.Product.Discount * i.Quantity))</h2>
+
+                <button form="confirmOrderForm" type="submit" class="btn btn-primary w-100">Confirm order</button>
+            </div>
+        </div>
+    </div>
+
+</div>
 

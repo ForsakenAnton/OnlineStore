@@ -101,9 +101,15 @@ namespace OnlineStore
 
             app.UseEndpoints(endpoints =>
             {
+                //endpoints.MapControllerRoute(
+                //   name: "default",
+                //   pattern: "ShopCart/AjaxEditOrderDataUser/{userId}",
+                //   defaults: new { controller = "ShopCart", action = "AjaxEditOrderDataUser" });
+
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}"//,
+                    /*constraints: new { controller = "$[^s]*" }*/);
             });
         }
     }

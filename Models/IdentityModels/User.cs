@@ -22,5 +22,7 @@ namespace OnlineStore.Models.IdentityModels
         public ICollection<FavoriteProduct> FavoriteProducts { get; set; }
         public ICollection<Comment> Comments { get; set; }
         public ICollection<Like> Likes { get; set; }
+
+        public ICollection<Order> Orders { get; set; }
     }
 }

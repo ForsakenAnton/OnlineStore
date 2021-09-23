@@ -1,0 +1,21 @@
+﻿@*@model OnlineStore.Models.ViewModels.OrderDataUserViewModel
+
+@{ 
+    string userId = Model.Id;
+    string id = userId;
+}
+
+<div class="container clearfix bg-white rounded rounded-3 ps-5 pe-5 pt-3 pb-3">
+    <div class="fs-3 mb-3">
+        Your data
+    </div>
+    <p class="float-lg-start">
+        @Model.Name @Model.Surname,
+        &nbsp;@Model.Email &nbsp; @userId
+    </p>
+    <p class="float-lg-end">
+        <a id="editId" data-id="@Model.Id" class="link-dark" style="cursor:pointer"  onclick="ajaxEditOrderDataUser()">
+            <i class="bi bi-pencil"></i> Edit
+        </a>
+    </p>
+</div>*@

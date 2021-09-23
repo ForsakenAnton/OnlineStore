@@ -41,8 +41,8 @@ namespace OnlineStore.Models
         public Manufacturer Manufacturer { get; set; }
         public ICollection<CategoryProduct> CategoryProducts { get; set; }
 
-        //[JsonIgnore]
         public ICollection<Comment> Comments { get; set; }
+        public ICollection<OrderProduct> OrderProducts { get; set; }
         //public BankCredit BankCredit { get; set; }
     }
 }

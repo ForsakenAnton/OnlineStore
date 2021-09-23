@@ -1,5 +1,4 @@
 ﻿function ajaxAddToShopCart(productId) {
-
     fetch('/ShopCart/AjaxAddToCart?productId=' + productId)
         .then((response) => {
             //console.log(response.status == 204);

@@ -16,6 +16,8 @@
     <Compile Remove="Models\MainCategory.cs" />
     <Compile Remove="Models\SubCategory.cs" />
     <Compile Remove="Models\SubSubCategory.cs" />
+    <Compile Remove="Models\ViewModels\OrderDataDeliveryViewModel.cs" />
+    <Compile Remove="Models\ViewModels\OrderDataUserViewModel.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -101,6 +103,8 @@
     <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\_utilities.scss" />
     <Content Remove="C:\Users\forsa\.nuget\packages\bootstrap.sass\5.0.1\contentFiles\any\any\wwwroot\scss\_variables.scss" />
     <Content Remove="Views\Home\_LayoutDetails.cshtml" />
+    <Content Remove="Views\ShopCart\_EditOrderDataUser.cshtml" />
+    <Content Remove="Views\ShopCart\_OrderDataUserInfo.cshtml" />
   </ItemGroup>
 
   <ItemGroup>

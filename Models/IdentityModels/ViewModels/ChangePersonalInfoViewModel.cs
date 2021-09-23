@@ -8,7 +8,7 @@ namespace OnlineStore.Models.IdentityModels.ViewModels
 {
     public class ChangePersonalInfoViewModel
     {
-        public string Id { get; set; }
+        public string Id { get; init; }
         [Required(ErrorMessage = "Nickname cannot be empty")]
         [Display(Name = "NickName")]
         public string UserName { get; set; }

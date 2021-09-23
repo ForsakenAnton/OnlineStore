@@ -134,18 +134,8 @@
                                 <span class="position-absolute top-0 start-50 translate-middle badge rounded-pill text-dark p-0 ms-3 fs-6">5</span>
                             </a>
                         </div>
-                        @{
-                            string path = Context.Request.Path;
-                            string query = "";
-                            @foreach (var item in Context.Request.Query)
-                            {
-                                query += query == "" ? "?" : "&";
-                                query += item.Key + "=" + item.Value;
-                            }
-                        }
-
                         <div class="col-4 col-lg-1 text-center text-lg-end mb-3  mb-lg-0 order-5">
-                            <a asp-action="Index" asp-controller="ShopCart" asp-route-returnUrl="@(path + query) " class="h2 bi bi-cart text-primary position-relative me-0">
+                            <a asp-action="Index" asp-controller="ShopCart" asp-route-returnUrl="@(Context.Request.Path + Context.Request.QueryString) " class="h2 bi bi-cart text-primary position-relative me-0">
                                 <span id="shopCartProductsCount" class="position-absolute top-0 start-50 translate-middle badge rounded-pill text-dark p-0 ms-3 fs-6">@countProducts</span>
                             </a>
                         </div>
@@ -194,7 +184,7 @@
         </div>
     </nav>
 
-    <p> @(path + query)</p>
+    <p> @(Context.Request.Path + Context.Request.QueryString)</p>
 
     <div class="container">
         <main role="main" class="pb-3">
@@ -220,6 +210,7 @@
     <script src="~/js/myJS/ajaxAddOrDeleteFavorite.js"></script>
     <script src="~/js/myJS/ajaxAddToShopCart.js"></script>
     <script src="~/js/myJS/ajaxRemoveFromShopCart.js"></script>
+    <script src="~/js/myJS/ajaxOrderDataUser.js"></script>
     <script src="~/js/tooltipsInitialize.js"></script>
     <script src="~/js/validateFormsInitialize.js"></script>
     @await RenderSectionAsync("Scripts", required: false)

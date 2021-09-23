@@ -26,6 +26,8 @@ namespace OnlineStore.DB
         public DbSet<Like> Likes { get; set; }
         public DbSet<Answer> Answers { get; set; }
         public DbSet<FavoriteProduct> FavoriteProducts { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderProduct> OrderProducts { get; set; }
 
         //public DbSet<BankCredit> BankCredits { get; set; }
 
@@ -41,6 +43,7 @@ namespace OnlineStore.DB
             builder.Entity<Like>().ToTable("Like");
             builder.Entity<Answer>().ToTable("Answer");
             builder.Entity<FavoriteProduct>().ToTable("FavoriteProduct");
+            builder.Entity<Order>().ToTable("Order");
 
             //builder.Entity<BankCredit>().ToTable("BankCredit");
 
@@ -49,6 +52,10 @@ namespace OnlineStore.DB
             builder.Entity<Product>()
                 .HasIndex(p => p.CommodityCode)
                 .IsUnique();
+
+            builder.Entity<Order>()
+                .Property(o => o.OrderNumber)
+                .ValueGeneratedOnAdd();
 
             //builder.Entity<Product>()
             //    .HasOne<Manufacturer>(e => e.Manufacturer)
