@@ -4,20 +4,11 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace OnlineStore.Models.ViewModels
+namespace OnlineStore.Models
 {
-    public class OrderDataUserAndDeliveryViewModel
+    public class Delivery
     {
-        public string Id { get; init; }
-        [Required]
-        public string Name { get; set; }
-        [Required]
-        public string Surname { get; set; }
-
-        [Required]
-        [Display(Name = "Email")]
-        [EmailAddress]
-        public string Email { get; set; }
+        public int Id { get; set; }
 
         [Required(ErrorMessage = "Enter the first delivery address")]
         [Display(Name = "First address")]
@@ -36,5 +27,9 @@ namespace OnlineStore.Models.ViewModels
         [Required(ErrorMessage = "Specify country")]
         [Display(Name = "Country")]
         public string Country { get; set; }
+
+
+        public int OrderId { get; set; }
+        public Order Order { get; set; }
     }
 }

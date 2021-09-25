@@ -90,7 +90,7 @@
                     priceTotal.innerText = result.priceTotal;
                 }
                 if (discountTotal) {
-                    discountTotal.innerText = result.discountTotal;
+                    discountTotal.innerText = "-" + result.discountTotal;
                 }
                 if (priceWithDiscountTotal) {
                     priceWithDiscountTotal.innerText = result.priceWithDiscountTotal;
@@ -99,6 +99,12 @@
                 if (minusSameProduct) {
                     minusSameProduct.classList = "btn text-warning text-decoration-none p-0";
                 }
+
+            //    priceWithDiscountTotalInCapture = document.getElementById("priceWithDiscountInCaptureId");
+
+            //    if (priceWithDiscountTotalInCapture) {
+            //        priceWithDiscountTotalInCapture = "-" + result.discountTotal;
+            //    }
             }
         });
 }

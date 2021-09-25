@@ -8,6 +8,9 @@ namespace OnlineStore.Models.ViewModels
     public class OrderPlacementViewModel
     {
         public ShopCart ShopCart { get; set; }
-        public OrderDataUserAndDeliveryViewModel OrderData { get; set; }
+        public OrderDataUserViewModel OrderDataUser { get; set; }
+        public Delivery Delivery { get; set; }
+        public int QuantityOrdersOfUser { get; set; }
+        public string ReturnUrl { get; set; }
     }
 }

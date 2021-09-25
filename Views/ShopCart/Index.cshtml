@@ -99,7 +99,7 @@
 
                 <h2 id="priceWithDiscountId" class="mb-5">@(Model.GetCartItems.Sum(i => i.Product.Price * i.Quantity) - Model.GetCartItems.Sum(i => i.Product.Discount * i.Quantity))</h2>
 
-                <a asp-action="OrderPlacement" class="btn btn-primary w-100">Order placement</a>
+                <a asp-action="OrderPlacement" asp-route-pathAndQuery="@(Context.Request.Path + Context.Request.QueryString.Value)" class="btn btn-primary w-100">Order placement</a>
             </div>
         </div>
     </div>

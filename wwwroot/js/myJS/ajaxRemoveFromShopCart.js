@@ -57,7 +57,7 @@
                     priceTotal.innerText = result.priceTotal;
                 }
                 if (discountTotal) {
-                    discountTotal.innerText = result.discountTotal;
+                    discountTotal.innerText = "-" + result.discountTotal;
                 }
                 if (priceWithDiscountTotal) {
                     priceWithDiscountTotal.innerText = result.priceWithDiscountTotal;
@@ -76,6 +76,12 @@
                         shopCartItem.remove();
                     }
                 }
+
+                //priceWithDiscountTotalInCapture = document.getElementById("priceWithDiscountInCaptureId");
+
+                //if (priceWithDiscountTotalInCapture) {
+                //    priceWithDiscountTotalInCapture = "-" + result.discountTotal;
+                //}
 
                 document.getElementById("shopCartProductsCount").innerText = result.countAllProducts;
             }

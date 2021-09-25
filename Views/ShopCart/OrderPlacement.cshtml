@@ -4,94 +4,201 @@
     ViewData["Title"] = "OrderPlacement";
 }
 
-<div class="container-fluid bg-light rounded rounded-3 p-5">
+<a href="@Model.ReturnUrl" class=" fs-3 btn btn-primary mb-3"><i class="bi bi-arrow-90deg-left"></i> Back to cart</a>
+
+<div class="container-fluid bg-light rounded rounded-3 p-5 mb-3">
     <h2 class="mb-3">Order confirmation</h2>
     <hr />
     <div class="row rounded rounded-3">
-        <div class="col-lg-8 col-12 mb-lg-0 mb-5">
-            <form id="confirmOrderForm" asp-antiforgery="true" method="post">
+        <div class="col-lg-9 col-12 mb-lg-0 mb-5">
+            <form id="confirmOrderForm" class="mb-3" asp-antiforgery="true" method="post">
                 <div asp-validation-summary="ModelOnly" class="is-invalid"></div>
+
+                <input type="hidden" asp-for="ReturnUrl" />
+                <input type="hidden" asp-for="QuantityOrdersOfUser" />
+
 
                 <fieldset class="bg-white p-3 mb-3">
                     <span class="fs-3">Your personal information</span>
-                    <input id="id" asp-for="OrderData.Id" type="hidden" />
 
                     <div class="mb-3">
-                        <label asp-for="OrderData.Name" class="form-label"></label>
-                        <input id="name" asp-for="OrderData.Name" class="form-control" />
-                        <span asp-validation-for="OrderData.Name" class="text-danger"></span>
+                        <label asp-for="OrderDataUser.Name" class="form-label"></label>
+                        <input id="name" asp-for="OrderDataUser.Name" class="form-control" />
+                        <span asp-validation-for="OrderDataUser.Name" class="text-danger"></span>
                     </div>
 
                     <div class="mb-3">
-                        <label asp-for="OrderData.Surname" class="form-label"></label>
-                        <input id="surname" asp-for="OrderData.Surname" class="form-control" />
-                        <span asp-validation-for="OrderData.Surname" class="text-danger"></span>
+                        <label asp-for="OrderDataUser.Surname" class="form-label"></label>
+                        <input id="surname" asp-for="OrderDataUser.Surname" class="form-control" />
+                        <span asp-validation-for="OrderDataUser.Surname" class="text-danger"></span>
                     </div>
 
                     <div class="mb-3">
-                        <label asp-for="OrderData.Email" class="form-label"></label>
-                        <input id="email" asp-for="OrderData.Email" class="form-control" />
-                        <span asp-validation-for="OrderData.Email" class="text-danger"></span>
+                        <label asp-for="OrderDataUser.Email" class="form-label"></label>
+                        <input id="email" asp-for="OrderDataUser.Email" class="form-control" />
+                        <span asp-validation-for="OrderDataUser.Email" class="text-danger"></span>
                     </div>
                 </fieldset>
 
                 <fieldset class="bg-white p-3 mb-3">
                     <span class="fs-3">Delivery information</span>
                     <div class="mb-3">
-                        <label asp-for="OrderData.Line1" class="form-label"></label>
-                        <input id="line1" asp-for="OrderData.Line1" class="form-control" />
-                        <span asp-validation-for="OrderData.Line1" class="text-danger"></span>
+                        <label asp-for="Delivery.Line1" class="form-label"></label>
+                        <input id="line1" asp-for="Delivery.Line1" class="form-control" />
+                        <span asp-validation-for="Delivery.Line1" class="text-danger"></span>
                     </div>
                     <div class="mb-3">
-                        <label asp-for="OrderData.Line2" class="form-label"></label>
-                        <input id="line2" asp-for="OrderData.Line2" class="form-control" />
-                        <span asp-validation-for="OrderData.Line2" class="text-danger"></span>
+                        <label asp-for="Delivery.Line2" class="form-label"></label>
+                        <input id="line2" asp-for="Delivery.Line2" class="form-control" />
+                        <span asp-validation-for="Delivery.Line2" class="text-danger"></span>
                     </div>
                     <div class="mb-3">
-                        <label asp-for="OrderData.Line3" class="form-label"></label>
-                        <input id="line3" asp-for="OrderData.Line3" class="form-control" />
-                        <span asp-validation-for="OrderData.Line3" class="text-danger"></span>
+                        <label asp-for="Delivery.Line3" class="form-label"></label>
+                        <input id="line3" asp-for="Delivery.Line3" class="form-control" />
+                        <span asp-validation-for="Delivery.Line3" class="text-danger"></span>
                         <div class="mb-3">
-                            <label asp-for="OrderData.City" class="form-label"></label>
-                            <input id="city" asp-for="OrderData.City" class="form-control" />
-                            <span asp-validation-for="OrderData.City" class="text-danger"></span>
+                            <label asp-for="Delivery.City" class="form-label"></label>
+                            <input id="city" asp-for="Delivery.City" class="form-control" />
+                            <span asp-validation-for="Delivery.City" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
-                            <label asp-for="OrderData.Country" class="form-label"></label>
-                            <input id="country" asp-for="OrderData.Country" class="form-control" />
-                            <span asp-validation-for="OrderData.Country" class="text-danger"></span>
+                            <label asp-for="Delivery.Country" class="form-label"></label>
+                            <input id="country" asp-for="Delivery.Country" class="form-control" />
+                            <span asp-validation-for="Delivery.Country" class="text-danger"></span>
                         </div>
                     </div>
                 </fieldset>
-
-
             </form>
+
+            <div class="container bg-white rounded rounded-3">
+                <div class="p-3 fs-3">Order №@Model.QuantityOrdersOfUser</div>
+                @foreach (var item in Model.ShopCart.GetCartItems)
+                {
+
+                    <div id="shopCartItemId@(item.Product.Id)" class="card mb-3 w-100 bg-white">
+                        <div class="row g-0 align-items-center">
+                            <div class="col-2">
+                                <img src="data:image/*;base64,@(Convert.ToBase64String(item.Product.Image))" class="img-fluid rounded-start" alt="Product image">
+                            </div>
+                            <div class="col-10">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col-lg-3 col-12 mb-1">
+                                            <p class="card-subtitle">@item.Product.Title @item.Product.Feature</p>
+                                        </div>
+                                        <div class="col-lg-4 col-12 fs-4 text-lg-center mb-3 align-self-center">
+                                            @*@{
+                                                string disabled = item.Quantity <= 1 ? "disabled" : "";
+                                            }
+                                            <a id="minusSameProductId@(item.Product.Id)" onclick="ajaxRemoveFromShopCart(@item.Product.Id, 1)" class="@disabled btn text-warning text-decoration-none p-0" role="button" aria-disabled="true" style="cursor:pointer">
+                                                <i class="fs-4 bi bi-dash-square"></i>
+                                            </a>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <span id="countSameProductsId@(item.Product.Id)">@item.Quantity</span>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <a id="plusSameProductId@(item.Product.Id)" onclick="ajaxAddToShopCart(@item.Product.Id)" class="btn text-warning text-decoration-none p-0" style="cursor:pointer">
+                                                <i class="fs-4 bi bi-plus-square"></i>
+                                            </a>*@
+                                        </div>
+                                        <div class="col-lg-5 col-12 mb-3">
+                                            @{string visibility = "visible";
+
+                                                @if (item.Product.Discount == 0)
+                                                {
+                                                    visibility = "invisible";
+                                                }
+                                            }
+                                            <div class="@visibility text-lg-end mb-1">
+                                                <del id="priceId@(item.Product.Id)" class="fs-5 text-muted">@(item.Product.Price * item.Quantity)</del>
+                                                &nbsp;
+                                                <span id="discountId@(item.Product.Id)" class="fs-6 text-dark bg-warning rounded-2 p-2">-@(item.Product.Discount * item.Quantity)</span>
+                                            </div>
+
+                                            <h3 id="priceWithDiscountId@(item.Product.Id)" class="text-lg-end mb-1">@(item.Product.Price * item.Quantity - item.Product.Discount * item.Quantity)</h3>
+                                            <div class="text-lg-end mb-1">
+                                                @*@await Html.PartialAsync("_FavoriteHeart", item.Product)
+                                                <span class="fs-6 text-secondary">Save for latter</span>
+                                                &nbsp;
+                                                <a onclick="ajaxRemoveFromShopCart(@item.Product.Id)" class="fs-4 text-decoration-none text-secondary" style="cursor:pointer">
+                                                    <i class="bi bi-trash"></i>
+                                                </a>*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
         </div>
 
-        <div class="col-lg-4 col-12 position-relative bg-white text-center rounded rounded-3 p-3">
+        <div class="col-lg-3 col-12 position-relative bg-white rounded rounded-3 p-3">
             <div class="position-sticky" style="top:65px;">
-                <h5>
-                    <span id="countAllProductsId">@Model.ShopCart.GetCartItems.Sum(i => i.Quantity)</span> item(s) in the basket
-                </h5>
-                @{string visibilityForAllDiscount = "invisible";
+                <div class="fs-3">Your Order</div>
+                <div class="bg-light rounded rounded-3 p-3 mb-3">
+                    <div class="fs-6 text-muted">Order №@Model.QuantityOrdersOfUser</div>
+                    <div class="fs-6 text-muted">
+                        <span id="countAllProductsId">@Model.ShopCart.GetCartItems.Sum(i => i.Quantity) </span>
+                        item(s)
+                        
+                    </div>
+                    <div class="fs-6 text-muted mb-3">
+                        Summa:
+                        <span id="priceWithDiscountInCaptureId"> @(Model.ShopCart.GetCartItems.Sum(i => i.Product.Price * i.Quantity) - Model.ShopCart.GetCartItems.Sum(i => i.Product.Discount * i.Quantity))</span>
+                    </div>
 
-                    @if (Model.ShopCart.GetCartItems.Any(i => i.Product.Discount != 0))
-                    {
-                        visibilityForAllDiscount = "visible";
-                    }
-                }
-                <div class="@visibilityForAllDiscount mb-3">
-                    <del id="priceId" class="fs-5 text-muted">@Model.ShopCart.GetCartItems.Sum(i => i.Product.Price * i.Quantity)</del>
-                    &nbsp;&nbsp;
-                    <span id="discountId" class="fs-6 text-dark bg-warning rounded-2 p-2">-@Model.ShopCart.GetCartItems.Sum(i => i.Product.Discount * i.Quantity)</span>
+                    <hr />
+
+                    <p>
+                        <button class="btn border-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapseProducts" aria-expanded="false" aria-controls="collapseProducts">
+                            Details <i class="bi bi-chevron-expand"></i>
+                        </button>
+                    </p>
+                    <div class="collapse bg-light rounded rounded-3 mb-5" id="collapseProducts">
+                        @foreach (var item in Model.ShopCart.GetCartItems)
+                        {
+
+                            <div class="card w-100 border-0">
+                                <div class="row g-0 align-items-center">
+                                    <div class="col-2">
+                                        <img src="data:image/*;base64,@(Convert.ToBase64String(item.Product.Image))" class="img-fluid rounded-start" alt="Product image">
+                                    </div>
+                                    <div class="col-10">
+                                        <div class="card-body">
+                                            <p class="card-subtitle">@item.Product.Title @item.Product.Feature</p>
+                                            <p class="text-muted">@(item.Product.Price * item.Quantity - item.Product.Discount * item.Quantity)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="clearfix">
+                            <h5 class="float-start">Full</h5>
+                            <h5 id="priceId" class="float-end">@Model.ShopCart.GetCartItems.Sum(i => i.Product.Price * i.Quantity)</h5>
+                        </div>
+                        <div class="clearfix mb-1">
+                            <h5 class="float-start">Discount</h5>
+                            <h5 id="discountId" class="float-end text-success">-@Model.ShopCart.GetCartItems.Sum(i => i.Product.Discount * i.Quantity)</h5>
+                        </div>
+                        <div class="clearfix">
+                            <h4 class="float-start">Total</h4>
+                            <h2 id="priceWithDiscountId" class="float-end">@(Model.ShopCart.GetCartItems.Sum(i => i.Product.Price * i.Quantity) - Model.ShopCart.GetCartItems.Sum(i => i.Product.Discount * i.Quantity))</h2>
+                        </div>
+                        <hr />
+                    </div>
+
+                    <button form="confirmOrderForm" type="submit" class="btn btn-primary w-100">Confirm order</button>
                 </div>
-
-                <h2 id="priceWithDiscountId" class="mb-5">@(Model.ShopCart.GetCartItems.Sum(i => i.Product.Price * i.Quantity) - Model.ShopCart.GetCartItems.Sum(i => i.Product.Discount * i.Quantity))</h2>
-
-                <button form="confirmOrderForm" type="submit" class="btn btn-primary w-100">Confirm order</button>
             </div>
         </div>
     </div>
-
 </div>
+
+<a href="@Model.ReturnUrl" class=" fs-3 btn btn-primary mb-3"><i class="bi bi-arrow-90deg-left"></i> Back to cart</a>
 

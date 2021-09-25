@@ -17,7 +17,6 @@
     <Compile Remove="Models\SubCategory.cs" />
     <Compile Remove="Models\SubSubCategory.cs" />
     <Compile Remove="Models\ViewModels\OrderDataDeliveryViewModel.cs" />
-    <Compile Remove="Models\ViewModels\OrderDataUserViewModel.cs" />
   </ItemGroup>
 
   <ItemGroup>

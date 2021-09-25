@@ -8,7 +8,7 @@ namespace OnlineStore.Models.ViewModels
 {
     public class OrderDataUserViewModel
     {
-        public string Id { get; init; }
+        //public string Id { get; init; }
         [Required]
         public string Name { get; set; }
         [Required]

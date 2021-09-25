@@ -81,7 +81,7 @@ namespace OnlineStore.Controllers
 
 
         [Authorize]
-        public async Task<IActionResult> OrderPlacement()
+        public async Task<IActionResult> OrderPlacement(string pathAndQuery)
         {
             if(GetShopCart().GetCartItems.Count() == 0)
             {
@@ -90,10 +90,13 @@ namespace OnlineStore.Controllers
             }
 
             User user = await _userManager.GetUserAsync(User);
+            int quantityOrdersOfUser = _context.Orders
+                .Include(o => o.User)
+                .Where(o => o.User.Id == user.Id)
+                .Count() + 1;
 
-            OrderDataUserAndDeliveryViewModel orderDataViewModel = new()
+            OrderDataUserViewModel orderDataUserViewModel = new()
             {
-                Id = user.Id,
                 Name = user.Name,
                 Surname = user.Surname,
                 Email = user.Email
@@ -103,7 +106,10 @@ namespace OnlineStore.Controllers
             OrderPlacementViewModel viewModel = new()
             {
                 ShopCart = shopCart,
-                OrderData = orderDataViewModel
+                OrderDataUser = orderDataUserViewModel,
+                Delivery = new Delivery(),
+                QuantityOrdersOfUser = quantityOrdersOfUser,
+                ReturnUrl = pathAndQuery
             };
 
             return View(viewModel);
@@ -115,7 +121,7 @@ namespace OnlineStore.Controllers
         {
             if (ModelState.IsValid)
             {
-
+                return Content("IsValid");
             }
 
             viewModel.ShopCart = GetShopCart();
