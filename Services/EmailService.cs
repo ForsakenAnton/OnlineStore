@@ -36,7 +36,7 @@ namespace OnlineStore.Services
             var email = new MimeMessage();
             email.From.Add(new MailboxAddress("exampleSender", from));
             email.To.Add(MailboxAddress.Parse(to));
-            email.Subject = "Confirm your Email";
+            email.Subject = subject;
             email.Body = new TextPart(TextFormat.Html) { Text = html };
 
             SmtpHiddenInfo smtpHiddenInfo = new SmtpHiddenInfo();

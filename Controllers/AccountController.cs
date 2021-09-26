@@ -13,14 +13,12 @@ namespace OnlineStore.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
-        public IConfiguration _configuration;
-        IEmailService _emailService;
+        private readonly IEmailService _emailService;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration, IEmailService emailService)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, IEmailService emailService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _configuration = configuration;
             _emailService = emailService;
         }
 
@@ -52,8 +50,7 @@ namespace OnlineStore.Controllers
                         new { userId = user.Id, code = code },
                         protocol: HttpContext.Request.Scheme);
 
-                    EmailService emailService = new EmailService(_configuration);
-                    await emailService.SendAsync("from_address@example.com", model.Email, "Confirm your account",
+                    await _emailService.SendAsync("from_address@example.com", model.Email, "Confirm your account",
                         $"For confirm registration <a href='{callbackUrl}'>follow the link</a>");
 
                     return View("ConfirmRegistration");
@@ -205,9 +202,7 @@ namespace OnlineStore.Controllers
                     new { userId = user.Id, code = code },
                     protocol: HttpContext.Request.Scheme);
 
-                EmailService emailService = new EmailService(_configuration);
-
-                await emailService.SendAsync("from_address@example.com",
+                await _emailService.SendAsync("from_address@example.com",
                     model.Email,
                     "Reset Password",
                     $"To reset password <a href='{callbackUrl}'>follow the link</a>");

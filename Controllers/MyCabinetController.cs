@@ -33,7 +33,23 @@ namespace OnlineStore.Controllers
         public IActionResult Index()
         {
             ViewBag.pageId = 1;
-            return View();
+            return View(GetShopCart());
+        }
+
+        public async Task<IActionResult> RemoveProductFromCart(int? productId)
+        {
+            if (productId == null)
+            {
+                return NotFound();
+            }
+            var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == productId);
+
+            if(product != null)
+            {
+                GetShopCart().RemoveAllSameItems(product);
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> PersonalInformation(string userId)
@@ -145,6 +161,18 @@ namespace OnlineStore.Controllers
 
             ViewBag.pageId = 5;
             return View(user);
+        }
+
+        public ShopCart GetShopCart()
+        {
+            ShopCart shopCart = HttpContext.Session.Get<ShopCart>("ShopCart");
+            if (shopCart == null)
+            {
+                shopCart = new ShopCart();
+                HttpContext.Session.Set<ShopCart>("ShopCart", shopCart);
+            }
+
+            return shopCart;
         }
     }
 }

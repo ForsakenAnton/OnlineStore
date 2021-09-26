@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineStore.DB;
 
 namespace OnlineStore.Migrations
 {
     [DbContext(typeof(OnlineStoreContext))]
-    partial class OnlineStoreContextModelSnapshot : ModelSnapshot
+    [Migration("20210926155641_AddedDisplayFormatToProducts_PriceAndDiscount")]
+    partial class AddedDisplayFormatToProducts_PriceAndDiscount
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -313,8 +315,7 @@ namespace OnlineStore.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderId")
-                        .IsUnique();
+                    b.HasIndex("OrderId");
 
                     b.ToTable("Delivery");
                 });
@@ -488,6 +489,7 @@ namespace OnlineStore.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<Guid>("OrderNumber")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("State")
@@ -698,8 +700,8 @@ namespace OnlineStore.Migrations
             modelBuilder.Entity("OnlineStore.Models.Delivery", b =>
                 {
                     b.HasOne("OnlineStore.Models.Order", "Order")
-                        .WithOne("Delivery")
-                        .HasForeignKey("OnlineStore.Models.Delivery", "OrderId")
+                        .WithMany()
+                        .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -809,8 +811,6 @@ namespace OnlineStore.Migrations
 
             modelBuilder.Entity("OnlineStore.Models.Order", b =>
                 {
-                    b.Navigation("Delivery");
-
                     b.Navigation("OrderProducts");
                 });
 

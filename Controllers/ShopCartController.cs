@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using OnlineStore.DB;
 using OnlineStore.Models;
 using OnlineStore.Models.IdentityModels;
 using OnlineStore.Models.ViewModels;
+using OnlineStore.Services;
 using OnlineStore.Sessions;
 using System;
 using System.Collections.Generic;
@@ -19,10 +21,12 @@ namespace OnlineStore.Controllers
     {
         private readonly OnlineStoreContext _context;
         private readonly UserManager<User> _userManager;
-        public ShopCartController(OnlineStoreContext context, UserManager<User> userManager)
+        private readonly IEmailService _emailService;
+        public ShopCartController(OnlineStoreContext context, UserManager<User> userManager, IEmailService emailService)
         {
             _context = context;
             _userManager = userManager;
+            _emailService = emailService;
         }
 
         public IActionResult Index(string emptyShopCart, string returnUrl)
@@ -80,7 +84,7 @@ namespace OnlineStore.Controllers
         }
 
 
-        [Authorize]
+            [Authorize]
         public async Task<IActionResult> OrderPlacement(string pathAndQuery)
         {
             if(GetShopCart().GetCartItems.Count() == 0)
@@ -121,60 +125,113 @@ namespace OnlineStore.Controllers
         {
             if (ModelState.IsValid)
             {
-                return Content("IsValid");
+                User user = await _userManager.GetUserAsync(User);
+                ShopCart shopCart = GetShopCart();
+
+                user.Name = viewModel.OrderDataUser.Name;
+                user.Surname = viewModel.OrderDataUser.Surname;
+                user.Email = viewModel.OrderDataUser.Email;
+
+                Order order = new()
+                {
+                    OrderNumber = Guid.NewGuid(),
+                    DateOfOrder = DateTime.Now,
+                    State = State.None,
+                    TotalPrice = shopCart.GetCartItems.Sum(item => (item.Product.Price - item.Product.Discount) * item.Quantity),
+                    User = user
+                };
+
+                viewModel.Delivery.Order = order;
+
+                List<OrderProduct> orderProducts = new List<OrderProduct>();
+                foreach (var item in shopCart.GetCartItems)
+                {
+                    var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == item.Product.Id); // (!)
+
+                    orderProducts.Add(
+                        new OrderProduct
+                        {
+                            Quantity = item.Quantity,
+                            PriceOfOneProduct = product.Price - product.Discount,
+                            Order = order,
+                            Product = product 
+                            // Product = item.Product (ef core Cannot insert explicit value for identity column in table 'Product' when IDENTITY_INSERT is set to OFF)
+                            // короче нет BindingModel и контекст не отслеживается. (!) Отследил выше 
+                        });
+                }
+
+                await _context.Deliveries.AddAsync(viewModel.Delivery);
+                await _context.OrderProducts.AddRangeAsync(orderProducts);
+                await _context.SaveChangesAsync();
+
+                shopCart.Clear();
+
+                var callbackUrl = Url.Action(
+                        "Index",
+                        "Home",
+                        null,
+                        protocol: HttpContext.Request.Scheme);
+
+                foreach (var admin in await _userManager.GetUsersInRoleAsync("admin"))
+                {
+                    await _emailService.SendAsync("from_buyer@example.com", admin.Email, $"Got an order from user {user.UserName}",
+                        $"To see order №{order.OrderNumber} <a href='{callbackUrl}'>follow the link</a>");
+                }
+
+                return RedirectToAction("Index", "Home");
             }
 
             viewModel.ShopCart = GetShopCart();
             return View(viewModel);
         }
 
-            //[Authorize]
-            //public async Task<IActionResult> AjaxEditOrderDataUser(string userId)
-            //{
-            //    User user = await _userManager.GetUserAsync(User);
-            //    if(userId != user.Id)
-            //    {
-            //        return NoContent();
-            //    }
+        //[Authorize]
+        //public async Task<IActionResult> AjaxEditOrderDataUser(string userId)
+        //{
+        //    User user = await _userManager.GetUserAsync(User);
+        //    if(userId != user.Id)
+        //    {
+        //        return NoContent();
+        //    }
 
-            //    OrderDataUserViewModel viewModel = new()
-            //    {
-            //        Id = user.Id,
-            //        Name = user.Name,
-            //        Surname = user.Surname,
-            //        Email = user.Email
-            //    };
+        //    OrderDataUserViewModel viewModel = new()
+        //    {
+        //        Id = user.Id,
+        //        Name = user.Name,
+        //        Surname = user.Surname,
+        //        Email = user.Email
+        //    };
 
-            //    return PartialView("_EditOrderDataUser", viewModel);
-            //}
+        //    return PartialView("_EditOrderDataUser", viewModel);
+        //}
 
-            //[Authorize]
-            //[HttpPost]
-            //public async Task<PartialViewResult> AjaxPostEditOrderDataUser([FromBody] OrderDataUserViewModel viewModel)
-            //{
-            //    User user = await _userManager.GetUserAsync(User);
+        //[Authorize]
+        //[HttpPost]
+        //public async Task<PartialViewResult> AjaxPostEditOrderDataUser([FromBody] OrderDataUserViewModel viewModel)
+        //{
+        //    User user = await _userManager.GetUserAsync(User);
 
-            //    if (ModelState.IsValid)
-            //    {
-            //        user.Name = viewModel.Name;
-            //        user.Surname = viewModel.Surname;
-            //        user.Email = user.Email;
+        //    if (ModelState.IsValid)
+        //    {
+        //        user.Name = viewModel.Name;
+        //        user.Surname = viewModel.Surname;
+        //        user.Email = user.Email;
 
-            //        await _userManager.UpdateAsync(user);
+        //        await _userManager.UpdateAsync(user);
 
-            //        ViewBag.successChangesDataUser = "The changes have been saved";
+        //        ViewBag.successChangesDataUser = "The changes have been saved";
 
-            //        return PartialView("_OrderDataUserInfo", viewModel);
-            //    }
+        //        return PartialView("_OrderDataUserInfo", viewModel);
+        //    }
 
-            //    ViewBag.failedChangesDataUser = "The changes have not been saved!";
-            //    return PartialView("_EditOrderDataUser", viewModel);
-            //}
-
-
+        //    ViewBag.failedChangesDataUser = "The changes have not been saved!";
+        //    return PartialView("_EditOrderDataUser", viewModel);
+        //}
 
 
-            public ShopCart GetShopCart()
+
+
+        public ShopCart GetShopCart()
         {
             ShopCart shopCart = HttpContext.Session.Get<ShopCart>("ShopCart");
             if (shopCart == null)

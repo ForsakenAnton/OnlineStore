@@ -1,8 +1,43 @@
-﻿
+﻿@model OnlineStore.Models.ShopCart
+
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/MyCabinet/_LayoutMyCabinet.cshtml";
 }
 
-<h1>Index</h1>
+@if (Model.GetCartItems.Any())
+{
+    <div class="container bg-white p-3 mb-5 rounded rounded-3">
+        <div class="clearfix">
+            <div class="float-xl-start mb-lg-0 mb-3">
+                <div class="fs-3 me-5">
+                    In the cart are <span class="text-success">@Model.GetCartItems.Count()</span> products
+                </div>
+                <div class="fs-6 text-muted">
+                    On Summa @Model.GetCartItems.Sum(i => (i.Product.Price - i.Product.Discount) * i.Quantity)
+                </div>
+            </div>
+
+            <div class="float-xl-start me-3 mb-lg-0 mb-5 p-0">
+                @foreach (var item in Model.GetCartItems)
+                {
+                    <span class="position-relative me-3">
+                        <a class="" asp-action="Details" asp-controller="Home" asp-route-productId="@item.Product.Id"
+                           title="@item.Product.Title @item.Product.Feature" data-bs-toggle="tooltip" data-bs-placement="top">
+                            <img src="data:image/*;base64,@(Convert.ToBase64String(item.Product.Image))" class="img-thumbnail" style="width:4rem" alt="Product image">
+                        </a>
+                        <a class="btn-close position-absolute border border-1 rounded rounded-circle text-muted text-decoration-none p-0" style="bottom: 100%; left:80%"
+                           asp-action="RemoveProductFromCart" asp-route-productId="@item.Product.Id"></a>
+                    </span>
+                }
+            </div>
+
+            <div class="float-xl-end text-center flex-nowrap">
+                <a class="link-primary" asp-action="Index" asp-controller="ShopCart">To the cart</a>
+                &nbsp;&nbsp;
+                <a class="btn btn-lg btn-primary" asp-action="OrderPlacement" asp-controller="ShopCart">Order placement</a>
+            </div>
+        </div>
+    </div>
+}
 

@@ -13,6 +13,7 @@ namespace OnlineStore.Models
         public int Id { get; set; }
 
         [Display(Name = "Your order's number")]
+        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid OrderNumber { get; set; } // int, string..?
 
         [Display(Name = "Order's date")]
@@ -25,6 +26,7 @@ namespace OnlineStore.Models
 
         public int UserId { get; set; }
         public User User { get; set; }
+        public Delivery Delivery { get; set; }
 
         public ICollection<OrderProduct> OrderProducts { get; set; }
     }

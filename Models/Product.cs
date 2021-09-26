@@ -12,16 +12,20 @@ namespace OnlineStore.Models
     [Display(Name = "Product")]
     public class Product
     {
+        //[Key]
+        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string Title { get; set; }
         public string Feature { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0}$")]
         [Column(TypeName = "decimal(9, 2)")]
         public decimal Price { get; set; }
 
         [Display(Name = "Top status")]
         public bool IsTop { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0}$")]
         [Column(TypeName = "decimal(9, 2)")]
         public decimal Discount { get; set; }
         public int Count { get; set; }

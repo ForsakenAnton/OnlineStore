@@ -55,9 +55,12 @@ namespace OnlineStore.DB
                 .HasIndex(p => p.CommodityCode)
                 .IsUnique();
 
-            builder.Entity<Order>()
-                .Property(o => o.OrderNumber)
-                .ValueGeneratedOnAdd();
+            //builder.Entity<Order>()
+            //    .Property(o => o.OrderNumber)
+            //    .ValueGeneratedOnAdd();
+
+            //builder.Entity<Product>()
+            //    .Property(p => p.Price).
 
             //builder.Entity<Product>()
             //    .HasOne<Manufacturer>(e => e.Manufacturer)
