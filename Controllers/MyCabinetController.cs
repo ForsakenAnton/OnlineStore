@@ -8,6 +8,7 @@ using OnlineStore.DB;
 using OnlineStore.Models;
 using OnlineStore.Models.IdentityModels;
 using OnlineStore.Models.IdentityModels.ViewModels;
+using OnlineStore.Models.ViewModels;
 using OnlineStore.Sessions;
 using System;
 using System.Collections.Generic;
@@ -30,9 +31,11 @@ namespace OnlineStore.Controllers
         }
 
 
-        public IActionResult Index()
+        public async Task<IActionResult> IndexAsync()
         {
             ViewBag.pageId = 1;
+            ViewBag.user = await _userManager.GetUserAsync(User);
+
             return View(GetShopCart());
         }
 
@@ -49,7 +52,7 @@ namespace OnlineStore.Controllers
                 GetShopCart().RemoveAllSameItems(product);
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(IndexAsync));
         }
 
         public async Task<IActionResult> PersonalInformation(string userId)
@@ -133,10 +136,33 @@ namespace OnlineStore.Controllers
             return View("PersonalInformation", user);
         }
 
-        public IActionResult MyOrders()
+        public async Task<IActionResult> MyOrdersAsync()
         {
+            var user = await _userManager.GetUserAsync(User);
+
+            List<MyOrdersViewModel> myOrdersViewModel = await _context.OrderProducts
+                .Include(op => op.Product)
+                .Include(op => op.Order)
+                    .ThenInclude(o => o.Delivery)
+                .GroupBy(op => op.Order.Id)
+                .Select(g => new MyOrdersViewModel
+                {
+                    IdAndOrderTupple = new Tuple<int, Order> ( g.Key, _context.Orders.FirstOrDefault(o => o.Id == g.Key))
+                })
+                .ToListAsync();
+
+            foreach (var group in myOrdersViewModel)
+            {
+                group.Products = await _context.OrderProducts
+                    .Where(op => op.Order.Id == group.IdAndOrderTupple.Item1)
+                    .Select(p => p.Product)
+                    .ToListAsync();
+
+                await _context.OrderProducts.Where(op => op.OrderId == group.IdAndOrderTupple.Item1).LoadAsync();
+            }
+
             ViewBag.pageId = 3;
-            return View();
+            return View(myOrdersViewModel);
         }
 
         public IActionResult ViewedProducts()

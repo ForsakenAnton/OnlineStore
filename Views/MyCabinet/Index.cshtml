@@ -7,37 +7,65 @@
 
 @if (Model.GetCartItems.Any())
 {
-    <div class="container bg-white p-3 mb-5 rounded rounded-3">
-        <div class="clearfix">
-            <div class="float-xl-start mb-lg-0 mb-3">
-                <div class="fs-3 me-5">
-                    In the cart are <span class="text-success">@Model.GetCartItems.Count()</span> products
-                </div>
-                <div class="fs-6 text-muted">
-                    On Summa @Model.GetCartItems.Sum(i => (i.Product.Price - i.Product.Discount) * i.Quantity)
-                </div>
+<div class="container bg-white p-3 mb-5 mt-0 rounded rounded-3">
+    <div class="clearfix h-100">
+        <div class="float-xl-start  mb-3">
+            <div class="fs-3 me-5">
+                In the cart are <span class="text-success">@Model.GetCartItems.Count()</span> models
             </div>
+            <div class="fs-6 text-muted">
+                On Summa @Model.GetCartItems.Sum(i => (i.Product.Price - i.Product.Discount) * i.Quantity)
+            </div>
+        </div>
 
-            <div class="float-xl-start me-3 mb-lg-0 mb-5 p-0">
-                @foreach (var item in Model.GetCartItems)
-                {
-                    <span class="position-relative me-3">
-                        <a class="" asp-action="Details" asp-controller="Home" asp-route-productId="@item.Product.Id"
-                           title="@item.Product.Title @item.Product.Feature" data-bs-toggle="tooltip" data-bs-placement="top">
+        <div class="float-xl-start me-3 mb-xl-3 mb-5 p-0">
+            @foreach (var item in Model.GetCartItems)
+            {
+                <div class="position-relative me-3 d-inline-block">
+                    <a class="btn-close position-absolute border border-1 rounded rounded-circle text-muted end-0 text-decoration-none p-0" 
+                       asp-action="RemoveProductFromCart" asp-route-productId="@item.Product.Id"></a>
+                    <a class="text-decoration-none" asp-action="Details" asp-controller="Home" asp-route-productId="@item.Product.Id"
+                       title="@item.Product.Title @item.Product.Feature">
+                        <figure class="figure text-center mb-0">
                             <img src="data:image/*;base64,@(Convert.ToBase64String(item.Product.Image))" class="img-thumbnail" style="width:4rem" alt="Product image">
-                        </a>
-                        <a class="btn-close position-absolute border border-1 rounded rounded-circle text-muted text-decoration-none p-0" style="bottom: 100%; left:80%"
-                           asp-action="RemoveProductFromCart" asp-route-productId="@item.Product.Id"></a>
-                    </span>
-                }
-            </div>
+                            <figcaption class="figure-caption mb-0">&times; @item.Quantity</figcaption>
+                        </figure>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
 
-            <div class="float-xl-end text-center flex-nowrap">
-                <a class="link-primary" asp-action="Index" asp-controller="ShopCart">To the cart</a>
-                &nbsp;&nbsp;
-                <a class="btn btn-lg btn-primary" asp-action="OrderPlacement" asp-controller="ShopCart">Order placement</a>
+    <div class="text-xl-start text-center flex-nowrap">
+            <a class="link-primary fs-6" asp-action="Index" asp-controller="ShopCart">To the cart</a>
+            &nbsp;&nbsp;
+            <a class="btn btn-lg btn-primary" asp-action="OrderPlacement" asp-controller="ShopCart">Order placement</a>
+    </div>
+</div>
+}
+
+
+
+<div class="container p-3 mb-5 mt-0 rounded rounded-3">
+    <div class="row">
+        <div class="col-xxl-6 col-12 bg-white p-0">
+            <div class="fs-3 bg-light pb-3">Personal Info</div>
+            <div class="fs-4 bg-secondary bg-gradient p-3 m-0">
+                @ViewBag.user.Name @ViewBag.user.Surname @ViewBag.user.Lastname
+            </div>
+            <div class="row p-3">
+                <div class="col-6 mb-5">
+                    <div class="text-muted"><small>Phone number</small></div>
+                    <div>@(ViewBag.user.PhoneNumber == null ? "none" : ViewBag.user.PhoneNumber)</div>
+                </div>
+                <div class="col-6">
+                    <div class="text-muted"><small>Email</small></div>
+                    <div>@ViewBag.user.Email</div>
+                </div>
+                <div>
+                    <a asp-action="PersonalInformation" asp-route-userId="@ViewBag.user.Id" class="link-primary shadow shadow-sm">Details</a>
+                </div>
             </div>
         </div>
     </div>
-}
-
+</div>

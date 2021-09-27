@@ -29,7 +29,7 @@ namespace OnlineStore.Controllers
             _emailService = emailService;
         }
 
-        public IActionResult Index(string emptyShopCart, string returnUrl)
+        public async Task<IActionResult> IndexAsync(string emptyShopCart, string returnUrl)
         {
             ViewBag.emptyShopCart = emptyShopCart;
             ViewBag.returnUrl = returnUrl;

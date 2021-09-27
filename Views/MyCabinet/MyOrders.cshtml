@@ -1,8 +1,76 @@
-﻿
+﻿@model IEnumerable<OnlineStore.Models.ViewModels.MyOrdersViewModel>
+
 @{
     ViewData["Title"] = "MyOrders";
     Layout = "~/Views/MyCabinet/_LayoutMyCabinet.cshtml";
 }
 
-<h1>MyOrders</h1>
+@foreach (var group in Model)
+{
+    <div class="container mb-5">
+        <div class="row text-center bg-white">
+            <div class="col-lg-2 col-md-4 d-flex flex-column border-1 border-bottom">
+                <div class="mb-auto text-muted">
+                    <small>ORDER NUMBER</small>
+                </div>
+                <div>
+                    @group.IdAndOrderTupple.Item2.OrderNumber
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-4 d-flex flex-column border-1 border-bottom">
+                <div class="mb-auto text-muted">
+                    <small>STATE</small>
+                </div>
+                <div>
+                    @group.IdAndOrderTupple.Item2.State
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-4 d-flex flex-column border-1 border-bottom">
+                <div class="mb-auto text-muted">
+                    <small>DATE</small>
+                </div>
+                <div>
+                    @group.IdAndOrderTupple.Item2.DateOfOrder
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-4 d-flex flex-column border-1 border-bottom">
+                <div class="mb-auto text-muted">
+                    <small>QUANTITY</small>
+                </div>
+                <div>
+                    @group.IdAndOrderTupple.Item2.OrderProducts.Count(op => op.OrderId == group.IdAndOrderTupple.Item1)
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-4 d-flex flex-column border-1 border-bottom">
+                <div class="mb-auto text-muted">
+                    <small>SUMMA</small>
+                </div>
+                <div>
+                    @group.IdAndOrderTupple.Item2.TotalPrice
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-4 d-flex flex-column border-1 border-bottom">
+                <div class="mb-auto text-muted">
+                    <small>&nbsp;</small>
+                </div>
+                <div>
+                    <a class="" data-bs-toggle="collapse" href="#collapseDetails@(group.IdAndOrderTupple.Item1)" role="button" aria-expanded="false" aria-controls="collapseDetails">
+                        Details <i class="bi bi-chevron-expand"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="collapse" id="collapseDetails@(group.IdAndOrderTupple.Item1)">
+            @foreach (var product in group.Products)
+            {
+                <p>@product.Title</p>
+            }
+        </div>
+    </div>
+}
 

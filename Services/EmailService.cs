@@ -34,7 +34,7 @@ namespace OnlineStore.Services
         public async Task SendAsync(string from, string to, string subject, string html)
         {
             var email = new MimeMessage();
-            email.From.Add(new MailboxAddress("exampleSender", from));
+            email.From.Add(new MailboxAddress("Sender", from));
             email.To.Add(MailboxAddress.Parse(to));
             email.Subject = subject;
             email.Body = new TextPart(TextFormat.Html) { Text = html };
