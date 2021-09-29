@@ -46,7 +46,7 @@
                             }
                         }
                         <span class="@visibility mb-1 small">
-                            <del>@product.Price</del>&nbsp;&nbsp;<span class="bg-warning ps-1 pe-1 rounded-1">-@product.Discount</span>
+                            <del>@Html.DisplayFor(p => product.Price)</del>&nbsp;&nbsp;<span class="bg-warning ps-1 pe-1 rounded-1">-@Html.DisplayFor(p => product.Discount)</span>
                         </span>
 
                         <br />

@@ -172,17 +172,27 @@ namespace OnlineStore.Controllers
                         null,
                         protocol: HttpContext.Request.Scheme);
 
-                foreach (var admin in await _userManager.GetUsersInRoleAsync("admin"))
-                {
-                    await _emailService.SendAsync("from_buyer@example.com", admin.Email, $"Got an order from user {user.UserName}",
-                        $"To see order №{order.OrderNumber} <a href='{callbackUrl}'>follow the link</a>");
-                }
+                // Отправка сообщения о заказе ВСЕМ админам /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                //new Task(async () => 
+                //{ 
+                    foreach (var admin in await _userManager.GetUsersInRoleAsync("admin"))
+                    {
+                        await _emailService.SendAsync("from_buyer@example.com", admin.Email, $"Got an order from user {user.UserName}",
+                            $"To see order №{order.OrderNumber} <a href='{callbackUrl}'>follow the link</a>");
+                    }
+                //}).Start();
 
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("OrderConfirmed", "ShopCart");
             }
 
             viewModel.ShopCart = GetShopCart();
             return View(viewModel);
+        }
+
+        [Authorize]
+        public async Task<IActionResult> OrderConfirmed()
+        {
+            return View(await _userManager.GetUserAsync(User));
         }
 
         //[Authorize]

@@ -7,70 +7,108 @@
 
 @foreach (var group in Model)
 {
-    <div class="container mb-5">
-        <div class="row text-center bg-white">
-            <div class="col-lg-2 col-md-4 d-flex flex-column border-1 border-bottom">
-                <div class="mb-auto text-muted">
-                    <small>ORDER NUMBER</small>
-                </div>
-                <div>
-                    @group.IdAndOrderTupple.Item2.OrderNumber
-                </div>
+<div class="container bg-white ps-3 pe-3 pb-3 rounded-3 border border-5 mb-5">
+    <div class="row text-center mb-3">
+        <div class="col-lg-3 col-md-4 d-flex flex-column border-1 border-bottom">
+            <div class="mb-auto text-muted border-1 border-bottom p-2">
+                <small>ORDER NUMBER</small>
             </div>
-
-            <div class="col-lg-2 col-md-4 d-flex flex-column border-1 border-bottom">
-                <div class="mb-auto text-muted">
-                    <small>STATE</small>
-                </div>
-                <div>
-                    @group.IdAndOrderTupple.Item2.State
-                </div>
+            <div class="p-2">
+                <small>@group.Order.OrderNumber</small>
             </div>
+        </div>
 
-            <div class="col-lg-2 col-md-4 d-flex flex-column border-1 border-bottom">
-                <div class="mb-auto text-muted">
-                    <small>DATE</small>
-                </div>
-                <div>
-                    @group.IdAndOrderTupple.Item2.DateOfOrder
-                </div>
+        <div class="col-lg-2 col-md-4 d-flex flex-column border-1 border-bottom">
+            <div class="mb-auto text-muted border-1 border-bottom p-2">
+                <small>STATE</small>
             </div>
-
-            <div class="col-lg-2 col-md-4 d-flex flex-column border-1 border-bottom">
-                <div class="mb-auto text-muted">
-                    <small>QUANTITY</small>
-                </div>
-                <div>
-                    @group.IdAndOrderTupple.Item2.OrderProducts.Count(op => op.OrderId == group.IdAndOrderTupple.Item1)
-                </div>
+            <div class="p-2">
+                <small>@group.Order.State</small>
             </div>
+        </div>
 
-            <div class="col-lg-2 col-md-4 d-flex flex-column border-1 border-bottom">
-                <div class="mb-auto text-muted">
-                    <small>SUMMA</small>
-                </div>
-                <div>
-                    @group.IdAndOrderTupple.Item2.TotalPrice
-                </div>
+        <div class="col-lg-2 col-md-4 d-flex flex-column border-1 border-bottom">
+            <div class="mb-auto text-muted border-1 border-bottom p-2">
+                <small>DATE</small>
             </div>
+            <div class="p-2">
+                <small>@group.Order.DateOfOrder</small>
+            </div>
+        </div>
 
-            <div class="col-lg-2 col-md-4 d-flex flex-column border-1 border-bottom">
-                <div class="mb-auto text-muted">
-                    <small>&nbsp;</small>
+        <div class="col-lg-2 col-md-4 d-flex flex-column border-1 border-bottom">
+            <div class="mb-auto text-muted border-1 border-bottom p-2">
+                <small>QUANTITY</small>
+            </div>
+            <div class="p-2">
+                <small> @group.Order.OrderProducts.Count(op => op.OrderId == group.OrderId)</small>
+            </div>
+        </div>
+
+        <div class="col-lg-2 col-md-4 d-flex flex-column border-1 border-bottom">
+            <div class="mb-auto text-muted border-1 border-bottom p-2">
+                <small>SUMMA</small>
+            </div>
+            <div class="p-2">
+                <small>@group.Order.TotalPrice</small>
+            </div>
+        </div>
+
+        <div class="col-lg-1 col-md-4 d-flex flex-column border-1 border-bottom">
+            <div class="mb-auto text-muted border-1 border-bottom p-2">
+                <small>&nbsp;</small>
+            </div>
+            <div class="p-2">
+                <a class="" data-bs-toggle="collapse" href="#collapseDetails@(group.OrderId)" role="button" aria-expanded="false" aria-controls="collapseDetails">
+                    <small>More <i class="bi bi-chevron-expand"></i></small>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="collapse container bg-light rounded rounded-3 p-3" id="collapseDetails@(group.OrderId)">
+        <p class="mb-3 fs-3">Order list</p>
+        @foreach (var product in group.Products)
+        {
+            <div class="row align-items-center mb-3">
+                <div class="col-2 mb-lg-0 mb-3">
+                    <img src="data:image/*;base64,@(Convert.ToBase64String(product.Image))" class="img-thumbnail" style="width:4rem; min-width:4rem;" alt="Product image">
                 </div>
-                <div>
-                    <a class="" data-bs-toggle="collapse" href="#collapseDetails@(group.IdAndOrderTupple.Item1)" role="button" aria-expanded="false" aria-controls="collapseDetails">
-                        Details <i class="bi bi-chevron-expand"></i>
+                <div class="col-4 mb-lg-0 mb-3">
+                    @product.Title @product.Feature
+                </div>
+                <div class="col-1 text-center text-muted mb-lg-0 mb-3">
+                    &times;@group.Order.OrderProducts.FirstOrDefault(op => op.ProductId == product.Id).Quantity
+                </div>
+
+                @{
+                    var op = group.Order.OrderProducts.FirstOrDefault(op => op.ProductId == product.Id);
+                }
+                <div class="col-2 text-center mb-lg-0 mb-3">
+                    @(op.PriceOfOneProduct * op.Quantity)$
+                </div>
+                <div class="col-lg-3 col-12 text-end mb-lg-0 mb-3">
+                    <a class="link-secondary text-decoration-none" asp-action="Details" asp-controller="Home" asp-route-productId="@product.Id" asp-route-ajaxPageId="3">
+                        <small class="bi bi-chat-fill text-dark"></small> Leave feedback
                     </a>
                 </div>
             </div>
-        </div>
-        <div class="collapse" id="collapseDetails@(group.IdAndOrderTupple.Item1)">
-            @foreach (var product in group.Products)
-            {
-                <p>@product.Title</p>
-            }
+
+            <hr class="text-dark" />
+        }
+        <div class="row">
+            <div class="col-lg-6 col-12">
+                <div class="row">
+
+                </div>
+            </div>
+            <div class="col">
+                <div class="row">
+                    <div class="col-6 fs-3 text-muted">Full</div>
+                    <div class="col-6 fs-3 fw-bold text-end">@Html.DisplayFor(o => group.Order.TotalPrice)</div>
+                </div>
+            </div>
         </div>
     </div>
+</div>
 }
 

@@ -89,10 +89,10 @@
                         }
                     }
                     <div class="@visibility mb-3">
-                        <del>@product.Price</del>&nbsp;&nbsp;<span class="bg-warning rounded-2 p-2">-@product.Discount</span>
+                        <del>@Html.DisplayFor(p => product.Price)</del>&nbsp;&nbsp;<span class="bg-warning rounded-2 p-2">-@Html.DisplayFor(p => product.Discount)</span>
                     </div>
 
-                    <h2 class="mb-3">@(product.Price - product.Discount)</h2>
+                    <h2 class="mb-3">@(product.Price - product.Discount)$</h2>
 
                     <div class="row">
                         <div class="col-6 mb-lg-0 mb-3 text-start">

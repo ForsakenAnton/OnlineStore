@@ -14,7 +14,7 @@
                 In the cart are <span class="text-success">@Model.GetCartItems.Count()</span> models
             </div>
             <div class="fs-6 text-muted">
-                On Summa @Model.GetCartItems.Sum(i => (i.Product.Price - i.Product.Discount) * i.Quantity)
+                On Summa @Model.GetCartItems.Sum(i => (i.Product.Price - i.Product.Discount) * i.Quantity)$
             </div>
         </div>
 

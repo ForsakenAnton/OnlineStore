@@ -26,32 +26,32 @@
 
                 let addToShopCartButton = document.getElementById("addToShopCartButtonId" + productId);
                 let byeButton = document.getElementById("byeButtonId" + productId);
-                let countCurrentProduct = document.getElementById("countCurrentProductId" + productId);
+                //let countCurrentProduct = document.getElementById("countCurrentProductId" + productId);
 
                 if (addToShopCartButton) {
-                    addToShopCartButton.classList = "bi bi-cart btn btn-lg btn-success w-100";
+                    addToShopCartButton.className = "bi bi-cart btn btn-lg btn-success w-100 disabled";
                 }
                 if (byeButton) {
                     byeButton.innerText = "Added to cart";
                 }
-                if (countCurrentProduct) {
-                    countCurrentProduct.innerText = result.countCurrentProduct;
-                }
+                //if (countCurrentProduct) {
+                //    countCurrentProduct.innerText = result.countCurrentProduct;
+                //}
 
 
                 let lastViewedAddToShopCartButton = document.getElementById("lastViewedAddToShopCartButtonId" + productId);
                 let lastViewedByeButton = document.getElementById("lastViewedByeButtonId" + productId);
-                let lastViewedCountCurrentProduct = document.getElementById("lastViewedCountCurrentProductId" + productId);
+                //let lastViewedCountCurrentProduct = document.getElementById("lastViewedCountCurrentProductId" + productId);
 
                 if (lastViewedAddToShopCartButton) {
-                    lastViewedAddToShopCartButton.classList = "bi bi-cart btn btn-lg btn-success w-100";
+                    lastViewedAddToShopCartButton.classList = "bi bi-cart btn btn-lg btn-success w-100 disabled";
                 }
                 if (lastViewedByeButton) {
                     lastViewedByeButton.innerText = "Added to cart";
                 }
-                if (lastViewedCountCurrentProduct) {
-                    lastViewedCountCurrentProduct.innerText = result.countCurrentProduct;
-                }
+                //if (lastViewedCountCurrentProduct) {
+                //    lastViewedCountCurrentProduct.innerText = result.countCurrentProduct;
+                //}
 
                 document.getElementById("shopCartProductsCount").innerText = result.countAllProducts;
 
@@ -74,26 +74,26 @@
                     countSameProducts.innerText = result.countCurrentProduct;
                 }
                 if (price) {
-                    price.innerText = result.price;
+                    price.innerText = result.price + "$";
                 }
                 if (discount) {
-                    discount.innerText = "-" + result.discount;
+                    discount.innerText = "-" + result.discount + "$";
                 }
                 if (priceWithDiscount) {
-                    priceWithDiscount.innerText = result.priceWithDiscount;
+                    priceWithDiscount.innerText = result.priceWithDiscount + "$";
                 }
 
                 if (countAllProducts) {
                     countAllProducts.innerText = result.countAllProducts;
                 }
                 if (priceTotal) {
-                    priceTotal.innerText = result.priceTotal;
+                    priceTotal.innerText = result.priceTotal + "$";
                 }
                 if (discountTotal) {
-                    discountTotal.innerText = "-" + result.discountTotal;
+                    discountTotal.innerText = "-" + result.discountTotal + "$";
                 }
                 if (priceWithDiscountTotal) {
-                    priceWithDiscountTotal.innerText = result.priceWithDiscountTotal;
+                    priceWithDiscountTotal.innerText = result.priceWithDiscountTotal + "$";
                 }
 
                 if (minusSameProduct) {

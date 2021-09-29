@@ -77,9 +77,9 @@
                 <h5 class="card-title">@Html.DisplayNameForModel()</h5>
                 <p class="card-text"><span class="fw-bold">@Html.DisplayNameFor(m => m.Title)</span>: @Model.Title</p>
                 <p class="card-text"><span class="fw-bold">@Html.DisplayNameFor(m => m.Feature)</span>: @Model.Feature</p>
-                <p class="card-text"><span class="fw-bold">@Html.DisplayNameFor(m => m.Price)</span> @Model.Price</p>
+                <p class="card-text"><span class="fw-bold">@Html.DisplayNameFor(m => m.Price)</span> @Html.DisplayFor(p => Model.Price)</p>
                 <p class="card-text"><span class="fw-bold">@Html.DisplayNameFor(m => m.IsTop)</span> @Model.IsTop</p>
-                <p class="card-text"><span class="fw-bold">@Html.DisplayNameFor(m => m.Discount)</span>: @Model.Discount</p>
+                <p class="card-text"><span class="fw-bold">@Html.DisplayNameFor(m => m.Discount)</span>: @Html.DisplayFor(p => Model.Discount)</p>
                 <p class="card-text"><span class="fw-bold">@Html.DisplayNameFor(m => m.Count)</span>: @Model.Count</p>
                 <p class="card-text"><span class="fw-bold">@Html.DisplayNameFor(m => m.CommodityCode)</span>: @Model.CommodityCode</p>
                 <hr />

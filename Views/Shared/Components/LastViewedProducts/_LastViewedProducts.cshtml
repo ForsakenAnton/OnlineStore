@@ -54,10 +54,10 @@
                                 }
                             }
                             <div class="@visibility mb-3">
-                                <del>@product.Price</del>&nbsp;&nbsp;<span class="bg-warning rounded-2 p-2">-@product.Discount</span>
+                                <del>@Html.DisplayFor(p => product.Price)</del>&nbsp;&nbsp;<span class="bg-warning rounded-2 p-2">-@Html.DisplayFor(p => product.Discount)</span>
                             </div>
 
-                            <h2 class="mb-3">@(product.Price - product.Discount)</h2>
+                            <h2 class="mb-3">@(product.Price - product.Discount)$</h2>
 
                             <div class="row">
                                 <div class="col-6 mb-lg-0 mb-3 text-start">
@@ -90,7 +90,7 @@
                         }
                         <button id="lastViewedAddToShopCartButtonId@(product.Id)" onclick="ajaxAddToShopCart(@product.Id)" class="@isAddedToCart">
                             <span id="lastViewedByeButtonId@(product.Id)">@textButton</span>
-                            &nbsp;&nbsp;
+                            @*&nbsp;&nbsp;
                             @if (ViewBag.ShopCart != null && (ViewBag.ShopCart as ShopCart).GetCartItems.Any(p => p.Product.Id == product.Id))
                             {
                                 <span id="lastViewedCountCurrentProductId@(product.Id)" class="badge rounded-pill bg-dark text-white text-end">@((ViewBag.ShopCart as ShopCart).GetCartItems.Where(p => p.Product.Id == product.Id).Sum(p => p.Quantity))</span>
@@ -98,7 +98,7 @@
                             else
                             {
                                 <span id="lastViewedCountCurrentProductId@(product.Id)" class="badge rounded-pill bg-dark text-white text-end"></span>
-                            }
+                            }*@
                         </button>
                     </div>
                         <div class="border-bottom"></div>

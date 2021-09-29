@@ -21,6 +21,7 @@ namespace OnlineStore.Models
         public DateTime DateOfOrder { get; set; }
         public State State { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0}$")]
         [Column(TypeName = "decimal(9, 2)")]
         public decimal TotalPrice { get; set; }
 

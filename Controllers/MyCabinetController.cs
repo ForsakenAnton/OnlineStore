@@ -31,7 +31,7 @@ namespace OnlineStore.Controllers
         }
 
 
-        public async Task<IActionResult> IndexAsync()
+        public async Task<IActionResult> Index()
         {
             ViewBag.pageId = 1;
             ViewBag.user = await _userManager.GetUserAsync(User);
@@ -52,7 +52,7 @@ namespace OnlineStore.Controllers
                 GetShopCart().RemoveAllSameItems(product);
             }
 
-            return RedirectToAction(nameof(IndexAsync));
+            return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> PersonalInformation(string userId)
@@ -136,7 +136,7 @@ namespace OnlineStore.Controllers
             return View("PersonalInformation", user);
         }
 
-        public async Task<IActionResult> MyOrdersAsync()
+        public async Task<IActionResult> MyOrders()
         {
             var user = await _userManager.GetUserAsync(User);
 
@@ -147,23 +147,26 @@ namespace OnlineStore.Controllers
                 .GroupBy(op => op.Order.Id)
                 .Select(g => new MyOrdersViewModel
                 {
-                    IdAndOrderTupple = new Tuple<int, Order> ( g.Key, _context.Orders.FirstOrDefault(o => o.Id == g.Key))
+                    OrderId = g.Key, 
+                    Order = _context.Orders.FirstOrDefault(o => o.Id == g.Key)
                 })
                 .ToListAsync();
 
             foreach (var group in myOrdersViewModel)
             {
                 group.Products = await _context.OrderProducts
-                    .Where(op => op.Order.Id == group.IdAndOrderTupple.Item1)
+                    .Where(op => op.Order.Id == group.OrderId)
                     .Select(p => p.Product)
                     .ToListAsync();
 
-                await _context.OrderProducts.Where(op => op.OrderId == group.IdAndOrderTupple.Item1).LoadAsync();
+                await _context.OrderProducts.Where(op => op.OrderId == group.OrderId).LoadAsync();
             }
 
             ViewBag.pageId = 3;
             return View(myOrdersViewModel);
         }
+
+
 
         public IActionResult ViewedProducts()
         {

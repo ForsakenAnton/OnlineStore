@@ -109,12 +109,12 @@
                                                 }
                                             }
                                             <div class="@visibility text-lg-end mb-1">
-                                                <del id="priceId@(item.Product.Id)" class="fs-5 text-muted">@(item.Product.Price * item.Quantity)</del>
+                                                <del id="priceId@(item.Product.Id)" class="fs-5 text-muted">@(item.Product.Price * item.Quantity)$</del>
                                                 &nbsp;
-                                                <span id="discountId@(item.Product.Id)" class="fs-6 text-dark bg-warning rounded-2 p-2">-@(item.Product.Discount * item.Quantity)</span>
+                                                <span id="discountId@(item.Product.Id)" class="fs-6 text-dark bg-warning rounded-2 p-2">-@(item.Product.Discount * item.Quantity)$</span>
                                             </div>
 
-                                            <h3 id="priceWithDiscountId@(item.Product.Id)" class="text-lg-end mb-1">@(item.Product.Price * item.Quantity - item.Product.Discount * item.Quantity)</h3>
+                                            <h3 id="priceWithDiscountId@(item.Product.Id)" class="text-lg-end mb-1">@(item.Product.Price * item.Quantity - item.Product.Discount * item.Quantity)$</h3>
                                             <div class="text-lg-end mb-1">
                                                 @*@await Html.PartialAsync("_FavoriteHeart", item.Product)
                                                 <span class="fs-6 text-secondary">Save for latter</span>
@@ -147,7 +147,7 @@
                     </div>
                     <div class="fs-6 text-muted mb-3">
                         Summa:
-                        <span id="priceWithDiscountInCaptureId"> @(Model.ShopCart.GetCartItems.Sum(i => i.Product.Price * i.Quantity) - Model.ShopCart.GetCartItems.Sum(i => i.Product.Discount * i.Quantity))</span>
+                        <span id="priceWithDiscountInCaptureId"> @(Model.ShopCart.GetCartItems.Sum(i => i.Product.Price * i.Quantity) - Model.ShopCart.GetCartItems.Sum(i => i.Product.Discount * i.Quantity))$</span>
                     </div>
 
                     <hr />
@@ -169,7 +169,7 @@
                                     <div class="col-10">
                                         <div class="card-body">
                                             <p class="card-subtitle">@item.Product.Title @item.Product.Feature</p>
-                                            <p class="text-muted">@(item.Product.Price * item.Quantity - item.Product.Discount * item.Quantity)</p>
+                                            <p class="text-muted">@(item.Product.Price * item.Quantity - item.Product.Discount * item.Quantity)$</p>
                                         </div>
                                     </div>
                                 </div>
@@ -180,15 +180,15 @@
                     <div class="mb-3">
                         <div class="clearfix">
                             <h5 class="float-start">Full</h5>
-                            <h5 id="priceId" class="float-end">@Model.ShopCart.GetCartItems.Sum(i => i.Product.Price * i.Quantity)</h5>
+                            <h5 id="priceId" class="float-end">@Model.ShopCart.GetCartItems.Sum(i => i.Product.Price * i.Quantity)$</h5>
                         </div>
                         <div class="clearfix mb-1">
                             <h5 class="float-start">Discount</h5>
-                            <h5 id="discountId" class="float-end text-success">-@Model.ShopCart.GetCartItems.Sum(i => i.Product.Discount * i.Quantity)</h5>
+                            <h5 id="discountId" class="float-end text-success">-@Model.ShopCart.GetCartItems.Sum(i => i.Product.Discount * i.Quantity)$</h5>
                         </div>
                         <div class="clearfix">
                             <h4 class="float-start">Total</h4>
-                            <h2 id="priceWithDiscountId" class="float-end">@(Model.ShopCart.GetCartItems.Sum(i => i.Product.Price * i.Quantity) - Model.ShopCart.GetCartItems.Sum(i => i.Product.Discount * i.Quantity))</h2>
+                            <h2 id="priceWithDiscountId" class="float-end">@(Model.ShopCart.GetCartItems.Sum(i => i.Product.Price * i.Quantity) - Model.ShopCart.GetCartItems.Sum(i => i.Product.Discount * i.Quantity))$</h2>
                         </div>
                         <hr />
                     </div>

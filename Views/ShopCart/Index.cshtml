@@ -51,12 +51,12 @@
                                             }
                                         }
                                         <div class="@visibility text-lg-end mb-1">
-                                            <del id="priceId@(item.Product.Id)" class="fs-5 text-muted">@(item.Product.Price * item.Quantity)</del>
+                                            <del id="priceId@(item.Product.Id)" class="fs-5 text-muted">@(item.Product.Price * item.Quantity)$</del>
                                             &nbsp;
-                                            <span id="discountId@(item.Product.Id)" class="fs-6 text-dark bg-warning rounded-2 p-2">-@(item.Product.Discount * item.Quantity)</span>
+                                            <span id="discountId@(item.Product.Id)" class="fs-6 text-dark bg-warning rounded-2 p-2">-@(item.Product.Discount * item.Quantity)$</span>
                                         </div>
 
-                                        <h3 id="priceWithDiscountId@(item.Product.Id)" class="text-lg-end mb-1">@(item.Product.Price * item.Quantity - item.Product.Discount * item.Quantity)</h3>
+                                        <h3 id="priceWithDiscountId@(item.Product.Id)" class="text-lg-end mb-1">@(item.Product.Price * item.Quantity - item.Product.Discount * item.Quantity)$</h3>
                                         <div class="text-lg-end mb-1">
                                             @await Html.PartialAsync("_FavoriteHeart", item.Product)
                                             <span class="fs-6 text-secondary">Save for latter</span>
@@ -92,12 +92,12 @@
                     }
                 }
                 <div class="@visibilityForAllDiscount mb-3">
-                    <del id="priceId" class="fs-5 text-muted">@Model.GetCartItems.Sum(i => i.Product.Price * i.Quantity)</del>
+                    <del id="priceId" class="fs-5 text-muted">@Model.GetCartItems.Sum(i => i.Product.Price * i.Quantity)$</del>
                     &nbsp;
-                    <span id="discountId" class="fs-6 text-dark bg-warning rounded-2 p-2">-@Model.GetCartItems.Sum(i => i.Product.Discount * i.Quantity)</span>
+                    <span id="discountId" class="fs-6 text-dark bg-warning rounded-2 p-2">-@Model.GetCartItems.Sum(i => i.Product.Discount * i.Quantity)$</span>
                 </div>
 
-                <h2 id="priceWithDiscountId" class="mb-5">@(Model.GetCartItems.Sum(i => i.Product.Price * i.Quantity) - Model.GetCartItems.Sum(i => i.Product.Discount * i.Quantity))</h2>
+                <h2 id="priceWithDiscountId" class="mb-5">@(Model.GetCartItems.Sum(i => i.Product.Price * i.Quantity) - Model.GetCartItems.Sum(i => i.Product.Discount * i.Quantity))$</h2>
 
                 <a asp-action="OrderPlacement" asp-route-pathAndQuery="@(Context.Request.Path + Context.Request.QueryString.Value)" class="btn btn-primary w-100">Order placement</a>
             </div>

@@ -33,13 +33,13 @@
                         countSameProducts.innerText = result.countCurrentProduct;
                     }
                     if (price) {
-                        price.innerText = result.price;
+                        price.innerText = result.price + "$";
                     }
                     if (discount) {
-                        discount.innerText = "-" + result.discount;
+                        discount.innerText = "-" + result.discount + "$";
                     }
                     if (priceWithDiscount) {
-                        priceWithDiscount.innerText = result.priceWithDiscount;
+                        priceWithDiscount.innerText = result.priceWithDiscount + "$";
                     }
                 }
 
@@ -54,13 +54,13 @@
                     countAllProducts.innerText = result.countAllProducts;
                 }
                 if (priceTotal) {
-                    priceTotal.innerText = result.priceTotal;
+                    priceTotal.innerText = result.priceTotal + "$";
                 }
                 if (discountTotal) {
-                    discountTotal.innerText = "-" + result.discountTotal;
+                    discountTotal.innerText = "-" + result.discountTotal + "$";
                 }
                 if (priceWithDiscountTotal) {
-                    priceWithDiscountTotal.innerText = result.priceWithDiscountTotal;
+                    priceWithDiscountTotal.innerText = result.priceWithDiscountTotal + "$";
                 }
 
 

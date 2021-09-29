@@ -1,0 +1,17 @@
+﻿@model OnlineStore.Models.IdentityModels.User
+
+@{
+    ViewData["Title"] = "OrderConfirmed";
+}
+
+<div class="alert alert-success text-center" role="alert">
+    <h4 class="alert-heading">Order accepted!</h4>
+    <p>We will see your order and call to you in a short time</p>
+    <hr>
+    <p class="mb-0">
+        <a class="link-success" asp-action="Index" asp-controller="Home">On main page </a>
+        <span> | </span>
+        <a class="link-success" asp-action="MyOrders" asp-controller="MyCabinet"> My orders</a>
+    </p>
+</div>
+

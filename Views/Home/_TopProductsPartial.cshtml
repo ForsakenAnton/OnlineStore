@@ -35,10 +35,10 @@
                             }
                         }
                         <div class="@visibility mb-3">
-                            <del>@product.Price</del>&nbsp;&nbsp;<span class="bg-warning rounded-2 p-2">-@product.Discount</span>
+                            <del>@Html.DisplayFor(p => product.Price)</del>&nbsp;&nbsp;<span class="bg-warning rounded-2 p-2">-@Html.DisplayFor(p => product.Discount)</span>
                         </div>
 
-                        <h2 class="">@(product.Price - product.Discount)</h2>
+                        <h2 class="">@(product.Price - product.Discount)$</h2>
                     </div>
                     @*<div class="card-footer border-top border-dark bg-white">*@
                     <div class="card-footer border-0 mb-3">

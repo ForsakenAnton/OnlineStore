@@ -248,7 +248,7 @@
                         }
                     }
                     <div class="@display mb-3">
-                        <del class="text-muted">@(Model.Product.Price)$</del>
+                        <del class="text-muted">@Html.DisplayFor(p => Model.Product.Price)</del>
                     </div>
 
                     <h5 class="">@(Model.Product.Price - Model.Product.Discount)$</h5>

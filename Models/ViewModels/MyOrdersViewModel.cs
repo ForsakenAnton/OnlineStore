@@ -7,7 +7,8 @@ namespace OnlineStore.Models.ViewModels
 {
     public class MyOrdersViewModel
     {
-        public Tuple<int, Order> IdAndOrderTupple { get; set; }
+        public int OrderId { get; set; }
+        public Order Order { get; set; }
         public List<Product> Products { get; set; }
     }
 }

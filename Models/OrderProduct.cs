@@ -10,6 +10,7 @@ namespace OnlineStore.Models
         public int Id { get; set; }
         public int Quantity { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0}$")]
         [Column(TypeName = "decimal(9, 2)")]
         public decimal PriceOfOneProduct { get; set; }
         public int OrderId { get; set; }
