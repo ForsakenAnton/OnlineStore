@@ -1,0 +1,140 @@
+﻿@model OnlineStore.Models.ViewModels.AllOrdersListViewModel
+
+@{
+    ViewData["Title"] = "AllOrdersList";
+}
+
+<div class="container bg-light rounded rounded-3 p-3 mb-3">
+
+    <div class="display-4 mb-5">
+        List of orders
+    </div>
+
+    <form asp-action="AllOrdersList" method="get" class="mb-5">
+        <label class="form-label" asp-for="OrderFilterViewModel.SelectStates">Order State</label>
+        <select class="form-select bg-light text-dark d-inline w-50" name="orderState" asp-items="@Model.OrderFilterViewModel.SelectStates"></select>
+        <input type="submit" class="btn btn-primary" value="Filter" />
+    </form>
+
+
+    @foreach (var order in Model.Orders)
+    {
+        @await Html.PartialAsync("_OrderItem", order)
+        @*<div id="orderId@(order.Id)" class="container bg-white rounded rounded-3 p-3 mb-5">
+            <div class="mb-3">
+                <div class="mb-3">
+                    <span class="fs-4 mb-2">Number of order:</span> @order.OrderNumber
+                </div>
+                <div class="mb-3">
+                    State:
+                    <order-state state="@order.OrderState" />
+                </div>
+                <p>
+                    <a class="btn mb-3" data-bs-toggle="collapse" href="#orderInfo" role="button" aria-expanded="false" aria-controls="orderInfo">
+                        Order info <i class="bi bi-chevron-expand"></i>
+                    </a>
+                </p>
+                <div class="collapse" id="orderInfo">
+                    <div class="row">
+                        <div class="col-xl-6 col-12 mb-xl-0 mb-5">
+                            <div class="display-5 mb-3">Customer info</div>
+                            <div class="row">
+                                <div class="col-md-6 col-12">
+                                    <dl>
+                                        <div class="fs-3">Customer</div>
+                                        <dt class="">Nick:</dt>
+                                        <dd class="text-break" style="white-space:pre-wrap">@order.User.UserName</dd>
+                                        <dt>Full name:</dt>
+                                        <dd class="text-break mb-3" style="white-space:pre-wrap">@order.User.Name @order.User.Surname @order.User.Lastname</dd>
+
+                                        <div class="fs-3">Contact info</div>
+                                        <dt>Phone:</dt>
+                                        <dd class="text-break" style="white-space:pre-wrap">@(!String.IsNullOrEmpty(order.User.PhoneNumber) ? order.User.PhoneNumber : "none")</dd>
+                                        <dt>Email:</dt>
+                                        <dd class="text-break mb-3" style="white-space:pre-wrap">@order.User.Email</dd>
+                                    </dl>
+                                </div>
+
+                                <div class="col-md-6 col-12">
+                                    <dl>
+                                        <div class="fs-3">Delivery address:</div>
+                                        <dt>First address:</dt>
+                                        <dd class="text-break" style="white-space:pre-wrap">@order.Delivery.Line1</dd>
+                                        <dt>Second address:</dt>
+                                        <dd class="text-break" style="white-space:pre-wrap">@(!String.IsNullOrEmpty(order.Delivery.Line2) ? order.Delivery.Line2 : "none")</dd>
+                                        <dt>Third address:</dt>
+                                        <dd class="text-break" style="white-space:pre-wrap">@(!String.IsNullOrEmpty(order.Delivery.Line3) ? order.Delivery.Line3 : "none")</dd>
+                                        <dt>City:</dt>
+                                        <dd class="text-break" style="white-space:pre-wrap">@order.Delivery.City</dd>
+                                        <dt>Country:</dt>
+                                        <dd class="text-break" style="white-space:pre-wrap">@order.Delivery.Country</dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-6 col-12">
+                            <div class="display-5 mb-5">Order info</div>
+                            @foreach (var item in order.OrderProducts)
+                            {
+                                <div class="clearfix mb-3 p-3 border-bottom">
+                                    <img src="data:image/*;base64,@(Convert.ToBase64String(item.Product.Image))" class="img-thumbnail float-start me-3" style="width:7rem" alt="Product image">
+                                    <div class="fs-4 mb-3">
+                                        @item.Product.Title @item.Product.Feature
+                                    </div>
+                                    <div>
+                                        <span class="fw-bold">Price of one product: </span>
+                                        <span class="text-primary">@Html.DisplayFor(i => item.PriceOfOneProduct)</span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <span class="fw-bolder">Quantity: </span>
+                                        <span class="text-info">@item.Quantity</span>
+                                    </div>
+                                    <div class="fs-5">
+                                        <span class="fw-bolder">Price of all the same products: </span>
+                                        <span class="text-success">@(item.Quantity * item.PriceOfOneProduct)$</span>
+                                    </div>
+                                </div>
+                            }
+
+                            <hr class="bg-dark mb-3" style="height:5px" />
+
+                            <div class="fs-2 ms-5">
+                                <span class="fw-bold">Total Price</span>
+                                <span class="text-success fw-bold border-bottom border-3 border-primary">@Html.DisplayFor(o => order.TotalPrice)</span>
+                            </div>
+
+                            <hr class="bg-dark mb-3" style="height:5px" />
+
+                            <div class="fs-3 mb-3">
+                                <span class="fw-bold">Status of order:</span> <order-state state="@order.OrderState" />
+                            </div>
+
+                            <form asp-antiforgery="true"
+                                  method="post"
+                                  data-ajax="true"
+                                  data-ajax-method="post"
+                                  data-ajax-loading="#loading"
+                                  data-ajax-mode="replace"
+                                  data-ajax-update="#orderId@(order.Id)"
+                                  data-ajax-url="@Url.Action("ChangeStateOfOrder", "ShopCart")">
+
+                                <div id="loading" class="spinner-border position-relative top-50 start-50" style="display:none;width:10rem;height:10rem;" role="status"></div>
+                                <div>
+                                    <span class="fw-bold">Change:</span>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>*@
+    }
+</div>
+
+
+
+<page-link page-list-model="Model.PageListViewModel" page-action="AllOrdersList"
+           page-url-productId="@(Model.OrderFilterViewModel.SelectStates)">
+</page-link>

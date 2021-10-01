@@ -19,7 +19,7 @@ namespace OnlineStore.Models
         [Display(Name = "Order's date")]
         [DataType(DataType.Date)]
         public DateTime DateOfOrder { get; set; }
-        public State State { get; set; }
+        public OrderState OrderState { get; set; }
 
         [DisplayFormat(DataFormatString = "{0}$")]
         [Column(TypeName = "decimal(9, 2)")]
@@ -32,12 +32,12 @@ namespace OnlineStore.Models
         public ICollection<OrderProduct> OrderProducts { get; set; }
     }
 
-    public enum State
+    public enum OrderState
     {
         None = 0,     // нет заказа
-        Received = 1, // доставлен
-        Paid = 2,     // оплачен
-        Sent = 3,     // отправлен
+        Sent = 1,     // отправлен
+        Received = 2, // доставлен
+        Paid = 3,     // оплачен 
         Returned = 4, // возвращен
         Cancelled = 5 // отменен
     }

@@ -34,7 +34,7 @@ namespace OnlineStore.Controllers
         // GET: Products
         public async Task<IActionResult> Index(int? categoryId, int? manufacturerId, string searchString, int page = 1, SortState sortOrder = SortState.PriceAsc)
         {
-            int pageSize = 3;
+            int pageSize = 10;
 
             IQueryable<Product> products = _context.Products
                 .Include(p => p.Manufacturer)

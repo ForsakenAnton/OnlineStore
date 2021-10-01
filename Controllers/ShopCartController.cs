@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using OnlineStore.DB;
@@ -29,7 +30,7 @@ namespace OnlineStore.Controllers
             _emailService = emailService;
         }
 
-        public async Task<IActionResult> IndexAsync(string emptyShopCart, string returnUrl)
+        public IActionResult Index(string emptyShopCart, string returnUrl)
         {
             ViewBag.emptyShopCart = emptyShopCart;
             ViewBag.returnUrl = returnUrl;
@@ -84,7 +85,8 @@ namespace OnlineStore.Controllers
         }
 
 
-            [Authorize]
+
+        [Authorize]
         public async Task<IActionResult> OrderPlacement(string pathAndQuery)
         {
             if(GetShopCart().GetCartItems.Count() == 0)
@@ -136,7 +138,7 @@ namespace OnlineStore.Controllers
                 {
                     OrderNumber = Guid.NewGuid(),
                     DateOfOrder = DateTime.Now,
-                    State = State.None,
+                    OrderState = OrderState.None,
                     TotalPrice = shopCart.GetCartItems.Sum(item => (item.Product.Price - item.Product.Discount) * item.Quantity),
                     User = user
                 };
@@ -280,42 +282,42 @@ namespace OnlineStore.Controllers
                 priceWithDiscountTotal
             });
         }
+
+
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> AllOrdersList(int orderState = -1, int page = 1) 
+        {
+            int pageSize = 3;
+
+            IQueryable<Order> orders = _context.Orders
+                .Include(o => o.Delivery)
+                .Include(o => o.User)
+                .Include(o => o.OrderProducts)
+                    .ThenInclude(op => op.Product);
+
+            if(orderState != -1)
+            {
+                orders = orders
+                    .Where(o => (int)o.OrderState == orderState);
+            }
+
+
+            int count = await orders.CountAsync();
+            var items = await orders.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+
+            AllOrdersListViewModel viewModel = new()
+            {
+                Orders = items,
+                PageListViewModel = new PageViewModel(count, page, pageSize),
+                OrderFilterViewModel = new OrderFilterViewModel(orderState)
+            };
+
+            return View(viewModel);
+        }
+
+        public async Task<IActionResult> ChangeStateOfOrder(int? state)
+        {
+            return View();
+        }
     }
-
-
-    //public class ShopCartController : Controller
-    //{
-    //    private readonly ShopCart _shopCart;
-    //    private readonly OnlineStoreContext _context;
-    //    public ShopCartController(ShopCart shopCart, OnlineStoreContext context)
-    //    {
-    //        _shopCart = shopCart;
-    //        _context = context;
-    //    }
-
-    //    public async Task<IActionResult> Index()
-    //    {
-    //        var items = await _shopCart.GetShopCartItemsAsync();
-    //        _shopCart.ShopCartItems = items;
-
-    //        ShopCartViewModel viewModel = new ShopCartViewModel
-    //        {
-    //            ShopCart = _shopCart
-    //        };
-
-    //        return View(viewModel);
-    //    }
-
-    //    public async Task<IActionResult> AddToCart(int id)
-    //    {
-    //        var item = await _context.Products.FirstOrDefaultAsync(p => p.Id == id);
-
-    //        if(item != null)
-    //        {
-    //            await _shopCart.AddToCartAsync(item);
-    //        }
-
-    //        return RedirectToAction("Index");
-    //    }
-    //}
 }

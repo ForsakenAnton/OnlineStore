@@ -1,0 +1,157 @@
+﻿@model OnlineStore.Models.Order
+
+    <div id="orderId@(Model.Id)" class="container bg-white rounded rounded-3 p-3 mb-5">
+        <div class="mb-3">
+            <div class="mb-3">
+                <span class="fs-4 mb-2">Number of order:</span> @Model.OrderNumber
+            </div>
+            <div class="mb-3">
+                State:
+                <order-state state="@Model.OrderState" />
+            </div>
+            <p>
+                <a class="btn mb-3" data-bs-toggle="collapse" href="#orderInfoorderId@(Model.Id)" role="button" aria-expanded="false" aria-controls="orderInfoorderId@(Model.Id)">
+                    Order info <i class="bi bi-chevron-expand"></i>
+                </a>
+            </p>
+            <div class="collapse" id="orderInfoorderId@(Model.Id)">
+                <div class="row">
+                    <div class="col-xl-6 col-12 mb-xl-0 mb-5">
+                        <div class="display-5 mb-3">Customer info</div>
+                        <div class="row">
+                            <div class="col-md-6 col-12">
+                                <dl>
+                                    <div class="fs-3">Customer</div>
+                                    <dt class="">Nick:</dt>
+                                    <dd class="text-break" style="white-space:pre-wrap">@Model.User.UserName</dd>
+                                    <dt>Full name:</dt>
+                                    <dd class="text-break mb-3" style="white-space:pre-wrap">@Model.User.Name @Model.User.Surname @Model.User.Lastname</dd>
+
+                                    <div class="fs-3">Contact info</div>
+                                    <dt>Phone:</dt>
+                                    <dd class="text-break" style="white-space:pre-wrap">@(!String.IsNullOrEmpty(Model.User.PhoneNumber) ? Model.User.PhoneNumber : "none")</dd>
+                                    <dt>Email:</dt>
+                                    <dd class="text-break mb-3" style="white-space:pre-wrap">@Model.User.Email</dd>
+                                </dl>
+                            </div>
+
+                            <div class="col-md-6 col-12">
+                                <dl>
+                                    <div class="fs-3">Delivery address:</div>
+                                    <dt>First address:</dt>
+                                    <dd class="text-break" style="white-space:pre-wrap">@Model.Delivery.Line1</dd>
+                                    <dt>Second address:</dt>
+                                    <dd class="text-break" style="white-space:pre-wrap">@(!String.IsNullOrEmpty(Model.Delivery.Line2) ? Model.Delivery.Line2 : "none")</dd>
+                                    <dt>Third address:</dt>
+                                    <dd class="text-break" style="white-space:pre-wrap">@(!String.IsNullOrEmpty(Model.Delivery.Line3) ? Model.Delivery.Line3 : "none")</dd>
+                                    <dt>City:</dt>
+                                    <dd class="text-break" style="white-space:pre-wrap">@Model.Delivery.City</dd>
+                                    <dt>Country:</dt>
+                                    <dd class="text-break" style="white-space:pre-wrap">@Model.Delivery.Country</dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-6 col-12">
+                        <div class="display-5 mb-5">Order info</div>
+                        @foreach (var item in Model.OrderProducts)
+                        {
+                            <div class="clearfix mb-3 p-3 border-bottom">
+                                <img src="data:image/*;base64,@(Convert.ToBase64String(item.Product.Image))" class="img-thumbnail float-start me-3" style="width:7rem" alt="Product image">
+                                <div class="fs-4 mb-3">
+                                    @item.Product.Title @item.Product.Feature
+                                </div>
+                                <div>
+                                    <span class="fw-bold">Price of one product: </span>
+                                    <span class="text-primary">@Html.DisplayFor(i => item.PriceOfOneProduct)</span>
+                                </div>
+                                <div class="mb-3">
+                                    <span class="fw-bolder">Quantity: </span>
+                                    <span class="text-info">@item.Quantity</span>
+                                </div>
+                                <div class="fs-5">
+                                    <span class="fw-bolder">Price of all the same products: </span>
+                                    <span class="text-success">@(item.Quantity * item.PriceOfOneProduct)$</span>
+                                </div>
+                            </div>
+                        }
+
+                        <hr class="bg-dark mb-3" style="height:5px" />
+
+                        <div class="fs-2 ms-5">
+                            <span class="fw-bold">Total Price</span>
+                            <span class="text-success fw-bold border-bottom border-3 border-primary">@Html.DisplayFor(o => Model.TotalPrice)</span>
+                        </div>
+
+                        <hr class="bg-dark mb-3" style="height:5px" />
+
+                        <div class="fs-3 mb-5">
+                            <span class="fw-bold">Status of order:</span> <order-state state="@Model.OrderState" />
+                        </div>
+
+                        <form asp-antiforgery="true"
+                              method="post"
+                              data-ajax="true"
+                              data-ajax-method="post"
+                              data-ajax-loading="#loading"
+                              data-ajax-mode="replace"
+                              data-ajax-update="#orderId@(Model.Id)"
+                              data-ajax-url="@Url.Action("ChangeStateOfOrder", "ShopCart")">
+
+                            <div id="loading" class="spinner-border position-relative top-50 start-50" style="display:none;width:10rem;height:10rem;" role="status"></div>
+                            <div>
+                                <span class="fw-bold fs-4">Change: </span>
+                            </div>
+
+                            <div class="rounded rounded-3 border border-1 p-3 mb-3" role="group">
+                                @foreach (OrderState state in Enum.GetValues(typeof(OrderState)))
+                                {
+                                    string check = (int)Model.OrderState == (int)state ? "checked" : "";
+
+                                    <div id="@(state.ToString() + Model.Id.ToString())">
+                                        <input type="radio" onclick="changeState('@(state.ToString() + Model.Id.ToString())')" name="state" class="btn-check" id="@Model.Id + @state" value="@((int)state)" autocomplete="off" @check>
+                                        <label class="btn" for="@Model.Id + @state">
+                                            <order-state state="@state" />
+                                            @if (check == "checked")
+                                            {
+                                                <i class=" fs3 bi bi-check-circle text-success"> Current state</i>
+                                            }
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+                            <input type="submit" class="btn btn-lg btn-primary" value="Change state" />
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
+    function changeState(id) {
+
+        let checkedElement = document.getElementById(id);
+
+
+        let elem = checkedElement;
+        while (true) {
+            if (elem.nextElementSibling === null) {
+                break;
+            }
+            elem.nextElementSibling.classList = "";
+            elem = elem.nextElementSibling;
+        }
+        while (true) {
+            if (elem.previousElementSibling === null) {
+                break;
+            }
+            elem.previousElementSibling.classList = "";
+            elem = elem.previousElementSibling;
+        }
+
+        checkedElement.classList = "bg-warning";
+    }
+</script>
