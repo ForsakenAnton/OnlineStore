@@ -169,8 +169,8 @@ namespace OnlineStore.Controllers
                 shopCart.Clear();
 
                 var callbackUrl = Url.Action(
-                        "Index",
-                        "Home",
+                        "AllOrdersList",
+                        "ShopCart",
                         null,
                         protocol: HttpContext.Request.Scheme);
 
@@ -293,7 +293,8 @@ namespace OnlineStore.Controllers
                 .Include(o => o.Delivery)
                 .Include(o => o.User)
                 .Include(o => o.OrderProducts)
-                    .ThenInclude(op => op.Product);
+                    .ThenInclude(op => op.Product)
+                .OrderByDescending(o => o.DateOfOrder);
 
             if(orderState != -1)
             {
@@ -315,9 +316,51 @@ namespace OnlineStore.Controllers
             return View(viewModel);
         }
 
-        public async Task<IActionResult> ChangeStateOfOrder(int? state)
+        public async Task<IActionResult> ChangeStateOfOrder(Order order, int? id, OrderState? state)
         {
-            return View();
+            if(order.Id != id)
+            {
+                return BadRequest();
+            }
+
+            if(state == null)
+            {
+                return NoContent();
+            }
+
+            order.OrderState = state.Value;
+            _context.Entry(order).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+
+            await _context.OrderProducts.Where(o => o.OrderId == id).LoadAsync();
+
+            foreach (var item in order.OrderProducts)
+            {
+                await _context.Products.Where(p => p.OrderProducts.Contains(item)).LoadAsync();
+            }
+
+            await _context.Deliveries.Where(d => d.OrderId == id).LoadAsync();
+            await _context.Users.LoadAsync();
+
+            //User user = await _userManager.GetUserAsync(User);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Orders.Contains(order));
+            order.User = user;
+
+            ///////////
+            var callbackUrl = Url.Action(
+                        "MyOrders",
+                        "MyCabinet",
+                        null,
+                        protocol: HttpContext.Request.Scheme);
+
+            await _emailService.SendAsync("from_admin@example.com",
+                order.User.Email,
+                $"State of your order №{order.OrderNumber} was changed on \"{order.OrderState}\", {order.User.UserName}",
+                $"To see details <a href='{callbackUrl}'>follow the link</a>");
+            ////////////
+            
+            return PartialView("_OrderItem", order);
         }
     }
 }

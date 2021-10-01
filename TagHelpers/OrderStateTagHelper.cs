@@ -26,6 +26,7 @@ namespace OnlineStore.TagHelpers
         //public string PageAction { get; set; }
 
         public OrderState State { get; set; }
+        //public bool IsColorState { get; set; }
         //public SelectList SelectStates { get; set; }
         //public bool IsLink { get; set; }
 
@@ -54,27 +55,23 @@ namespace OnlineStore.TagHelpers
             output.TagName = "span";
             output.TagMode = TagMode.StartTagAndEndTag;
 
-           // TagBuilder a = new TagBuilder("a");
+            // TagBuilder a = new TagBuilder("a");
             TagBuilder i = new TagBuilder("i");
             //a.InnerHtml.Append(State.ToString());
 
-            string[] states = 
+            string[] states =
             {
-                "bi bi-cart-dash-fill bg-secondary",
-                "bi bi-truck bg-light",
-                "bi bi-shop-window bg-primary",
-                "bi bi-bookmark-check bg-success",
-                "bi bi-x-circle bg-danger",
-                "bi bi-arrow-return-left bg-warning"
+                    "bi bi-cart-dash-fill bg-secondary",
+                    "bi bi-truck bg-light",
+                    "bi bi-shop-window bg-primary",
+                    "bi bi-bookmark-check bg-success",
+                    "bi bi-x-circle bg-danger",
+                    "bi bi-arrow-return-left bg-warning"
             };
 
             string currentState = states[(int)State];
-            i.AddCssClass(currentState + " ps-3 pe-3 pt-1 pb-1 rounded rounded-3");
+            i.AddCssClass(currentState + " ps-3 pe-3 pt-1 pb-1 rounded rounded-3 text-nowrap");
             i.InnerHtml.Append(" " + State.ToString());
-
-            //a.InnerHtml.AppendHtml(i);
-            //a.Attributes["href"] = urlHelper.Action(PageAction);
-
 
             output.Content.SetHtmlContent(i);
             //return base.ProcessAsync(context, output);

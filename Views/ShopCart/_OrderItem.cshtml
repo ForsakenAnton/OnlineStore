@@ -1,5 +1,24 @@
 ﻿@model OnlineStore.Models.Order
 
+    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog  modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-body ">
+                        <div class="alert alert-success text-success alert-dismissible fade show text-center mb-0" role="alert">
+                            <strong>Changes saved!</strong>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                
+                @*<div class="modal-footer bg-success">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>*@
+            </div>
+        </div>
+    </div>
+
     <div id="orderId@(Model.Id)" class="container bg-white rounded rounded-3 p-3 mb-5">
         <div class="mb-3">
             <div class="mb-3">
@@ -97,7 +116,14 @@
                               data-ajax-loading="#loading"
                               data-ajax-mode="replace"
                               data-ajax-update="#orderId@(Model.Id)"
+                              data-ajax-success="success"
                               data-ajax-url="@Url.Action("ChangeStateOfOrder", "ShopCart")">
+
+                            <input type="hidden" asp-for="@Model.Id" />
+                            <input type="hidden" asp-for="@Model.OrderNumber" />
+                            <input type="hidden" asp-for="@Model.DateOfOrder" />
+                            <input type="hidden" asp-for="@Model.TotalPrice" />
+                            <input type="hidden" asp-for="@Model.UserId" />
 
                             <div id="loading" class="spinner-border position-relative top-50 start-50" style="display:none;width:10rem;height:10rem;" role="status"></div>
                             <div>
@@ -109,15 +135,14 @@
                                 {
                                     string check = (int)Model.OrderState == (int)state ? "checked" : "";
 
-                                    <div id="@(state.ToString() + Model.Id.ToString())">
+                                    <div class="" id="@(state.ToString() + Model.Id.ToString())">
                                         <input type="radio" onclick="changeState('@(state.ToString() + Model.Id.ToString())')" name="state" class="btn-check" id="@Model.Id + @state" value="@((int)state)" autocomplete="off" @check>
                                         <label class="btn" for="@Model.Id + @state">
                                             <order-state state="@state" />
                                             @if (check == "checked")
                                             {
-                                                <i class=" fs3 bi bi-check-circle text-success"> Current state</i>
+                                                <i class=" fs-5 bi bi-check-circle text-success"> Current</i>
                                             }
-                                            <span></span>
                                         </label>
                                     </div>
                                 }
@@ -153,5 +178,12 @@
         }
 
         checkedElement.classList = "bg-warning";
+    }
+
+    function success() {
+        var myModal = new bootstrap.Modal(document.getElementById('successModal'), {
+            keyboard: false
+        });
+        myModal.show();
     }
 </script>
