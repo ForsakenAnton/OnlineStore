@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using OnlineStore.AutomapperProfiles;
+using OnlineStore.AutoMapperProfiles;
 using OnlineStore.DB;
 using OnlineStore.Models;
 using OnlineStore.Models.IdentityModels;
@@ -32,6 +34,12 @@ namespace OnlineStore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAutoMapper(config =>
+            {
+                config.AddProfile<TemplateAutoMapperProfile>();
+                config.AddProfile<CharactetisticAutoMapperProfile>();
+            });
+
             services.AddDistributedMemoryCache();
 
             services.AddDbContext<OnlineStoreContext>(options =>

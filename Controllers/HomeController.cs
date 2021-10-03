@@ -407,9 +407,12 @@ namespace OnlineStore.Controllers
                 .Include(c => c.Likes)
                 .Include(c => c.User)
                 .Include(c => c.Product)
-                .Include(c => c.Answers)
+                .Include(c => c.Answers
+                               .Where(a => a.IsModerated == true))
                     .ThenInclude(a => a.User)
                 .Where(c => c.Product.Id == id && c.IsModerated);
+
+            //comments = 
 
             switch (sortOrder)
             {

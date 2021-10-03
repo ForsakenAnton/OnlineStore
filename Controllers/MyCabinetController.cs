@@ -144,6 +144,7 @@ namespace OnlineStore.Controllers
                 .Include(op => op.Product)
                 .Include(op => op.Order)
                     .ThenInclude(o => o.Delivery)
+                    .Where(o => o.Order.User.Id == user.Id)
                 .GroupBy(op => op.Order.Id)
                 .Select(g => new MyOrdersViewModel
                 {
@@ -161,6 +162,8 @@ namespace OnlineStore.Controllers
 
                 await _context.OrderProducts.Where(op => op.OrderId == group.OrderId).LoadAsync();
             }
+
+            myOrdersViewModel = myOrdersViewModel.OrderByDescending(o => o.Order.DateOfOrder).ToList();
 
             ViewBag.pageId = 3;
             return View(myOrdersViewModel);

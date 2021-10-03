@@ -25,7 +25,7 @@ namespace OnlineStore.Models
         [Column(TypeName = "decimal(9, 2)")]
         public decimal TotalPrice { get; set; }
 
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public User User { get; set; }
         public Delivery Delivery { get; set; }
 

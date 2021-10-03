@@ -23,7 +23,7 @@ namespace OnlineStore.Models
         public bool IsModerated { get; set; }
         public DateTime Date { get; set; }
 
-        public int UserId { get; set; } // User: IdentityUser
+        public string UserId { get; set; } // User: IdentityUser
         public int ProductId { get; set; }
 
         // Nav

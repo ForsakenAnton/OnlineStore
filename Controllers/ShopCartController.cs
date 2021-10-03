@@ -316,14 +316,14 @@ namespace OnlineStore.Controllers
             return View(viewModel);
         }
 
-        public async Task<IActionResult> ChangeStateOfOrder(Order order, int? id, OrderState? state)
+        public async Task<IActionResult> ChangeStateOfOrder(Order order, int? id, string ordersUserId, OrderState? state)
         {
             if(order.Id != id)
             {
                 return BadRequest();
             }
 
-            if(state == null)
+            if(state == null || String.IsNullOrEmpty(ordersUserId))
             {
                 return NoContent();
             }
@@ -334,18 +334,24 @@ namespace OnlineStore.Controllers
 
 
             await _context.OrderProducts.Where(o => o.OrderId == id).LoadAsync();
-
             foreach (var item in order.OrderProducts)
             {
                 await _context.Products.Where(p => p.OrderProducts.Contains(item)).LoadAsync();
             }
 
             await _context.Deliveries.Where(d => d.OrderId == id).LoadAsync();
-            await _context.Users.LoadAsync();
-
-            //User user = await _userManager.GetUserAsync(User);
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Orders.Contains(order));
+            User user = await _context.Users.FirstOrDefaultAsync(u => u.Id == ordersUserId);
             order.User = user;
+
+            //Order modifiedOrder = await _context.Orders
+            //    //.Include(o => o.Delivery)
+            //     //   .ThenInclude(d => d.Order)
+            //    .Include(o => o.User)
+            //    .Include(o => o.OrderProducts)
+            //        .ThenInclude(op => op.Product)
+            //    .FirstOrDefaultAsync(o => o.UserId == ordersUserId);
+
+            //modifiedOrder.Delivery = await _context.Deliveries.FirstOrDefaultAsync(d => d.OrderId == id);
 
             ///////////
             var callbackUrl = Url.Action(

@@ -116,7 +116,7 @@
                               data-ajax-loading="#loading"
                               data-ajax-mode="replace"
                               data-ajax-update="#orderId@(Model.Id)"
-                              data-ajax-success="success"
+                              data-ajax-complete="complete"
                               data-ajax-url="@Url.Action("ChangeStateOfOrder", "ShopCart")">
 
                             <input type="hidden" asp-for="@Model.Id" />
@@ -124,6 +124,7 @@
                             <input type="hidden" asp-for="@Model.DateOfOrder" />
                             <input type="hidden" asp-for="@Model.TotalPrice" />
                             <input type="hidden" asp-for="@Model.UserId" />
+                            <input type="hidden" name="ordersUserId" value="@Model.User.Id" />
 
                             <div id="loading" class="spinner-border position-relative top-50 start-50" style="display:none;width:10rem;height:10rem;" role="status"></div>
                             <div>
@@ -180,7 +181,7 @@
         checkedElement.classList = "bg-warning";
     }
 
-    function success() {
+    function complete() {
         var myModal = new bootstrap.Modal(document.getElementById('successModal'), {
             keyboard: false
         });
