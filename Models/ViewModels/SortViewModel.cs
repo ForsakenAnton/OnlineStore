@@ -16,6 +16,11 @@ namespace OnlineStore.Models.ViewModels
         CountAsc,
         CountDesc,
 
+        CommentAsc,
+        CommentDesc,
+        AnswerAsc,
+        AnswerDesc,
+
         ByDate,
         ByUseful
     }

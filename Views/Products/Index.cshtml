@@ -44,6 +44,10 @@
                         SortState.DiscountDesc => "discount",
                         SortState.CountAsc => "count",
                         SortState.CountDesc => "count",
+                        SortState.CommentAsc => "comments",
+                        SortState.CommentDesc => "comments",
+                        SortState.AnswerAsc => "answers",
+                        SortState.AnswerDesc => "answers",
                         _ => "price"
                     };
                 }
@@ -227,7 +231,7 @@
         </thead>
         <tbody>
             @foreach (var item in Model.Products)
-                    {
+            {
                 <tr>
                     <td style="width:10rem">
                         @Html.DisplayFor(modelItem => item.Title)
@@ -306,7 +310,18 @@
                         <div>
                             <a asp-controller="Comments" asp-action="ProductCommentsList" asp-route-productId="@item.Id" type="button" class="btn btn-sm btn-outline-info w-100">
                                 Reviews
-                                <span class="badge bg-secondary"> @item.Comments.Count(c => c.IsModerated == false)</span>
+                                <span class="badge bg-secondary"> @item.Comments.Count(c => c.IsModerated == false) </span>
+                                | Answers
+                                <span class="badge bg-secondary">
+                                    @{int countAnswer = 0;
+                                        foreach (var comment in item.Comments)
+                                        {
+                                            countAnswer += comment.Answers.Count(c => c.IsModerated == false);
+                                        }
+                                    }
+                                    &nbsp;@countAnswer
+                                </span>
+
                             </a>
                         </div>
                         @*</div>*@

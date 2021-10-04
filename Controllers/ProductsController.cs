@@ -43,6 +43,9 @@ namespace OnlineStore.Controllers
                 .Include(p => p.Comments)
                     .ThenInclude(c => c.User)
                 .Include(p => p.Comments)
+                    .ThenInclude(c => c.Answers)
+                        .ThenInclude(a => a.User)
+                .Include(p => p.Comments)
                         .ThenInclude(l => l.Likes);
 
 
@@ -67,6 +70,13 @@ namespace OnlineStore.Controllers
                                 p.Feature.ToLower().Trim().Contains(searchString));
             }
 
+            var comments = _context.Comments
+                .Include(c => c.Answers)
+                .Where(c => products.Contains(c.Product) && c.IsModerated == false);
+
+            var answers = _context.Answers
+                .Where(a => comments.Contains(a.Comment));
+
             // Sort /////////////////////////////////////////////
 
             products = sortOrder switch
@@ -79,6 +89,11 @@ namespace OnlineStore.Controllers
                 SortState.DiscountDesc => products.OrderByDescending(p => p.Discount),
                 SortState.CountAsc => products.OrderBy(p => p.Count),
                 SortState.CountDesc => products.OrderByDescending(p => p.Count),
+
+                SortState.CommentAsc => products.OrderBy(p => p.Comments.Where(c => c.IsModerated == false).Count()),
+                SortState.CommentDesc => products.OrderByDescending(p => p.Comments.Where(c => c.IsModerated == false).Count()),
+                SortState.AnswerAsc => products.OrderBy(p => p.Comments.Count(c => c.Answers.Count != 0)),
+                SortState.AnswerDesc => products.OrderByDescending(p => p.Comments.Count(c => c.Answers.Count != 0)),
                 _ => products.OrderBy(p => p.Price)
             };
 

@@ -71,11 +71,11 @@
             <div class="accordion mb-5" id="accordionExample">
                 <div class="accordion-item border border-2 border-info rounded-3">
                     <h2 class="accordion-header" id="headingThree">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFeedback" aria-expanded="false" aria-controls="collapseFeedback">
                             Leave feedback
                         </button>
                     </h2>
-                    <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                    <div id="collapseFeedback" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
                         <div class="accordion-body ">
                             <form asp-antiforgery="true"
                                   method="post"
@@ -84,13 +84,14 @@
                                   data-ajax-loading="#loading2"
                                   data-ajax-mode="replace"
                                   data-ajax-update="#modal"
+                                  data-ajax-success="onFeedBackSuccess()"
                                   data-ajax-url="@Url.Action("SentFeedback", "Home")">
 
                                 <div id="loading2" class="spinner-border position-relative top-50 start-50" style="display:none;width:10rem;height:10rem;" role="status"></div>
 
                                 <div class="mb-3">
-                                    <label for="Message" class="form-label">Your feedback</label>
-                                    <textarea class="form-control mb-5" id="Message" name="Message" rows="5"></textarea>
+                                    <label for="messageFeedback" class="form-label">Your feedback</label>
+                                    <textarea class="form-control mb-5" id="messageFeedback" name="MessageFeedback" rows="5"></textarea>
 
                                     <div class="mb-5">
                                         <div class="rating-area">
@@ -109,12 +110,12 @@
 
                                     <div class="row align-items-center mb-3">
                                         <div class="col-lg-5">
-                                            <label for="Virtues" class="col-form-label">Virtues:</label>
-                                            <textarea id="Virtues" name="Virtues" class="form-control" rows="1"></textarea>
+                                            <label for="virtues" class="col-form-label">Virtues:</label>
+                                            <textarea id="virtues" name="Virtues" class="form-control" rows="1"></textarea>
                                         </div>
                                         <div class="col-lg-5 offset-lg-2">
-                                            <label for="Shortcomings" class="col-form-label">Shortcomings:</label>
-                                            <textarea id="Shortcomings" name="Shortcomings" class="form-control" rows="1"></textarea>
+                                            <label for="shortcomings" class="col-form-label">Shortcomings:</label>
+                                            <textarea id="shortcomings" name="Shortcomings" class="form-control" rows="1"></textarea>
                                         </div>
                                     </div>
 
@@ -190,11 +191,12 @@
                           data-ajax-loading="#loading3"
                           data-ajax-mode="replace"
                           data-ajax-update="#modal"
+                          data-ajax-success="onAnswerSuccess()"
                           data-ajax-url="@Url.Action("SentAnswer", "Home")">
 
                         <div class="mb-3">
-                            <label for="Message" class="form-label">Your ansver</label>
-                            <textarea class="form-control mb-3" id="Message" name="Message" rows="5">@(comment.User.Email),&nbsp;</textarea>
+                            <label for="answer" class="form-label">Your ansver</label>
+                            <textarea class="form-control mb-3" id="answer" name="Message" rows="5">@(comment.User.Email),&nbsp;</textarea>
                             <input type="hidden" name="CommentId" value="@comment.Id" />
                             <div class="text-center">
                                 <button type="submit" class="btn btn-lg btn-outline-primary w-75 mb-3">Send answer</button>
@@ -278,6 +280,20 @@
     </page-link>
 </div>
 
-@section Scripts {
+@*@section Scripts {*@
+    <script>
+        function onFeedBackSuccess() {
+            //var bsCollapse = new bootstrap.Collapse(document.getElementById("collapseFeedback"), {
+            //    toggle: false
+            //});
+            //bsCollapse.hide();
+            document.getElementById("messageFeedback").value = "";
+            document.getElementById("virtues").value = "";
+            document.getElementById("shortcomings").value = "";
+        }
 
-}
+        function onAnswerSuccess() {
+            document.getElementById("answer").value = "";
+        }
+    </script>
+@*}*@

@@ -14,14 +14,14 @@ namespace OnlineStore.AutomapperProfiles
         public TemplateAutoMapperProfile()
         {
 			CreateMap<Template, TemplatesListDto>()
-					.ForMember(t => t.TemplatesDto,
+					.ForMember(t => t.ListDto,
 						opt => opt.MapFrom(
 							src => JsonSerializer.Deserialize<List<TemplateDto>>(src.SerializedClassesListToString, new JsonSerializerOptions { })));
 
 			CreateMap<TemplatesListDto, Template>()
 				.ForMember(t => t.SerializedClassesListToString,
 				opt => opt.MapFrom(
-					src => JsonSerializer.Serialize(src.TemplatesDto, new JsonSerializerOptions { WriteIndented = true })));
+					src => JsonSerializer.Serialize(src.ListDto, new JsonSerializerOptions { WriteIndented = true })));
 		}
     }
 }
