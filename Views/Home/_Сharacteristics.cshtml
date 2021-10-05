@@ -1,1 +1,26 @@
-﻿<div class="display-1">_Сharacteristics</div>
+﻿@model OnlineStore.Models.ModelsDTO.CharacteristicsListDto
+
+<div class="display-1">_Сharacteristics</div>
+
+<div class="table-responsive">
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th scope="col">@Html.DisplayNameFor(m => m.ListDto.FirstOrDefault().Property)</th>
+                <th scope="col">@Html.DisplayNameFor(m => m.ListDto.FirstOrDefault().Value)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null)
+            {
+                @foreach (var item in Model?.ListDto)
+                {
+                    <tr scope="row">
+                        <td>@item.Property</td>
+                        <td>@item.Value</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

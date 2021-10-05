@@ -1,0 +1,123 @@
+﻿@model OnlineStore.Models.ModelsDTO.TemplatesListDto
+
+@{
+    //ViewData["Title"] = "EditTemplate";
+}
+
+<h1>EditTemplate</h1>
+
+
+<!-- Latest Sortable -->
+<script src="https://raw.githack.com/SortableJS/Sortable/master/Sortable.js"></script>
+
+
+<div class="container p-3 mb-3">
+    <form id="propsListForm" asp-action="EditTemplate" onsubmit="editTemplate(event)">
+
+        <input value="@ViewBag.Id" name="id" type="hidden" />
+        <input value="@ViewBag.Title" required name="title" placeholder="title..." class="form-control mb-3" />
+        @foreach (var item in Model.ListDto)
+        {
+            <div name="propertyValue" class="clearfix mb-5 p-3 border border-5 rounded rounded-3">
+                <textarea asp-for="@item.Property" required name="property" class="form-control form-control-sm mb-2" placeholder="property..."></textarea>
+                <input asp-for="@item.TakePartInSort" type="checkbox" name="takePartInSort" class="form-check-input float-start"><span class="float-start me-5">&nbsp;add to sort</span>
+                <button type="button" onclick="addField(event)" class="btn btn-sm btn-primary float-start">Add field</button>
+                <button name="removeButton" type="button" onclick="removeField(event)" class="btn btn-sm btn-danger float-end">Remove field</button>
+            </div>
+        }
+    </form>
+    <input form="propsListForm" type="submit" class="btn btn-primary" value="Edit" />
+</div>
+
+
+<script>
+    Sortable.create(propsListForm, {
+        //swap: true,
+        ghostClass: "bg-primary",
+        animation: 150,
+        delay: 100
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        let propertyValues = document.getElementsByName("propertyValue");
+        if (propertyValues.length === 1) {
+            document.getElementsByName("removeButton")[0].disabled = true;
+        }
+    });
+
+
+    let parentNodeForm = document.getElementById("propsListForm");
+
+    function addField(event) {
+
+        document.getElementsByName("removeButton")[0].disabled = false;
+
+        let propertyValue = event.target.parentElement; //closest('div');
+        let cloneNode = propertyValue.cloneNode(true);
+
+        let children = cloneNode.children; //childNodes;
+        //  console.log (children.length);
+        for (let i = 0; i < children.length; i++) {
+            if (children[i].type === "button") {
+                continue;
+            }
+
+            if (children[i].type === "checkbox" && children[i].checked === true) {
+                children[i].checked = false;
+            }
+
+            if (children[i].type === "text" || children[i].type === "textarea") {
+                children[i].value = "";
+            }
+        }
+
+        // вставляем не before, а after (propertyValue.nextSibling)
+        parentNodeForm.insertBefore(cloneNode, propertyValue.nextSibling);
+    }
+
+    function removeField(event) {
+        let parentElement = event.target.parentElement;
+        parentElement.remove();
+
+        let fields = document.getElementsByName("removeButton");
+        if (fields.length == 1) {
+            fields[0].disabled = true;
+        }
+    }
+
+
+    function editTemplate(event) {
+        let properties = document.getElementsByName("property");
+        //let values = document.getElementsByName("value");
+        let checkboxes = document.getElementsByName("takePartInSort");
+
+
+        let countCheck = checkboxes.length;
+        let countProp = checkboxes.length;
+
+        for (let i = 0; i < countCheck; i++) {
+            checkboxes[i].value = checkboxes[i].checked === true ? true : false;
+        }
+
+        for (let i = 0; i < countProp; i++) {
+            // (!) properties[0] : при переименовании элемента ниже - след. элемент стает первым
+            //     поэтому, если считать по индексу, то в итоге получим четные элементы, а не все
+            properties[0].name = "[" + i + "].property"; // [i].name = так массив попадает в контроллер. Или же Model[i].name
+            checkboxes[0].name = "[" + i + "].takePartInSort";
+        }
+
+        //let objArray = [];
+
+        //for (let i = 0; i < properties.length; i++) {
+        //    objArray.push({
+        //        property: properties[i].value,
+        //        //value: values[i].value,
+        //        takePartInSort: checkboxes[i].checked === true ? true : false
+        //    });
+        //}
+
+        //let jsonString = JSON.stringify(objArray, null, 4);
+        //console.log(jsonString);
+    }
+</script>

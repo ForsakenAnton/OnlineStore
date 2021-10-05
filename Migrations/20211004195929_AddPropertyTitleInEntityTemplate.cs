@@ -2,13 +2,13 @@
 
 namespace OnlineStore.Migrations
 {
-    public partial class AddShopCartIdToShopCartItem : Migration
+    public partial class AddPropertyTitleInEntityTemplate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "ShopCartId",
-                table: "ShopCartItem",
+                name: "Title",
+                table: "Template",
                 type: "nvarchar(max)",
                 nullable: true);
         }
@@ -16,8 +16,8 @@ namespace OnlineStore.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "ShopCartId",
-                table: "ShopCartItem");
+                name: "Title",
+                table: "Template");
         }
     }
 }

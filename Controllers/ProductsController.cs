@@ -37,9 +37,11 @@ namespace OnlineStore.Controllers
             int pageSize = 10;
 
             IQueryable<Product> products = _context.Products
+                .Include(p => p.Characteristic)
                 .Include(p => p.Manufacturer)
                 .Include(cp => cp.CategoryProducts)
                     .ThenInclude(c => c.Category)
+                        .ThenInclude(c => c.Template)
                 .Include(p => p.Comments)
                     .ThenInclude(c => c.User)
                 .Include(p => p.Comments)
@@ -48,6 +50,12 @@ namespace OnlineStore.Controllers
                 .Include(p => p.Comments)
                         .ThenInclude(l => l.Likes);
 
+            foreach (var item in products)
+            {
+                item.Characteristic = new Characteristic();
+                _context.Entry<Product>(item).State = EntityState.Modified;
+            }
+            await _context.SaveChangesAsync();
 
             if (categoryId != null && categoryId != 0)
             {
@@ -181,6 +189,7 @@ namespace OnlineStore.Controllers
                     data = br.ReadBytes((int)model.Image.Length);
                     model.Product.Image = data;
                 }
+
 
                 if (model.categoriesId.Length != 0)
                 {

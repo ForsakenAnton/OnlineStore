@@ -16,10 +16,10 @@ namespace OnlineStore.AutomapperProfiles
 			CreateMap<Template, TemplatesListDto>()
 					.ForMember(t => t.ListDto,
 						opt => opt.MapFrom(
-							src => JsonSerializer.Deserialize<List<TemplateDto>>(src.SerializedClassesListToString, new JsonSerializerOptions { })));
+							src => JsonSerializer.Deserialize<List<TemplateDto>>(src.SerializedTemplates, new JsonSerializerOptions { })));
 
 			CreateMap<TemplatesListDto, Template>()
-				.ForMember(t => t.SerializedClassesListToString,
+				.ForMember(t => t.SerializedTemplates,
 				opt => opt.MapFrom(
 					src => JsonSerializer.Serialize(src.ListDto, new JsonSerializerOptions { WriteIndented = true })));
 		}

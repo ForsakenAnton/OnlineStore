@@ -37,7 +37,7 @@ namespace OnlineStore
             services.AddAutoMapper(config =>
             {
                 config.AddProfile<TemplateAutoMapperProfile>();
-                config.AddProfile<CharactetisticAutoMapperProfile>();
+                config.AddProfile<CharacteristicAutoMapperProfile>();
             });
 
             services.AddDistributedMemoryCache();

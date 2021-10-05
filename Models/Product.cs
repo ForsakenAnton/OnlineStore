@@ -40,13 +40,18 @@ namespace OnlineStore.Models
         //public ICollection<Category> Categories { get; set; }
         //////////////////////////////////////////////////
 
-
+         
         // Navigation
         public Manufacturer Manufacturer { get; set; }
         public ICollection<CategoryProduct> CategoryProducts { get; set; }
 
         public ICollection<Comment> Comments { get; set; }
         public ICollection<OrderProduct> OrderProducts { get; set; }
+
+        /// ////////////////////////////////////////////////////
+        //public IEnumerable<Template> Templates { get; set; }
+        public Characteristic Characteristic { get; set; }
+        /// ////////////////////////////////////////////////////
         //public BankCredit BankCredit { get; set; }
     }
 }

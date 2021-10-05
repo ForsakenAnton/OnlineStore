@@ -15,6 +15,8 @@ using OnlineStore.Sessions;
 using OnlineStore.Models.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using OnlineStore.Models.IdentityModels;
+using AutoMapper;
+using OnlineStore.Models.ModelsDTO;
 
 namespace OnlineStore.Controllers
 {
@@ -25,14 +27,22 @@ namespace OnlineStore.Controllers
         public IConfiguration _configuration;
         private readonly OnlineStoreContext _context;
         IOrderCategoriesServise _orderCategoriesServise;
+        private readonly IMapper _mapper;
 
-        public HomeController(UserManager<User> userManager, ILogger<HomeController> logger, IConfiguration configuration, OnlineStoreContext context, IOrderCategoriesServise orderCategoriesServise)
+        public HomeController(
+            UserManager<User> userManager,
+            ILogger<HomeController> logger,
+            IConfiguration configuration,
+            OnlineStoreContext context,
+            IOrderCategoriesServise orderCategoriesServise,
+            IMapper mapper)
         {
             _userManager = userManager;
             _logger = logger;
             _configuration = configuration;
             _context = context;
             _orderCategoriesServise = orderCategoriesServise;
+            _mapper = mapper;
         }
 
         public async Task<IActionResult> Index()
@@ -365,7 +375,7 @@ namespace OnlineStore.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return NoContent();
             }
 
             var product = await _context.Products
@@ -378,7 +388,7 @@ namespace OnlineStore.Controllers
 
             if (product == null)
             {
-                return NotFound();
+                return NoContent();
             }
 
             HttpContext.Session.Set<Product>("haveBeenViewedProducts" + product.Id, product);
@@ -386,19 +396,31 @@ namespace OnlineStore.Controllers
             return PartialView("_AllAboutProduct", product);
         }
 
-        public async Task<PartialViewResult> Сharacteristics(int? id)
+        public async Task<IActionResult> Сharacteristics(int? id)
         {
-            var product = await _context.Products
-                .FirstOrDefaultAsync(p => p.Id == id);
+            if(id == null)
+            {
+                return NoContent();
+            }
 
-            return PartialView("_Сharacteristics");
+            var characteristic = await _context.Characteristics
+                .FirstOrDefaultAsync(ch => ch.ProductId == id);
+
+            //if(characteristic == null)
+            //{
+            //    return NoContent();
+            //}
+
+            CharacteristicsListDto characteristicsListDto = _mapper.Map<CharacteristicsListDto>(characteristic);
+
+            return PartialView("_Сharacteristics", characteristicsListDto);
         }
 
         public async Task<IActionResult> Comments(int? id, int page = 1, SortState sortOrder = SortState.ByDate)
         {
             if(id == null)
             {
-                return NotFound();
+                return NoContent();
             }
 
             int pageSize = 4;

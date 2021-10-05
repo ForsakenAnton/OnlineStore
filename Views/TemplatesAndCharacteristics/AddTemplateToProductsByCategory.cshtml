@@ -1,0 +1,49 @@
+﻿@model OnlineStore.Models.ModelsDTO.TemplatesListDto
+
+@{
+    //ViewData["Title"] = "AddTemplateToProductsByCategory";
+}
+
+<h1>Add Template To Products By Category</h1>
+
+<div class="row">
+    <div class="col-lg-6 col-12 text-lg-end">
+        <button class="btn border-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDetails" aria-expanded="false" aria-controls="collapseDetails">
+            "@ViewBag.Title". Details <i class="bi bi-chevron-expand"></i>
+        </button>
+        <div id="collapseDetails" class="collapse">
+            <table class="table table-sm">
+                
+                <thead>
+                    <tr>
+                        <th scope="col">@Html.DisplayNameFor(m => m.ListDto.FirstOrDefault().Property)</th>
+                        <th scope="col">@Html.DisplayNameFor(m => m.ListDto.FirstOrDefault().TakePartInSort)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.ListDto)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(m => item.Property)</td>
+                            <td>@Html.DisplayFor(m => item.TakePartInSort)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-lg-6 col-12">
+        <div class="mb-3">
+            <form asp-action="AddTemplateToProductsByCategory">
+                <div class="fw-bold">Сhoose these categories and add template for characteristics of products:</div>
+                <label for="@ViewBag.CategoriesList" class="form-label"></label>
+                <select required name="categoryId" for="categoryId" class="form-select bg-light text-dark" asp-items="@ViewBag.CategoriesList">
+                    <option disabled="disabled" value="">Сhoose categories</option>
+                </select>
+
+                <input type="hidden" value="@ViewBag.Id" />
+                <button type="submit" class="btn btn-primary">Add template</button>
+            </form>
+        </div>
+    </div>
+</div>

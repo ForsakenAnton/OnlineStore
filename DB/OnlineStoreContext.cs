@@ -29,8 +29,11 @@ namespace OnlineStore.DB
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderProduct> OrderProducts { get; set; }
         public DbSet<Delivery> Deliveries { get; set; }
-        //public DbSet<Template> Templates { get; set; }
-        //public DbSet<Charactetistic> Charactetistics { get; set; }
+
+        /// /////////////////////////////////////////////////////////////
+        public DbSet<Template> Templates { get; set; }
+        public DbSet<Characteristic> Characteristics { get; set; }
+        /// /////////////////////////////////////////////////////////////
 
         //public DbSet<BankCredit> BankCredits { get; set; }
 
@@ -49,8 +52,10 @@ namespace OnlineStore.DB
             builder.Entity<Order>().ToTable("Order");
             builder.Entity<Delivery>().ToTable("Delivery");
 
-            //builder.Entity<Template>().ToTable("Template");
-            //builder.Entity<Charactetistic>().ToTable("Charactetistic");
+            /// ////////////////////////////////////////////////////////
+            builder.Entity<Template>().ToTable("Template");
+            builder.Entity<Characteristic>().ToTable("Characteristic");
+            /// /////////////////////////////////////////////////////////
 
             //builder.Entity<BankCredit>().ToTable("BankCredit");
 
@@ -60,9 +65,15 @@ namespace OnlineStore.DB
                 .HasIndex(p => p.CommodityCode)
                 .IsUnique();
 
+            //builder
+            //    .Entity<Template>()
+            //    .HasMany(p => p.Categories)
+            //    .WithMany(p => p.Templates);
+                //.UsingEntity(j => j.ToTable("TemplateCategories"));
+
             //builder.Entity<Comment>()
             //    .Property(u => u.Rating)
-            //    .HasDefaultValue(1);
+            //    .HasDefaultValue<int>(1);
 
             //builder.Entity<Order>()
             //    .Property(o => o.OrderNumber)

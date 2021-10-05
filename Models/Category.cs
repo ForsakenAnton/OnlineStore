@@ -32,6 +32,10 @@ namespace OnlineStore.Models
         
         public ICollection<CategoryProduct> CategoryProducts { get; set; }
 
+        //public ICollection<Template> Templates { get; set; }
+        public int? TemplateId { get; set; }
+        public Template Template { get; set; }
+
 
 
         //////////////////////////////////////////////////

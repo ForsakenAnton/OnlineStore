@@ -1,0 +1,28 @@
+﻿@model OnlineStore.Models.ModelsDTO.TemplatesListDto
+
+@{
+    //ViewData["Title"] = "DetailsTemplate";
+}
+
+<h4>@ViewBag.Title</h4>
+
+<table class="table table-sm">
+    <thead>
+        <tr>
+            <th scope="col">@Html.DisplayNameFor(m => m.ListDto.FirstOrDefault().Property)</th>
+            <th scope="col">@Html.DisplayNameFor(m => m.ListDto.FirstOrDefault().TakePartInSort)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.ListDto)
+        {
+            <tr>
+                <td>@Html.DisplayFor(m => item.Property)</td>
+                <td>@Html.DisplayFor(m => item.TakePartInSort)</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a class="btn btn-danger" asp-action="EditTemplate" asp-route-id="@ViewBag.Id">Edit</a>
+

@@ -206,6 +206,9 @@ namespace OnlineStore.Migrations
                     b.Property<int?>("ParentCategoryId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("TemplateId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -214,6 +217,8 @@ namespace OnlineStore.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ParentCategoryId");
+
+                    b.HasIndex("TemplateId");
 
                     b.ToTable("Category");
                 });
@@ -238,6 +243,27 @@ namespace OnlineStore.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("CategoryProducts");
+                });
+
+            modelBuilder.Entity("OnlineStore.Models.Characteristic", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SerializedCharactetistics")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId")
+                        .IsUnique();
+
+                    b.ToTable("Characteristic");
                 });
 
             modelBuilder.Entity("OnlineStore.Models.Comment", b =>
@@ -570,6 +596,24 @@ namespace OnlineStore.Migrations
                     b.ToTable("Product");
                 });
 
+            modelBuilder.Entity("OnlineStore.Models.Template", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("SerializedTemplates")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Template");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -644,7 +688,13 @@ namespace OnlineStore.Migrations
                         .WithMany("Categories")
                         .HasForeignKey("ParentCategoryId");
 
+                    b.HasOne("OnlineStore.Models.Template", "Template")
+                        .WithMany("Categories")
+                        .HasForeignKey("TemplateId");
+
                     b.Navigation("ParentCategory");
+
+                    b.Navigation("Template");
                 });
 
             modelBuilder.Entity("OnlineStore.Models.CategoryProduct", b =>
@@ -662,6 +712,17 @@ namespace OnlineStore.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("OnlineStore.Models.Characteristic", b =>
+                {
+                    b.HasOne("OnlineStore.Models.Product", "Product")
+                        .WithOne("Characteristic")
+                        .HasForeignKey("OnlineStore.Models.Characteristic", "ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Product");
                 });
@@ -806,9 +867,16 @@ namespace OnlineStore.Migrations
                 {
                     b.Navigation("CategoryProducts");
 
+                    b.Navigation("Characteristic");
+
                     b.Navigation("Comments");
 
                     b.Navigation("OrderProducts");
+                });
+
+            modelBuilder.Entity("OnlineStore.Models.Template", b =>
+                {
+                    b.Navigation("Categories");
                 });
 #pragma warning restore 612, 618
         }

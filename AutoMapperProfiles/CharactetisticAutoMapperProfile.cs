@@ -9,17 +9,17 @@ using System.Threading.Tasks;
 
 namespace OnlineStore.AutoMapperProfiles
 {
-    public class CharactetisticAutoMapperProfile : Profile
+    public class CharacteristicAutoMapperProfile : Profile
     {
-		public CharactetisticAutoMapperProfile()
+		public CharacteristicAutoMapperProfile()
 		{
-			CreateMap<Charactetistic, CharacteristicsListDto>()
+			CreateMap<Characteristic, CharacteristicsListDto>()
 						.ForMember(c => c.ListDto,
 							opt => opt.MapFrom(
-								src => JsonSerializer.Deserialize<List<CharacteristicDto>>(src.SerializedClassesListToString, new JsonSerializerOptions { }))); //ToCreateClassList(src.SerializedClassesListToString)));
+								src => JsonSerializer.Deserialize<List<CharacteristicDto>>(src.SerializedCharactetistics, new JsonSerializerOptions { }))); //ToCreateClassList(src.SerializedClassesListToString)));
 
-			CreateMap<CharacteristicsListDto, Charactetistic>()
-				.ForMember(p => p.SerializedClassesListToString,
+			CreateMap<CharacteristicsListDto, Characteristic>()
+				.ForMember(p => p.SerializedCharactetistics,
 				opt => opt.MapFrom(
 					src => JsonSerializer.Serialize(src.ListDto, new JsonSerializerOptions { WriteIndented = true }))); //ToCreateJoinString(src.ListDto)));
 		}

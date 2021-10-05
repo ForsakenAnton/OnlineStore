@@ -1,0 +1,44 @@
+﻿@model IEnumerable<OnlineStore.Models.Template>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="CreateTemplate">Create New Template</a>
+</p>
+<table class="table table-sm">
+    <thead>
+        <tr>
+            @*<th>
+                @Html.DisplayNameFor(model => model.SerializedTemplates)
+            </th>*@
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            @*<td>
+            @Html.DisplayFor(modelItem => item.SerializedTemplates)
+        </td>*@
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                <a class="btn btn-success" asp-action="AddTemplateToProductsByCategory" asp-route-id="@item.Id">Add to products by category</a> |
+            </td>
+            <td>
+                <a class="link-warning" asp-action="EditTemplate" asp-route-id="@item.Id">Edit</a> |
+                <a class="link-primary" asp-action="DetailsTemplate" asp-route-id="@item.Id">Details</a> |
+                <a class="link-danger" asp-action="DeleteTemplate" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
