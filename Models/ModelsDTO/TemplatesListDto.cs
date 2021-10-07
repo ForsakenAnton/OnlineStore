@@ -9,6 +9,8 @@ namespace OnlineStore.Models.ModelsDTO
 {
 	public class TemplatesListDto
 	{
+        public int Id { get; set; }
+        public string Title { get; set; }
         public List<TemplateDto> ListDto { get; set; }
     }
 }

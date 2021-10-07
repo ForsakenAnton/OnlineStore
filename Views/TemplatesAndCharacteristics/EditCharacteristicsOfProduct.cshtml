@@ -1,0 +1,148 @@
+﻿@model OnlineStore.Models.ModelsDTO.CharacteristicsListDto
+
+@{
+    ViewData["Title"] = "EditCharacteristicsOfProduct";
+}
+
+<script src="https://raw.githack.com/SortableJS/Sortable/master/Sortable.js"></script>
+
+<div class="modal fade" id="chooseTemplate" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="chooseTemplateLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="chooseTemplateLabel">Templates list</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body bg-white">
+                <div class="container">
+                    <div class="row">
+                        @foreach (var template in ViewBag.TemplatesListDtos)
+                        {
+                        <div class="col-lg-4 col-md-6 col-12 d-flex flex-column bg-light border rounded rounded-3  p-3">
+                            <div class="mb-auto">
+                                <h4>@template.Title</h4>
+                                @foreach (var property in template.ListDto)
+                                {
+                                    <div>@property.Property</div>
+                                }
+                            </div>
+                            
+                            <a asp-action="EditCharacteristicsOfProduct"
+                               asp-route-productId="@ViewBag.ProductId"
+                               asp-route-templateId="@template.Id"
+                               class="btn btn-outline-success w-100 mt-3">
+                                Chose template
+                            </a>
+                        </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container p-3 mb-3">
+    <button type="button" class="btn btn-primary mb-5" data-bs-toggle="modal" data-bs-target="#chooseTemplate">
+        You can choose the ready-to-use templates
+    </button>
+
+    <form id="propsListForm" asp-action="EditCharacteristicsOfProduct" onsubmit="editCharacteristicsOfProduct(event)">
+
+        <input value="@Model.Id" name="id" type="hidden" />
+        <input value="@ViewBag.Id" name="id" type="hidden" />
+        <input value="@ViewBag.ProductId" name="productId" type="hidden" />
+        @foreach (var item in Model.ListDto)
+        {
+            <div name="propertyValue" class="clearfix mb-5 p-3 border border-5 rounded rounded-3">
+                <textarea asp-for="@item.Property" required name="property" class="form-control form-control-sm mb-2" placeholder="property..."></textarea>
+                <textarea asp-for="@item.Value" required name="value" class="form-control form-control-sm mb-2" placeholder="value..."></textarea>
+                <input asp-for="@item.TakePartInSort" type="checkbox" name="takePartInSort" class="form-check-input float-start"><span class="float-start me-5">&nbsp;add to sort</span>
+                <button type="button" onclick="addField(event)" class="btn btn-sm btn-primary float-start">Add field</button>
+                <button type="button" onclick="removeField(event)" name="removeButton" class="btn btn-sm btn-danger float-end">Remove field</button>
+            </div>
+        }
+    </form>
+    <input form="propsListForm" type="submit" class="btn btn-primary" value="Save" />
+</div>
+
+
+<script>
+    Sortable.create(propsListForm, {
+        ghostClass: "bg-primary",
+        animation: 150,
+        delay: 100
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        let propertyValues = document.getElementsByName("propertyValue");
+        if (propertyValues.length === 1) {
+            document.getElementsByName("removeButton")[0].disabled = true;
+        }
+    });
+
+
+    let parentNodeForm = document.getElementById("propsListForm");
+
+    function addField(event) {
+
+        document.getElementsByName("removeButton")[0].disabled = false;
+
+        let propertyValue = event.target.parentElement; //closest('div');
+        let cloneNode = propertyValue.cloneNode(true);
+
+        let children = cloneNode.children; //childNodes;
+        //  console.log (children.length);
+        for (let i = 0; i < children.length; i++) {
+            if (children[i].type === "button") {
+                continue;
+            }
+
+            if (children[i].type === "checkbox" && children[i].checked === true) {
+                children[i].checked = false;
+            }
+
+            if (children[i].type === "text" || children[i].type === "textarea") {
+                children[i].value = "";
+            }
+        }
+
+        // вставляем не before, а after (propertyValue.nextSibling)
+        parentNodeForm.insertBefore(cloneNode, propertyValue.nextSibling);
+    }
+
+    function removeField(event) {
+        let parentElement = event.target.parentElement;
+        parentElement.remove();
+
+        let fields = document.getElementsByName("removeButton");
+        if (fields.length == 1) {
+            fields[0].disabled = true;
+        }
+    }
+
+
+    function editCharacteristicsOfProduct(event) {
+        let properties = document.getElementsByName("property");
+        let values = document.getElementsByName("value");
+        let checkboxes = document.getElementsByName("takePartInSort");
+
+
+        let countCheck = checkboxes.length;
+        let countProp = checkboxes.length;
+
+        for (let i = 0; i < countCheck; i++) {
+            checkboxes[i].value = checkboxes[i].checked === true ? true : false;
+        }
+
+        for (let i = 0; i < countProp; i++) {
+            properties[0].name = "[" + i + "].property";
+            values[0].name = "[" + i + "].value";
+            checkboxes[0].name = "[" + i + "].takePartInSort";
+        }
+    }
+</script>
+

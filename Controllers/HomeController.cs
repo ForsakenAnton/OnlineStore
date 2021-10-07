@@ -167,6 +167,7 @@ namespace OnlineStore.Controllers
             int pageSize = 8;
 
             IQueryable<Product> products = _context.Products
+                .Include(p => p.Characteristic)
                 .Include(p => p.Manufacturer)
                 .Include(p => p.Comments);
                     //.ThenInclude(c => c.User)
@@ -223,6 +224,24 @@ namespace OnlineStore.Controllers
             //PageViewModel<Product> pageListViewModel = await PageViewModel<Product>.CreateAsync(products, page, pageSize);
             int count = await products.CountAsync();
             var items = await products.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+
+
+            // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) //
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            List<Characteristic> listCharacteristics = await products.Select(p => new Characteristic
+            {
+                SerializedCharactetistics = p.Characteristic.SerializedCharactetistics
+            })
+            .ToListAsync();
+
+            List<CharacteristicsListDto> characteristicsListDto = _mapper.Map<List<CharacteristicsListDto>>(listCharacteristics);
+
+            //var groupingListOfCharacteristics = characteristicsListDto
+            //    .GroupBy(c => c.Id)
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) //
 
             IndexProductsViewModel viewModel = new IndexProductsViewModel
             {

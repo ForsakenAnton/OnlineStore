@@ -158,144 +158,259 @@ namespace OnlineStore.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        /////////////////////////////////////////////////////////////////////////////
 
 
-        public async Task<IActionResult> AddTemplateToProductsByCategory(int? id)
+        public async Task<IActionResult> EditCharacteristicsOfProduct(int? productId, int? templateId)
         {
-            if (id == null)
+            if (productId == null)
             {
                 return NotFound();
             }
 
-            var template = await _context.Templates.FirstOrDefaultAsync(t => t.Id == id);
-            if (template == null)
+            List<Template> templates = await _context.Templates.ToListAsync();
+            List<TemplatesListDto> templatesListDtos = _mapper.Map<List<TemplatesListDto>>(templates);
+
+            for (int i = 0; i < templatesListDtos.Count; i++)
             {
-                return NotFound();
+                templatesListDtos[i].Id = templates[i].Id;
+                templatesListDtos[i].Title = templates[i].Title;
             }
 
-            var templatesListDto = _mapper.Map<TemplatesListDto>(template);
+            ViewBag.TemplatesListDtos = templatesListDtos;
 
-            ViewBag.Id = template.Id;
-            ViewBag.Title = template.Title;
+            ViewBag.ProductId = productId;
 
-            var categories = await _context.Categories
-                .Include(c => c.Template)
-                .Where(c => c.Categories.Count == 0)
-                .ToListAsync();
-
-            //categories.Insert(0, new Category { Id = 0, Title = "Not Seleted" });
-            //SelectList categoriesList = new SelectList(categories, "Id", "Title");
-            IList<SelectListItem> selectListItems = categories
-                .Select(c => new SelectListItem
+            var characteristic = await _context.Characteristics.FirstOrDefaultAsync(ch => ch.ProductId == productId);
+            if (characteristic == null)
+            {
+                CharacteristicsListDto newCharacteristicsListDto = new CharacteristicsListDto
                 {
-                    Text = c.Template != null ? c.Title + $" (The category allready contains \"{c.Template.Title}\" template)" : c.Title,
-                    Value = c.Id.ToString(),
-                    Disabled = c.Template != null
-                }).ToList();
-            SelectList categoriesList = new SelectList(selectListItems, "Value", "Text"/*, categories.FirstOrDefault(c => c.Template.Id == template.Id)*/);
+                    Id = -1,
+                    ListDto = new List<CharacteristicDto>()
+                    {                    
+                        new CharacteristicDto()
+                    }
+                };
 
-            ViewBag.CategoriesList = categoriesList;
+                if(templateId != null)
+                {
+                    var templateListDto = _mapper.Map<TemplatesListDto>(await _context.Templates.FirstOrDefaultAsync(t => t.Id == templateId));
+                    newCharacteristicsListDto.ListDto = templateListDto.ListDto
+                        .Select(t => new CharacteristicDto
+                        {
+                            Property = t.Property,
+                            Value = "",
+                            TakePartInSort = t.TakePartInSort
+                        }).ToList();
+                }
 
-            return View(templatesListDto);
+                return View(newCharacteristicsListDto);
+            }
+
+
+            ViewBag.Id = characteristic.Id;
+            CharacteristicsListDto characteristicsListDto = _mapper.Map<CharacteristicsListDto>(characteristic);
+
+            if (templateId != null)
+            {
+                CharacteristicsListDto newCharacteristicsListDto = new CharacteristicsListDto() { ListDto = new List<CharacteristicDto>() };
+                var templateListDto = _mapper.Map<TemplatesListDto>(await _context.Templates.FirstOrDefaultAsync(t => t.Id == templateId));
+
+                newCharacteristicsListDto.ListDto = templateListDto.ListDto
+                    .Select(t => new CharacteristicDto
+                    {
+                        Property = t.Property,
+                        Value = "",
+                        TakePartInSort = t.TakePartInSort
+                    }).ToList();
+
+                foreach (var item in newCharacteristicsListDto.ListDto)
+                {
+                    var newRow = characteristicsListDto.ListDto.FirstOrDefault(ch => ch.Property == item.Property);
+                    if (newRow == null)
+                    {
+                        characteristicsListDto.ListDto.Add(item);
+                    }
+                }
+            }
+
+            return View(characteristicsListDto);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddTemplateToProductsByCategory(int? id, int categoryId)
+        public async Task<IActionResult> EditCharacteristicsOfProduct(List<CharacteristicDto> listDto, int? id, int? productId)
         {
-            if (id == null)
+            if (id == null || productId == null)
+            {
+                return BadRequest();
+            }
+            CharacteristicsListDto characteristicsListDto = new CharacteristicsListDto { ListDto = listDto };
+            Characteristic characteristic = _mapper.Map<Characteristic>(characteristicsListDto);
+
+            Product product = await _context.Products
+                .Include(p => p.Characteristic)
+                .FirstOrDefaultAsync(p => p.Id == productId);
+            if(product == null)
             {
                 return NotFound();
             }
-            Template template = await _context.Templates.FirstOrDefaultAsync(t => t.Id == id);
 
-            if (template == null)
+            if (product.Characteristic == null)
             {
-                return NotFound();
-            }
-
-             
-
-            TemplatesListDto templatesListDto = _mapper.Map<TemplatesListDto>(template);
-
-            CharacteristicsListDto characteristicsListDto = new CharacteristicsListDto() { ListDto = new List<CharacteristicDto>() };
-
-            foreach (var templateDto in templatesListDto.ListDto)
-            {
-                characteristicsListDto.ListDto.Add(new CharacteristicDto
-                {
-                    Property = templateDto.Property,
-                    // Value = "",
-                    TakePartInSort = templateDto.TakePartInSort
-                });
-            }
-
-
-            Category category = await _context.Categories
-                .Include(c => c.Template)
-                .FirstOrDefaultAsync(c => c.Id == categoryId);
-
-            category.TemplateId = template.Id;
-            _context.Categories.Update(category);
-
-            ////////////////////////////////////////
-            var product = await _context.CategoryProducts
-                .Include(cp => cp.Product)
-                    .ThenInclude(p => p.Characteristic)
-                .Where(cp => cp.CategoryId == categoryId)
-                .Select(p => p.Product).FirstOrDefaultAsync(p => p.Characteristic != null);
-
-            Characteristic characteristic;
-
-            if (product != null)
-            {
-                CharacteristicsListDto characteristicsListDtoToUpdate = _mapper.Map<CharacteristicsListDto>(product.Characteristic);
-
-                foreach (var item in characteristicsListDto.ListDto)
-                {
-                    if (characteristicsListDtoToUpdate.ListDto.Where(i => i.Property != item.Property).FirstOrDefault().Property != item.Property) // (!)
-                    {
-                        characteristicsListDtoToUpdate.ListDto.Add(item);
-                    }
-                }
-
-                characteristic = _mapper.Map<Characteristic>(characteristicsListDtoToUpdate);
+                product.Characteristic = characteristic;
+                await _context.SaveChangesAsync();
             }
             else
             {
-                characteristic = _mapper.Map<Characteristic>(characteristicsListDto);
+                Characteristic characteristicToUpdate = await _context.Characteristics.FirstOrDefaultAsync(ch => ch.Id == id);
+                characteristicToUpdate.SerializedCharactetistics = characteristic.SerializedCharactetistics;
+                _context.Entry<Characteristic>(characteristicToUpdate).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
             }
-            ////////////////////////////////////////////////////////////////////////////////////////
+            
 
-            //Characteristic characteristic = _mapper.Map<Characteristic>(characteristicsListDto);
-
-            List<Product> products = await _context.CategoryProducts
-                .Include(cp => cp.Category)
-                .Include(cp => cp.Product)
-                    .ThenInclude(p => p.Characteristic)
-                .Where(cp => cp.CategoryId == categoryId)
-                .Select(p => p.Product)
-                .ToListAsync();
-
-            //_context.Characteristics.Load();
-            foreach (var p in products)
-            {
-                Characteristic toUpdateCharacteristic = new Characteristic
-                {
-                    ProductId = p.Id,
-                    SerializedCharactetistics = characteristic.SerializedCharactetistics
-                };
-
-                _context.Characteristics.Add(toUpdateCharacteristic);
-            }
-
-
-
-            await _context.SaveChangesAsync();
-
-
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", "Products");
         }
+
+        /////////////////////////////////////////////////////////////////////////////
+
+
+        //public async Task<IActionResult> AddTemplateToProductsByCategory(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var template = await _context.Templates.FirstOrDefaultAsync(t => t.Id == id);
+        //    if (template == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var templatesListDto = _mapper.Map<TemplatesListDto>(template);
+
+        //    ViewBag.Id = template.Id;
+        //    ViewBag.Title = template.Title;
+
+        //    var categories = await _context.Categories
+        //        .Include(c => c.Template)
+        //        .Where(c => c.Categories.Count == 0)
+        //        .ToListAsync();
+
+        //    //categories.Insert(0, new Category { Id = 0, Title = "Not Seleted" });
+        //    //SelectList categoriesList = new SelectList(categories, "Id", "Title");
+        //    IList<SelectListItem> selectListItems = categories
+        //        .Select(c => new SelectListItem
+        //        {
+        //            Text = c.Template != null ? c.Title + $" (The category allready contains \"{c.Template.Title}\" template)" : c.Title,
+        //            Value = c.Id.ToString(),
+        //            Disabled = c.Template != null
+        //        }).ToList();
+        //    SelectList categoriesList = new SelectList(selectListItems, "Value", "Text"/*, categories.FirstOrDefault(c => c.Template.Id == template.Id)*/);
+
+        //    ViewBag.CategoriesList = categoriesList;
+
+        //    return View(templatesListDto);
+        //}
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> AddTemplateToProductsByCategory(int? id, int categoryId)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    Template template = await _context.Templates.FirstOrDefaultAsync(t => t.Id == id);
+
+        //    if (template == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+
+
+        //    TemplatesListDto templatesListDto = _mapper.Map<TemplatesListDto>(template);
+
+        //    CharacteristicsListDto characteristicsListDto = new CharacteristicsListDto() { ListDto = new List<CharacteristicDto>() };
+
+        //    foreach (var templateDto in templatesListDto.ListDto)
+        //    {
+        //        characteristicsListDto.ListDto.Add(new CharacteristicDto
+        //        {
+        //            Property = templateDto.Property,
+        //            // Value = "",
+        //            TakePartInSort = templateDto.TakePartInSort
+        //        });
+        //    }
+
+
+        //    Category category = await _context.Categories
+        //        .Include(c => c.Template)
+        //        .FirstOrDefaultAsync(c => c.Id == categoryId);
+
+        //    category.TemplateId = template.Id;
+        //    _context.Categories.Update(category);
+
+        //    ////////////////////////////////////////
+        //    var product = await _context.CategoryProducts
+        //        .Include(cp => cp.Product)
+        //            .ThenInclude(p => p.Characteristic)
+        //        .Where(cp => cp.CategoryId == categoryId)
+        //        .Select(p => p.Product).FirstOrDefaultAsync(p => p.Characteristic != null);
+
+        //    Characteristic characteristic;
+
+        //    if (product != null)
+        //    {
+        //        CharacteristicsListDto characteristicsListDtoToUpdate = _mapper.Map<CharacteristicsListDto>(product.Characteristic);
+
+        //foreach (var item in characteristicsListDto.ListDto)
+        //        {
+        //            if (characteristicsListDtoToUpdate.ListDto.Where(i => i.Property != item.Property).FirstOrDefault().Property != item.Property) // (!)
+        //            {
+        //                characteristicsListDtoToUpdate.ListDto.Add(item);
+        //            }
+        //        }
+
+        //        characteristic = _mapper.Map<Characteristic>(characteristicsListDtoToUpdate);
+        //    }
+        //    else
+        //    {
+        //        characteristic = _mapper.Map<Characteristic>(characteristicsListDto);
+        //    }
+        //    ////////////////////////////////////////////////////////////////////////////////////////
+
+        //    //Characteristic characteristic = _mapper.Map<Characteristic>(characteristicsListDto);
+
+        //    List<Product> products = await _context.CategoryProducts
+        //        .Include(cp => cp.Category)
+        //        .Include(cp => cp.Product)
+        //            .ThenInclude(p => p.Characteristic)
+        //        .Where(cp => cp.CategoryId == categoryId)
+        //        .Select(p => p.Product)
+        //        .ToListAsync();
+
+        //    //_context.Characteristics.Load();
+        //    foreach (var p in products)
+        //    {
+        //        Characteristic toUpdateCharacteristic = new Characteristic
+        //        {
+        //            ProductId = p.Id,
+        //            SerializedCharactetistics = characteristic.SerializedCharactetistics
+        //        };
+
+        //        _context.Characteristics.Add(toUpdateCharacteristic);
+        //    }
+
+
+
+        //    await _context.SaveChangesAsync();
+
+
+        //    return RedirectToAction(nameof(Index));
+        //}
     }
 }

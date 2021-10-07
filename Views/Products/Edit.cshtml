@@ -62,6 +62,12 @@
     </div>
 </div>*@
 
+<div>
+    <a asp-action="EditCharacteristicsOfProduct" asp-controller="TemplatesAndCharacteristics" asp-route-productId="@Model.Product.Id" type="button" class="btn btn-outline-warning w-100">
+        Edit characteristics
+    </a>
+</div>
+
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit" enctype="multipart/form-data">

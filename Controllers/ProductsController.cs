@@ -41,7 +41,6 @@ namespace OnlineStore.Controllers
                 .Include(p => p.Manufacturer)
                 .Include(cp => cp.CategoryProducts)
                     .ThenInclude(c => c.Category)
-                        .ThenInclude(c => c.Template)
                 .Include(p => p.Comments)
                     .ThenInclude(c => c.User)
                 .Include(p => p.Comments)
@@ -49,13 +48,13 @@ namespace OnlineStore.Controllers
                         .ThenInclude(a => a.User)
                 .Include(p => p.Comments)
                         .ThenInclude(l => l.Likes);
-
-            foreach (var item in products)
-            {
-                item.Characteristic = new Characteristic();
-                _context.Entry<Product>(item).State = EntityState.Modified;
-            }
-            await _context.SaveChangesAsync();
+            
+            //foreach (var item in products)
+            //{
+            //    item.Characteristic = new Characteristic();
+            //    _context.Entry<Product>(item).State = EntityState.Modified;
+            //}
+            //await _context.SaveChangesAsync();
 
             if (categoryId != null && categoryId != 0)
             {

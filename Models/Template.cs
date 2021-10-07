@@ -11,10 +11,9 @@ namespace OnlineStore.Models
         public string SerializedTemplates { get; set; }
         public string Title { get; set; }
 
-        //public IEnumerable<Product> Products { get; set; }
-        public ICollection<Category> Categories { get; set; }
+        //public ICollection<Product> Products { get; set; }
+        //public ICollection<Category> Categories { get; set; }
         //public int? CategoryId  { get; set; }
-        //public Category Category { get; set; }
-        
+        //public Category Category { get; set; }    
     }
 }

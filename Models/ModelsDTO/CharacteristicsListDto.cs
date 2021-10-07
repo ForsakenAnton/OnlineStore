@@ -7,6 +7,7 @@ namespace OnlineStore.Models.ModelsDTO
 {
 	public class CharacteristicsListDto
 	{
-		public List<CharacteristicDto> ListDto { get; set; }
+        public int Id { get; set; }
+        public List<CharacteristicDto> ListDto { get; set; }
 	}
 }
