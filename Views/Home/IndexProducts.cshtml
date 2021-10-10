@@ -14,7 +14,17 @@
             </div>
             <div class="modal-body bg-white">
                 <div class="container">
-                    qwerty
+                    @if (Model.GroupCharacteristicsViewModels != null)
+                    {
+                        @foreach (var group in Model.GroupCharacteristicsViewModels)
+                        {
+                            <h3>@group.Property</h3>
+                            foreach (var item in group.CharacteristicsListViewModel)
+                            {
+                                <div>@(item.Count). @item.Value</div>
+                            }
+                        }
+                    }
                 </div>
             </div>
             <div class="modal-footer">

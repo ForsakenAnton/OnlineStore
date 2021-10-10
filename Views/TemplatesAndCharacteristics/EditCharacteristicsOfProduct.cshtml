@@ -49,6 +49,7 @@
         You can choose the ready-to-use templates
     </button>
 
+    <div class="fs3 mb-3 border-bottom">Model: <span class="fw-bold">@ViewBag.Product.Title</span></div>
     <form id="propsListForm" asp-action="EditCharacteristicsOfProduct" onsubmit="editCharacteristicsOfProduct(event)">
 
         <input value="@Model.Id" name="id" type="hidden" />

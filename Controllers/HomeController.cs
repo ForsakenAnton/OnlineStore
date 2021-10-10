@@ -237,6 +237,28 @@ namespace OnlineStore.Controllers
 
             List<CharacteristicsListDto> characteristicsListDto = _mapper.Map<List<CharacteristicsListDto>>(listCharacteristics);
 
+            List<CharacteristicDto> allLists = new List<CharacteristicDto>();
+            foreach (var list in characteristicsListDto)
+            {
+                allLists.AddRange(list.ListDto);
+            }
+
+            List<GroupCharacteristicsViewModel> groupCharacteristicsViewModel =  allLists.GroupBy(a => a.Property)
+                .Select(g => new GroupCharacteristicsViewModel
+                {
+                    Property = g.Key,
+                    CharacteristicsListViewModel = allLists
+                        .Where(p => p.Property == g.Key)
+                        .Select(l => new CharacteristicsListViewModel
+                        {
+                            Count = allLists.Count(a => a.Property == g.Key && a.Value == l.Value),
+                            Value = l.Value
+                        })
+                        .Distinct() // (!) организовать IEqualityComparer !!!
+                        .ToList()
+                })
+                .ToList();
+
             //var groupingListOfCharacteristics = characteristicsListDto
             //    .GroupBy(c => c.Id)
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -250,6 +272,7 @@ namespace OnlineStore.Controllers
                 FilterViewModel = new FilterViewModel(productId, searchString, categoryId, null, null, null),
                 PageListViewModel = new PageViewModel(count, page, pageSize),
                 ProductId = productId,
+                GroupCharacteristicsViewModels = groupCharacteristicsViewModel
                 //User = user,
                 //FavoriteProducts = favoriteProducts
             };

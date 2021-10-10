@@ -15,8 +15,8 @@ namespace OnlineStore.DB
     {
         public static async Task InitializeAsync(OnlineStoreContext context, IWebHostEnvironment environment/*, UserManager<User> userManager, RoleManager<IdentityRole> roleManager*/)
         {
-            //context.Database.EnsureDeleted();
-            //context.Database.EnsureCreated();
+           // context.Database.EnsureDeleted();
+           // context.Database.EnsureCreated();
 
             if (context.Products.Any() == false)
             {

@@ -41,6 +41,8 @@ namespace OnlineStore.Controllers
                 IdentityResult createdResult = await _userManager.CreateAsync(user: user, password: model.Password);
                 if (createdResult.Succeeded)
                 {
+                    await _userManager.AddToRoleAsync(user, "user");
+
                     await _signInManager.SignInAsync(user: user, isPersistent: false);
                     //return RedirectToAction("Index", "Home");
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -145,7 +147,6 @@ namespace OnlineStore.Controllers
 
                 if (signInResult.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(user, "user");
 
                     //избегагаем перенаправления на нежелательные сайты
                     if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))

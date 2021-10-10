@@ -33,10 +33,10 @@ namespace OnlineStore
 
                     await InitializeData.InitializeAsync(context, environment/*, userManager, rolesManager*/);
 
-                    //var userManager = services.GetRequiredService<UserManager<User>>();
-                    //var rolesManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-                    //IConfiguration configuration = services.GetRequiredService<IConfiguration>();
-                    //await RoleInitializer.InitializeAsync(userManager, rolesManager, configuration);
+                    var userManager = services.GetRequiredService<UserManager<User>>();
+                    var rolesManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+                    IConfiguration configuration = services.GetRequiredService<IConfiguration>();
+                    await RoleInitializer.InitializeAsync(userManager, rolesManager, configuration);
                 }
                 catch(Exception ex)
                 {

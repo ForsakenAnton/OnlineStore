@@ -177,8 +177,8 @@ namespace OnlineStore.Controllers
             }
 
             ViewBag.TemplatesListDtos = templatesListDtos;
-
             ViewBag.ProductId = productId;
+            ViewBag.Product = await _context.Products.FirstOrDefaultAsync(p => p.Id == productId);
 
             var characteristic = await _context.Characteristics.FirstOrDefaultAsync(ch => ch.ProductId == productId);
             if (characteristic == null)
