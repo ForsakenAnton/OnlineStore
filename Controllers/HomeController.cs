@@ -130,10 +130,11 @@ namespace OnlineStore.Controllers
                         .Where(p => selectIenumerableProducts.Contains(p))
                         .OrderBy(p => (p.Price - p.Discount));
 
-                    //IQueryable<Product> products = _context.Products
-                    //    .Aggregate(new List<Product>(), (acc, dest) => acc.add);
 
-
+                    // Main Filters ////
+                    List<GroupPropertyValuesViewModel> groupPropertyValues = await GetGroupPropertyValues(products);
+                    ////////////////////
+                    
 
                     int count = await products.CountAsync();
                     var items = await products.Skip(0).Take(8).ToListAsync();
@@ -145,6 +146,7 @@ namespace OnlineStore.Controllers
                         FilterViewModel = new FilterViewModel(null, null, categoryId, null, null, null),
                         PageListViewModel = new PageViewModel(count, 1, 8),
                         ProductId = null,
+                        GroupPropertyValuesViewModels = groupPropertyValues
                         //User = user,
                         //FavoriteProducts = favoriteProducts
                     };
@@ -162,7 +164,7 @@ namespace OnlineStore.Controllers
             return NotFound();
         }
 
-        public async Task<IActionResult> IndexProducts(int? productId, int? categoryId, string searchString, int page = 1, SortState sortOrder = SortState.PriceAsc)
+        public async Task<IActionResult> IndexProducts(int? productId, int? categoryId, string[] values, string searchString, int page = 1, SortState sortOrder = SortState.PriceAsc)
         {
             int pageSize = 8;
 
@@ -205,9 +207,6 @@ namespace OnlineStore.Controllers
                 products = products
                     .Where(p => p.Title.ToLower().Trim().Contains(searchString) ||
                                 p.Feature.ToLower().Trim().Contains(searchString));
-                //.ToList();
-
-                //page = 1;
             }
 
             // Sort /////////////////////////////////////////////
@@ -219,6 +218,24 @@ namespace OnlineStore.Controllers
                 _ => products.OrderBy(p => p.Price)
             };
 
+
+            // Main filters //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            //if(values.Length != 0)
+            //{
+            //    products = GetFilteredProducts(products, values);
+            //}
+
+            List<GroupPropertyValuesViewModel> groupPropertyValues = await GetGroupPropertyValues(products);
+
+            if (values.Length != 0)
+            {
+                products = GetFilteredProducts(products, values);
+            }
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
             // Pagination ///////////////////////////////////////
 
             //PageViewModel<Product> pageListViewModel = await PageViewModel<Product>.CreateAsync(products, page, pageSize);
@@ -226,10 +243,76 @@ namespace OnlineStore.Controllers
             var items = await products.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
 
 
-            // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) //
+            IndexProductsViewModel viewModel = new IndexProductsViewModel
+            {
+                Products = items,
+                SortViewModel = new SortViewModel(sortOrder),
+                FilterViewModel = new FilterViewModel(productId, searchString, categoryId, null, null, null),
+                PageListViewModel = new PageViewModel(count, page, pageSize),
+                ProductId = productId,
+                GroupPropertyValuesViewModels = groupPropertyValues
+                //User = user,
+                //FavoriteProducts = favoriteProducts
+            };
 
-            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            List<Characteristic> listCharacteristics = await products.Select(p => new Characteristic
+            return View("IndexProducts", viewModel);
+        }
+
+        private IQueryable<Product> GetFilteredProducts(IQueryable<Product> products, string[] values)
+        {
+            var filteredProducts = new List<Product>();
+            int count = products.Count();
+            foreach (var product in products)
+            {
+                var characteristics = _mapper.Map<CharacteristicsListDto>(product.Characteristic);
+                if (characteristics != null)
+                {
+                    foreach (var row in characteristics.ListDto)
+                    {
+
+                        if (values.Contains(row.Value))
+                        {
+                            filteredProducts.Add(product);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            int countFP = filteredProducts.Count();
+            countFP = products.Count();
+            products = products.Where(p => filteredProducts.Contains(p));
+            countFP = products.Count();
+            return products; //filteredProducts.AsQueryable();
+        }
+    
+
+        private async Task<List<GroupPropertyValuesViewModel>> GetGroupPropertyValues(IQueryable<Product> products)
+        {
+            List<CharacteristicDto> allLists = await GetCharacteristicDtoList(products);
+
+            List<GroupPropertyValuesViewModel> groupPropertyValues = allLists.GroupBy(a => a.Property)
+                .Select(g => new GroupPropertyValuesViewModel
+                {
+                    Property = g.Key,
+                    CharacteristicValueViewModel = allLists
+                        .Where(p => p.Property == g.Key && p.TakePartInSort == true)
+                        .Select(l => new CharacteristicValueViewModel
+                        {
+                            Count = allLists.Count(a => a.Property == g.Key && a.Value == l.Value),
+                            Value = l.Value
+                        })
+                        .Distinct(new CharacteristicValueViewModelComparer()) // (!)
+                        .ToList()
+                })
+                .ToList();
+
+            return groupPropertyValues;
+        }
+
+        private async Task<List<CharacteristicDto>> GetCharacteristicDtoList(IQueryable<Product> products)
+        {
+            List<Characteristic> listCharacteristics = await products.AsQueryable().Select(p => new Characteristic
             {
                 SerializedCharactetistics = p.Characteristic.SerializedCharactetistics
             })
@@ -243,45 +326,8 @@ namespace OnlineStore.Controllers
                 allLists.AddRange(list.ListDto);
             }
 
-            List<GroupCharacteristicsViewModel> groupCharacteristicsViewModel =  allLists.GroupBy(a => a.Property)
-                .Select(g => new GroupCharacteristicsViewModel
-                {
-                    Property = g.Key,
-                    CharacteristicsListViewModel = allLists
-                        .Where(p => p.Property == g.Key)
-                        .Select(l => new CharacteristicsListViewModel
-                        {
-                            Count = allLists.Count(a => a.Property == g.Key && a.Value == l.Value),
-                            Value = l.Value
-                        })
-                        .Distinct() // (!) организовать IEqualityComparer !!!
-                        .ToList()
-                })
-                .ToList();
-
-            //var groupingListOfCharacteristics = characteristicsListDto
-            //    .GroupBy(c => c.Id)
-            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) // (!) //
-
-            IndexProductsViewModel viewModel = new IndexProductsViewModel
-            {
-                Products = items,
-                SortViewModel = new SortViewModel(sortOrder),
-                FilterViewModel = new FilterViewModel(productId, searchString, categoryId, null, null, null),
-                PageListViewModel = new PageViewModel(count, page, pageSize),
-                ProductId = productId,
-                GroupCharacteristicsViewModels = groupCharacteristicsViewModel
-                //User = user,
-                //FavoriteProducts = favoriteProducts
-            };
-
-            return View("IndexProducts", viewModel);
+            return allLists;
         }
-    
-
-
 
 
 

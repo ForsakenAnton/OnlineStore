@@ -9,22 +9,33 @@
     <div class="modal-dialog modal-fullscreen">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="mainFiltersLabel">Templates list</h5>
+                <h5 class="modal-title" id="mainFiltersLabel">Filters</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body bg-white">
                 <div class="container">
-                    @if (Model.GroupCharacteristicsViewModels != null)
-                    {
-                        @foreach (var group in Model.GroupCharacteristicsViewModels)
+                    <h2 class="text-center mb-5">Main Filters</h2>
+                    <form asp-action="IndexProducts" asp-route-categoryId="@(Model.FilterViewModel.CategoryId)" asp-route-sortOrder="@(SortState.PriceDesc)">>
+                        @if (Model.GroupPropertyValuesViewModels != null)
                         {
-                            <h3>@group.Property</h3>
-                            foreach (var item in group.CharacteristicsListViewModel)
+                            @foreach (var group in Model.GroupPropertyValuesViewModels)
                             {
-                                <div>@(item.Count). @item.Value</div>
+                                <h4 class="mb-3">@group.Property</h4>
+                                foreach (var item in group.CharacteristicValueViewModel)
+                                {
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="@(item.Value)" name="values">
+                                        <label class="form-check-label" for="tvalues">
+                                            @(item.Value) (@(item.Count))
+                                        </label>
+                                    </div>
+                                }
+                                <hr class="mb-5" />
                             }
                         }
-                    }
+
+                        <input type="submit" class="btn btn-primary" value="Filter" />
+                    </form>
                 </div>
             </div>
             <div class="modal-footer">

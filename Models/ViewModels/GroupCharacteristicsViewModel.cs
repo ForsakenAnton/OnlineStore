@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace OnlineStore.Models.ViewModels
 {
-    public class GroupCharacteristicsViewModel
+    public class GroupPropertyValuesViewModel
     {
         public string Property { get; set; }
-        public List<CharacteristicsListViewModel> CharacteristicsListViewModel  { get; set; }
+        public List<CharacteristicValueViewModel> CharacteristicValueViewModel { get; set; }
     }
 }

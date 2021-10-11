@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace OnlineStore.Models.ModelsDTO
 {
-	public class CharacteristicDto
+	public class CharacteristicDto//: IAsyncEnumerable
 	{
 		public string Property { get; set; }
 		public string Value { get; set; }
