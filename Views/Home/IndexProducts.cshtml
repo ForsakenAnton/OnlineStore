@@ -15,20 +15,34 @@
             <div class="modal-body bg-white">
                 <div class="container">
                     <h2 class="text-center mb-5">Main Filters</h2>
-                    <form asp-action="IndexProducts" asp-route-categoryId="@(Model.FilterViewModel.CategoryId)" asp-route-sortOrder="@(SortState.PriceDesc)">>
+                    <form asp-action="IndexProducts" asp-route-categoryId="@(Model.FilterViewModel.CategoryId)" asp-route-sortOrder="@(Model.SortViewModel.Current)">
                         @if (Model.GroupPropertyValuesViewModels != null)
                         {
+                            int index = 0;
                             @foreach (var group in Model.GroupPropertyValuesViewModels)
                             {
                                 <h4 class="mb-3">@group.Property</h4>
                                 foreach (var item in group.CharacteristicValueViewModel)
                                 {
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="@(item.Value)" name="values">
-                                        <label class="form-check-label" for="tvalues">
-                                            @(item.Value) (@(item.Count))
-                                        </label>
-                                    </div>
+                                    string check = "";
+                                    if (Model.FilterViewModel.CurrentProperties != null && Model.FilterViewModel.CurrentValues != null)
+                                    {
+                                        check = Model.FilterViewModel.CurrentProperties.Contains(group.Property) &&
+                                                       Model.FilterViewModel.CurrentValues.Contains(item.Value) ?
+                                                       "checked" : "";
+                                    }
+
+                    <div class="form-check">
+                        <input class="form-check-input filterProperty" type="hidden" value="@(group.Property)" name="[@(index)].property">
+                        @*<input class="form-check-input filterValue" type="checkbox" onclick="onCheckFilter(event)" value="@(item.Value)" name="[@(index)].value">*@
+                        <input class="form-check-input filterValue" type="checkbox" value="@(item.Value)" name="[@(index)].value" @check>
+                       
+                        <label class="form-check-label" for="tvalues">
+                            <span class="fw-bold text-success">@(item.Value)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>(@(item.Count))</span>
+                        </label>
+                    </div>
+
+                                    index++;
                                 }
                                 <hr class="mb-5" />
                             }
@@ -63,7 +77,7 @@
                        asp-route-page="@(Model.PageListViewModel.PageNumber)"
                        asp-route-productId="@(Model.FilterViewModel.ProductId)"
                        asp-route-categoryId="@(Model.FilterViewModel.CategoryId)"
-                       asp-route-searchString="@(Model.FilterViewModel.SelectedSearchString)"
+                       asp-route-searchString="@(Model.FilterViewModel.SelectedSearchString)"       
                        asp-route-sortOrder="@(SortState.PriceAsc)">
                         <i class="bi bi-arrow-up"></i> price
                     </a>
@@ -78,6 +92,8 @@
                        asp-route-sortOrder="@(SortState.PriceDesc)">
                         <i class="bi bi-arrow-down"></i> price
                     </a>
+                    @*asp-route-currentProperties="@Model.FilterViewModel.CurrentProperties"
+                    asp-route-currentValues="@Model.FilterViewModel.CurrentValues"*@
                 </li>
             </ul>
         </div>
@@ -165,11 +181,47 @@
            page-url-productId="@(Model.FilterViewModel.ProductId)"
            page-url-categoryId="@(Model.FilterViewModel.CategoryId)"
            page-url-searchString="@(Model.FilterViewModel.SelectedSearchString)"
-           page-url-sortOrder="@(Model.SortViewModel.Current)">
+           page-url-sortOrder="@(Model.SortViewModel.Current)"
+           page-url-currentProperties="@(Model.FilterViewModel.CurrentProperties)"
+           page-url-currentValues="@(Model.FilterViewModel.CurrentValues)">
 </page-link>
 
 
 <vc:last-viewed-products />
+
+
+<script>
+    function onCheckFilter(event) {
+        let properties = document.getElementsByClassName("filterProperty");
+        let values = document.getElementsByClassName("filterValue");
+
+        let characteristicList = [];
+        for (let i = 0; i < properties.length; i++) {
+            if (properties[i].value !== null && values[i].value !== null && values[i].checked === true) {
+                characteristicList.push({
+                    property: properties[i].value,
+                    value: values[i].value
+                });
+            }
+        }
+
+        fetch('/home/IndexProducts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: JSON.stringify(characteristicList)
+        });
+
+            //.then((response) => {
+            //    return response.text();
+            //})
+            //.then((result) => {
+            //    mainSearchAjaxResult.style.display = "block";
+            //    mainSearchAjaxResult.innerHTML = result;
+            //});
+    }
+</script>
 
 
 @*@section Scripts {

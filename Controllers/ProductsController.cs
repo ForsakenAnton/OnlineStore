@@ -123,7 +123,7 @@ namespace OnlineStore.Controllers
             {
                 Products = items,
                 SortViewModel = new SortViewModel(sortOrder),
-                FilterViewModel = new FilterViewModel(null, searchString, categoryId, categories, manufacturerId, manufacturers),
+                FilterViewModel = new FilterViewModel(null, searchString, categoryId, categories, manufacturerId, manufacturers, null),
                 PageListViewModel = new PageViewModel(count, page, pageSize)
             };
 

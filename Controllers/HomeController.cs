@@ -143,7 +143,7 @@ namespace OnlineStore.Controllers
                     {
                         Products = items,
                         SortViewModel = new SortViewModel(SortState.PriceAsc),
-                        FilterViewModel = new FilterViewModel(null, null, categoryId, null, null, null),
+                        FilterViewModel = new FilterViewModel(null, null, categoryId, null, null, null, null),
                         PageListViewModel = new PageViewModel(count, 1, 8),
                         ProductId = null,
                         GroupPropertyValuesViewModels = groupPropertyValues
@@ -164,7 +164,20 @@ namespace OnlineStore.Controllers
             return NotFound();
         }
 
-        public async Task<IActionResult> IndexProducts(int? productId, int? categoryId, string[] values, string searchString, int page = 1, SortState sortOrder = SortState.PriceAsc)
+        //public async Task<IActionResult> Test([FromBody] List<CharacteristicViewModel> listOfCharacteristicViewModelsFromBody)
+        //{
+        //    return NoContent();
+        //}
+
+        public async Task<IActionResult> IndexProducts(int? productId,
+                                                       int? categoryId,       
+                                                       string searchString,
+                                                       List<CharacteristicViewModel> listOfCharacteristicViewModels,
+                                                       string[] currentProperties,
+                                                       string[] currentValues,
+                                                       // [FromBody] List<CharacteristicViewModel> listOfCharacteristicViewModelsFromBody,
+                                                       int page = 1,
+                                                       SortState sortOrder = SortState.PriceAsc)
         {
             int pageSize = 8;
 
@@ -228,10 +241,33 @@ namespace OnlineStore.Controllers
 
             List<GroupPropertyValuesViewModel> groupPropertyValues = await GetGroupPropertyValues(products);
 
-            if (values.Length != 0)
+            if(currentProperties.Length != 0 && currentValues.Length != 0)
             {
-                products = GetFilteredProducts(products, values);
+                for (int i = 0; i < currentProperties.Length; i++)
+                {
+                    listOfCharacteristicViewModels.Add(new CharacteristicViewModel { Property = currentProperties[i], Value = currentValues[i] });
+                }
             }
+
+            if (listOfCharacteristicViewModels.Count != 0 /*|| listOfCharacteristicViewModelsFromBody.Count != 0*/)
+            {
+                //if (listOfCharacteristicViewModelsFromBody.Count != 0)
+                //{
+                //    listOfCharacteristicViewModels = listOfCharacteristicViewModelsFromBody;
+                //}
+                //else
+                //{
+                    listOfCharacteristicViewModels = listOfCharacteristicViewModels.Where(l => !String.IsNullOrEmpty(l.Property) && !String.IsNullOrEmpty(l.Value)).ToList();
+                //}
+
+                products = GetFilteredProducts(products, listOfCharacteristicViewModels);
+
+                if (!String.IsNullOrEmpty(HttpContext.Request.Headers["test"]))
+                {
+                    _logger.LogInformation(HttpContext.Request.Headers["test"]);
+                }
+            }
+
 
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -247,7 +283,7 @@ namespace OnlineStore.Controllers
             {
                 Products = items,
                 SortViewModel = new SortViewModel(sortOrder),
-                FilterViewModel = new FilterViewModel(productId, searchString, categoryId, null, null, null),
+                FilterViewModel = new FilterViewModel(productId, searchString, categoryId, null, null, null, listOfCharacteristicViewModels),
                 PageListViewModel = new PageViewModel(count, page, pageSize),
                 ProductId = productId,
                 GroupPropertyValuesViewModels = groupPropertyValues
@@ -258,7 +294,7 @@ namespace OnlineStore.Controllers
             return View("IndexProducts", viewModel);
         }
 
-        private IQueryable<Product> GetFilteredProducts(IQueryable<Product> products, string[] values)
+        private IQueryable<Product> GetFilteredProducts(IQueryable<Product> products, List<CharacteristicViewModel> listOfCharacteristicViewModels)
         {
             var filteredProducts = new List<Product>();
             int count = products.Count();
@@ -269,8 +305,7 @@ namespace OnlineStore.Controllers
                 {
                     foreach (var row in characteristics.ListDto)
                     {
-
-                        if (values.Contains(row.Value))
+                        if (listOfCharacteristicViewModels.Select(l => l.Property).Contains(row.Property) && listOfCharacteristicViewModels.Select(l => l.Value).Contains(row.Value))
                         {
                             filteredProducts.Add(product);
                             break;
