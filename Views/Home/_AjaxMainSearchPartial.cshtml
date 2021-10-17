@@ -27,7 +27,7 @@
             @foreach (var product in Model.Products)
             {
                 @*<div><a asp-action="Details" asp-route-productId="@product.Id">@product.Title</a></div>*@
-            <div class="d-flex position-relative me-3 mb-3 border-bottom border-2 border-success">
+            <div class="d-flex position-relative me-3 mb-3 border-bottom border-2 border-success" title="@product.Title @product.Feature">
                 <div class="flex-shrink-0">
                     <img src="data:image/*;base64,@(Convert.ToBase64String(product.Image))" class="flex-shrink-0 img-thumbnail ms-1 me-3 border-0" style="height:5rem;" alt="Category image">
                 </div> 

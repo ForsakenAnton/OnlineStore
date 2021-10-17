@@ -140,7 +140,7 @@ namespace OnlineStore.Controllers
 
 
                 Microsoft.AspNetCore.Identity.SignInResult signInResult = await _signInManager.PasswordSignInAsync(
-                    model.Email,
+                    user.UserName,  // model.Email,
                     model.Password,
                     isPersistent: model.RememberMe, // Флаг, указывающий, должен ли файл cookie для входа сохраняться после закрытия браузера.
                     lockoutOnFailure: false); // Флаг, указывающий, следует ли блокировать учетную запись пользователя в случае сбоя входа.

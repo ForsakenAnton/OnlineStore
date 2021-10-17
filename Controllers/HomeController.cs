@@ -137,14 +137,14 @@ namespace OnlineStore.Controllers
                     
 
                     int count = await products.CountAsync();
-                    var items = await products.Skip(0).Take(8).ToListAsync();
+                    var items = await products.Skip(0).Take(12).ToListAsync();
 
                     IndexProductsViewModel viewModel = new IndexProductsViewModel
                     {
                         Products = items,
                         SortViewModel = new SortViewModel(SortState.PriceAsc),
                         FilterViewModel = new FilterViewModel(null, null, categoryId, null, null, null, null),
-                        PageListViewModel = new PageViewModel(count, 1, 8),
+                        PageListViewModel = new PageViewModel(count, 1, 12),
                         ProductId = null,
                         GroupPropertyValuesViewModels = groupPropertyValues
                         //User = user,
@@ -164,29 +164,12 @@ namespace OnlineStore.Controllers
             return NotFound();
         }
 
-        //public async Task<IActionResult> Test([FromBody] List<CharacteristicViewModel> listOfCharacteristicViewModelsFromBody)
-        //{
-        //    return NoContent();
-        //}
-
-        public async Task<IActionResult> IndexProducts(int? productId,
-                                                       int? categoryId,       
-                                                       string searchString,
-                                                       List<CharacteristicViewModel> listOfCharacteristicViewModels,
-                                                       string[] currentProperties,
-                                                       string[] currentValues,
-                                                       // [FromBody] List<CharacteristicViewModel> listOfCharacteristicViewModelsFromBody,
-                                                       int page = 1,
-                                                       SortState sortOrder = SortState.PriceAsc)
+        public async Task<IActionResult> AjaxMainFilterIndexProducts(int? productId, int? categoryId, SortState sortOrder, List<CharacteristicViewModel> listOfCharacteristicViewModels /*[FromBody] List<CharacteristicViewModel> listOfCharacteristicViewModels,*/)
         {
-            int pageSize = 8;
-
             IQueryable<Product> products = _context.Products
                 .Include(p => p.Characteristic)
                 .Include(p => p.Manufacturer)
                 .Include(p => p.Comments);
-                    //.ThenInclude(c => c.User)
-                //.ToListAsync();
 
             // Filter //////////////////////////////////////
 
@@ -201,7 +184,68 @@ namespace OnlineStore.Controllers
                     products = products
                        .Where(p => p.Title.ToLower().Trim().Contains(product.Title.ToLower().Trim()) ||
                                    product.Title.ToLower().Trim().Contains(p.Title.ToLower().Trim()));
-                        //.ToList();
+                }
+            }
+            else if (categoryId != null && categoryId != 0)
+            {
+                var selectIenumerableProducts = _context.CategoryProducts
+                        .Where(cp => cp.CategoryId == categoryId)
+                        .Select(p => p.Product);
+
+                products = products.Where(p => selectIenumerableProducts.Contains(p));
+            }
+
+            products = sortOrder switch
+            {
+                SortState.PriceAsc => products.OrderBy(p => (p.Price - p.Discount)),
+                SortState.PriceDesc => products.OrderByDescending(p => (p.Price - p.Discount)),
+                _ => products.OrderBy(p => p.Price)
+            };
+
+
+            if (listOfCharacteristicViewModels.Count != 0)
+            {
+                listOfCharacteristicViewModels = listOfCharacteristicViewModels.Where(l => !String.IsNullOrEmpty(l.Property) && !String.IsNullOrEmpty(l.Value)).ToList();
+                if (listOfCharacteristicViewModels.Count != 0)
+                {
+                    products = GetFilteredProducts(products, listOfCharacteristicViewModels);
+                }
+            }
+
+
+            return Json(new { productsCount = products.Count() });
+        }
+
+        public async Task<IActionResult> IndexProducts(int? productId,
+                                                       int? categoryId,       
+                                                       string searchString,
+                                                       List<CharacteristicViewModel> listOfCharacteristicViewModels,
+                                                       string[] currentProperties,
+                                                       string[] currentValues,
+                                                       // [FromBody] List<CharacteristicViewModel> listOfCharacteristicViewModelsFromBody,
+                                                       int page = 1,
+                                                       SortState sortOrder = SortState.PriceAsc)
+        {
+            int pageSize = 12;
+
+            IQueryable<Product> products = _context.Products
+                .Include(p => p.Characteristic)
+                .Include(p => p.Manufacturer)
+                .Include(p => p.Comments);
+
+            // Filter //////////////////////////////////////
+
+            if (productId != null)
+            {
+                var product = await _context.Products
+                    .FirstOrDefaultAsync(p => p.Id == productId);
+
+                if (product != null)
+                {
+
+                    products = products
+                       .Where(p => p.Title.ToLower().Trim().Contains(product.Title.ToLower().Trim()) ||
+                                   product.Title.ToLower().Trim().Contains(p.Title.ToLower().Trim()));
                 }
             }
             else if (categoryId != null && categoryId != 0)
@@ -249,22 +293,12 @@ namespace OnlineStore.Controllers
                 }
             }
 
-            if (listOfCharacteristicViewModels.Count != 0 /*|| listOfCharacteristicViewModelsFromBody.Count != 0*/)
+            if (listOfCharacteristicViewModels.Count != 0)
             {
-                //if (listOfCharacteristicViewModelsFromBody.Count != 0)
-                //{
-                //    listOfCharacteristicViewModels = listOfCharacteristicViewModelsFromBody;
-                //}
-                //else
-                //{
-                    listOfCharacteristicViewModels = listOfCharacteristicViewModels.Where(l => !String.IsNullOrEmpty(l.Property) && !String.IsNullOrEmpty(l.Value)).ToList();
-                //}
-
-                products = GetFilteredProducts(products, listOfCharacteristicViewModels);
-
-                if (!String.IsNullOrEmpty(HttpContext.Request.Headers["test"]))
+                listOfCharacteristicViewModels = listOfCharacteristicViewModels.Where(l => !String.IsNullOrEmpty(l.Property) && !String.IsNullOrEmpty(l.Value)).ToList();
+                if (listOfCharacteristicViewModels.Count != 0)
                 {
-                    _logger.LogInformation(HttpContext.Request.Headers["test"]);
+                    products = GetFilteredProducts(products, listOfCharacteristicViewModels);
                 }
             }
 
@@ -301,16 +335,52 @@ namespace OnlineStore.Controllers
             foreach (var product in products)
             {
                 var characteristics = _mapper.Map<CharacteristicsListDto>(product.Characteristic);
+
                 if (characteristics != null)
                 {
-                    foreach (var row in characteristics.ListDto)
+                    var groupCharacteristics = listOfCharacteristicViewModels.GroupBy(l => l.Property)
+                         .Select(g => new
+                         {
+                             property = g.Key,
+                             values = listOfCharacteristicViewModels.Where(l => l.Property == g.Key).Select(v => v.Value)
+                         });
+
+                    bool isContainValues = false;
+                    foreach (var group in groupCharacteristics)
                     {
-                        if (listOfCharacteristicViewModels.Select(l => l.Property).Contains(row.Property) && listOfCharacteristicViewModels.Select(l => l.Value).Contains(row.Value))
+                        foreach (var value in group.values)
                         {
-                            filteredProducts.Add(product);
+                            isContainValues = false;
+                            CharacteristicDto characteristicDto = new CharacteristicDto { Property = group.property, Value = value, TakePartInSort = true };
+
+                            if (/*characteristics.ListDto.Select(ch => ch.Property).Contains(group.property) == true &&
+                                characteristics.ListDto.Select(ch => ch.Value).Contains(value) == true &&*/
+                                characteristics.ListDto.Contains(characteristicDto, new CharacteristicDtoComparer()))
+                            {
+                                isContainValues = true;
+                                break;
+                            }
+                        }
+
+                        if(isContainValues == false)
+                        {
                             break;
                         }
                     }
+
+                    if(isContainValues == true)
+                    {
+                        filteredProducts.Add(product);
+                    }
+
+                    //foreach (var row in characteristics.ListDto)
+                    //{
+                    //    if (listOfCharacteristicViewModels.Select(l => l.Property).Contains(row.Property) && listOfCharacteristicViewModels.Select(l => l.Value).Contains(row.Value))
+                    //    {
+                    //        filteredProducts.Add(product);
+                    //        break;
+                    //    }
+                    //}
                 }
             }
 

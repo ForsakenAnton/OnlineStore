@@ -32,15 +32,16 @@
                                                        "checked" : "";
                                     }
 
-                    <div class="form-check">
-                        <input class="form-check-input filterProperty" type="hidden" value="@(group.Property)" name="[@(index)].property">
-                        @*<input class="form-check-input filterValue" type="checkbox" onclick="onCheckFilter(event)" value="@(item.Value)" name="[@(index)].value">*@
-                        <input class="form-check-input filterValue" type="checkbox" value="@(item.Value)" name="[@(index)].value" @check>
-                       
-                        <label class="form-check-label" for="tvalues">
-                            <span class="fw-bold text-success">@(item.Value)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>(@(item.Count))</span>
-                        </label>
-                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input filterProperty" type="hidden" value="@(group.Property)" name="[@(index)].property">
+                                        <input id="@(index)" class="form-check-input filterValue" type="checkbox" value="@(item.Value)" name="[@(index)].value" onclick="onCheckFilter(event, '@Model.ProductId', '@Model.FilterViewModel.CategoryId', '@Model.SortViewModel.Current')" @check>
+                                        @*<input class="form-check-input filterValue" type="checkbox" value="@(item.Value)" name="[@(index)].value" @check>*@
+
+                                        <label class="form-check-label" for="tvalues">
+                                            <span class="fw-bold text-success">@(item.Value)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>(@(item.Count))</span>
+                                        </label>
+                                        <span id="@(index)spanForFilterButton" class="ms-5"></span>
+                                    </div>
 
                                     index++;
                                 }
@@ -48,7 +49,7 @@
                             }
                         }
 
-                        <input type="submit" class="btn btn-primary" value="Filter" />
+                        <input type="submit" class="btn btn-lg btn-primary ps-3 pe-3" value="Filter" />
                     </form>
                 </div>
             </div>
@@ -77,7 +78,7 @@
                        asp-route-page="@(Model.PageListViewModel.PageNumber)"
                        asp-route-productId="@(Model.FilterViewModel.ProductId)"
                        asp-route-categoryId="@(Model.FilterViewModel.CategoryId)"
-                       asp-route-searchString="@(Model.FilterViewModel.SelectedSearchString)"       
+                       asp-route-searchString="@(Model.FilterViewModel.SelectedSearchString)"
                        asp-route-sortOrder="@(SortState.PriceAsc)">
                         <i class="bi bi-arrow-up"></i> price
                     </a>
@@ -93,13 +94,13 @@
                         <i class="bi bi-arrow-down"></i> price
                     </a>
                     @*asp-route-currentProperties="@Model.FilterViewModel.CurrentProperties"
-                    asp-route-currentValues="@Model.FilterViewModel.CurrentValues"*@
+                        asp-route-currentValues="@Model.FilterViewModel.CurrentValues"*@
                 </li>
             </ul>
         </div>
     </div>
 
-    <div class="row g-0 ms-3 me-3 ">
+    <div class="row g-0 ms-3 me-3">
         @foreach (var product in Model.Products)
         {
             <div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 gy-5 main-box-shadow">
@@ -191,27 +192,93 @@
 
 
 <script>
-    function onCheckFilter(event) {
+    function onCheckFilter(event, productId, categoryId, sortOrder) {
+        // alert(productId + " " + categoryId + " " + sortOrder);
         let properties = document.getElementsByClassName("filterProperty");
         let values = document.getElementsByClassName("filterValue");
 
-        let characteristicList = [];
+        //let characteristicList = [];
+        let characteristicsString = "";
+        let index = 0;
         for (let i = 0; i < properties.length; i++) {
             if (properties[i].value !== null && values[i].value !== null && values[i].checked === true) {
-                characteristicList.push({
-                    property: properties[i].value,
-                    value: values[i].value
-                });
+                characteristicsString += '&[' + index + '].property=' + properties[i].value + '&[' + index + '].value=' + values[i].value;
+                index++;
+                //characteristicList.push({
+                //    property: properties[i].value,
+                //    value: values[i].value
+                //});
             }
         }
 
-        fetch('/home/IndexProducts', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8'
-            },
-            body: JSON.stringify(characteristicList)
-        });
+        //&[0].property=666&[0].value=777&[1].property=888&[1].value=999
+        fetch('/home/AjaxMainFilterIndexProducts?productId=' + productId + '&categoryId=' + categoryId + '&sortOrder=' + sortOrder + characteristicsString)
+            .then((response) => {
+                return response.json();
+            })
+            .then((result) => { // productsCount: int
+                // alert(result.productsCount);
+                let targetId = event.target.id;
+                // alert(targetId);
+                let spanForFilterButton = document.getElementById(targetId + 'spanForFilterButton');
+                if (spanForFilterButton !== null) {
+                    //alert(spanForFilterButton.id);
+                    let filterButton = document.getElementsByName('filterButton');
+                    if (filterButton) {
+                        for (let i = 0; i < filterButton.length; i++) {
+                            if (filterButton[i])
+                                filterButton[i].remove();
+                        }
+                    }
+
+                    let newFilterButton = document.createElement('BUTTON');
+                    newFilterButton.textContent = result.productsCount;
+                    newFilterButton.classList = "badge rounded-pill bg-success text-center ps-4 pe-4 pt-2 pb-2 mb-3 position-absolute";
+                    newFilterButton.style.opacity = "0.8";
+                    newFilterButton.name = "filterButton";
+
+                    if (result.productsCount === 0) {
+                        newFilterButton.disabled = true;
+                        newFilterButton.textContent = result.productsCount;
+                    }
+                    spanForFilterButton.appendChild(newFilterButton);
+                   // }
+                }
+            })
+    }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*@section Scripts {
+        <script>
+    //fetch('/home/AjaxMainFilterIndexProducts', {
+        //    method: 'POST',
+        //    headers: {
+        //        'Content-Type': 'application/json;charset=utf-8'
+        //    },
+        //    body:  JSON.stringify(characteristicList)
+        //});
 
             //.then((response) => {
             //    return response.text();
@@ -220,12 +287,5 @@
             //    mainSearchAjaxResult.style.display = "block";
             //    mainSearchAjaxResult.innerHTML = result;
             //});
-    }
-</script>
-
-
-@*@section Scripts {
-        <script>
-
         </script>
     }*@
