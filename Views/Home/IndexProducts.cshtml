@@ -40,7 +40,7 @@
                                         <label class="form-check-label" for="tvalues">
                                             <span class="fw-bold text-success">@(item.Value)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>(@(item.Count))</span>
                                         </label>
-                                        <span id="@(index)spanForFilterButton" class="ms-5"></span>
+                                        <span id="@(index)spanForFilterButton" class="ms-5 mb-3 pb-3 position-relative"></span>
                                     </div>
 
                                     index++;
@@ -49,7 +49,8 @@
                             }
                         }
 
-                        <input type="submit" class="btn btn-lg btn-primary ps-3 pe-3" value="Filter" />
+                        <input id="submitButton" type="submit" class="btn btn-lg btn-primary ps-3 pe-3 me-5" value="Filter" />
+                        <input id="resetButton" type="button" class="btn btn-lg btn-warning ps-3 pe-3" value="Reset Filters" onclick="resetFilters('@Model.ProductId', '@Model.FilterViewModel.CategoryId', '@Model.SortViewModel.Current')" />
                     </form>
                 </div>
             </div>
@@ -192,12 +193,21 @@
 
 
 <script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("submitButton").disabled = true;
+        //document.getElementById("resetButton").disabled = true;
+    });
+
+
     function onCheckFilter(event, productId, categoryId, sortOrder) {
         // alert(productId + " " + categoryId + " " + sortOrder);
         let properties = document.getElementsByClassName("filterProperty");
         let values = document.getElementsByClassName("filterValue");
 
         //let characteristicList = [];
+
+
         let characteristicsString = "";
         let index = 0;
         for (let i = 0; i < properties.length; i++) {
@@ -218,6 +228,9 @@
             })
             .then((result) => { // productsCount: int
                 // alert(result.productsCount);
+                if (!event) {
+                    return;
+                }
                 let targetId = event.target.id;
                 // alert(targetId);
                 let spanForFilterButton = document.getElementById(targetId + 'spanForFilterButton');
@@ -233,18 +246,41 @@
 
                     let newFilterButton = document.createElement('BUTTON');
                     newFilterButton.textContent = result.productsCount;
-                    newFilterButton.classList = "badge rounded-pill bg-success text-center ps-4 pe-4 pt-2 pb-2 mb-3 position-absolute";
-                    newFilterButton.style.opacity = "0.8";
+                    newFilterButton.classList = "btn btn-sm btn-outline-success badge rounded-pill text-center text-dark ps-5 pe-5 pt-2 pb-2";
+                    //newFilterButton.style.backgroundColor = "white";
                     newFilterButton.name = "filterButton";
 
                     if (result.productsCount === 0) {
                         newFilterButton.disabled = true;
                         newFilterButton.textContent = result.productsCount;
+                        document.getElementById("submitButton").disabled = true;
                     }
+                    document.getElementById("submitButton").disabled = false;
                     spanForFilterButton.appendChild(newFilterButton);
-                   // }
                 }
             })
+    }
+
+    function resetFilters(productId, categoryId, sortOrder) {
+
+        document.getElementById("submitButton").disabled = true;
+
+        let values = document.getElementsByClassName("filterValue");
+        for (var i = 0; i < values.length; i++) {
+            if (values[i].value !== null && values[i].checked === true) {
+                values[i].checked = false;
+            }
+        }
+
+        let filterButton = document.getElementsByName('filterButton');
+        if (filterButton) {
+            for (let i = 0; i < filterButton.length; i++) {
+                if (filterButton[i])
+                    filterButton[i].remove();
+            }
+        }
+
+        onCheckFilter(null, productId, categoryId, sortOrder);
     }
 </script>
 

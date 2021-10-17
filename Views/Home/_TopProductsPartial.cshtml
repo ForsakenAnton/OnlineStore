@@ -3,7 +3,7 @@
 @foreach (var group in Model)
 {
     <h4>
-        TOP offers - @group.CategoryTitle.Item2<sup><a asp-action="IndexCategories" asp-route-categoryId="@group.CategoryTitle.Item1" class="link-info text-decoration-none">@group.Products.Count() amount of goods</a></sup>
+        TOP offers - @group.CategoryTitle.Item2<sup><a asp-action="IndexCategories" asp-route-categoryId="@group.CategoryTitle.Item1" class="link-info text-info text-decoration-none">@group.Products.Count() amount of goods</a></sup>
     </h4>
 
     <div class="container-fluid p-3 mb-5">

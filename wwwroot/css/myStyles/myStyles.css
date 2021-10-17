@@ -19,6 +19,12 @@ body {
     z-index: 1000;
 }
 
+:hover.filter-button {
+    background-color: green;
+    /*color: white;*/
+    transition: all 0.3s ease-in-out;
+}
+
 
 .altetnate-table-hover tr:hover {
     box-shadow: var(--main-box-shadow);
