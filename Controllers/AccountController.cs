@@ -138,9 +138,9 @@ namespace OnlineStore.Controllers
                     }
                 }
 
-
+                string userName = user != null ? user.UserName : model.Email;
                 Microsoft.AspNetCore.Identity.SignInResult signInResult = await _signInManager.PasswordSignInAsync(
-                    user.UserName,  // model.Email,
+                    userName,  // model.Email,
                     model.Password,
                     isPersistent: model.RememberMe, // Флаг, указывающий, должен ли файл cookie для входа сохраняться после закрытия браузера.
                     lockoutOnFailure: false); // Флаг, указывающий, следует ли блокировать учетную запись пользователя в случае сбоя входа.

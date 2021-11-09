@@ -4,7 +4,7 @@
     string isModeratedColor = Model.IsModerated == false ? "bg-warning bg-gradient" : "bg-success bg-gradient";
 
     string isUnauditedCommentBudge = Model.IsModerated == true ? "bi bi-check-circle text-success" : "bi bi-exclamation-triangle text-warning";
-    string isUnauditedCommentText = Model.IsModerated == true ? "Audited comment" : "Unaudited comment";
+    string isUnauditedCommentText = Model.IsModerated == true ? "Audited comment" : "Unaudited answer";
 
     string disabledAllow = Model.IsModerated == true ? "disabled" : "";
     string disabledProhibit = Model.IsModerated == false ? "disabled" : "";

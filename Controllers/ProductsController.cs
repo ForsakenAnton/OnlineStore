@@ -190,7 +190,7 @@ namespace OnlineStore.Controllers
                 }
 
 
-                if (model.categoriesId.Length != 0)
+                if (model.categoriesId != null && model.categoriesId.Length != 0)
                 {
                     for(int i = 0; i < model.categoriesId.Length; i++)
                     {

@@ -40,7 +40,7 @@
                                         <label class="form-check-label" for="tvalues">
                                             <span class="fw-bold text-success">@(item.Value)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>(@(item.Count))</span>
                                         </label>
-                                        <span id="@(index)spanForFilterButton" class="ms-5 mb-3 pb-3 position-relative"></span>
+                                        <span id="@(index)spanForFilterButton" class="ms-5 position-relative"></span>
                                     </div>
 
                                     index++;
@@ -221,7 +221,7 @@
             }
         }
 
-        //&[0].property=666&[0].value=777&[1].property=888&[1].value=999
+        // &[0].property=666&[0].value=777&[1].property=888&[1].value=999
         fetch('/home/AjaxMainFilterIndexProducts?productId=' + productId + '&categoryId=' + categoryId + '&sortOrder=' + sortOrder + characteristicsString)
             .then((response) => {
                 return response.json();
@@ -246,16 +246,17 @@
 
                     let newFilterButton = document.createElement('BUTTON');
                     newFilterButton.textContent = result.productsCount;
-                    newFilterButton.classList = "btn btn-sm btn-outline-success badge rounded-pill text-center text-dark ps-5 pe-5 pt-2 pb-2";
-                    //newFilterButton.style.backgroundColor = "white";
+                    newFilterButton.classList = "btn btn-sm btn-outline-success border border-2 border-warning badge rounded-pill text-center text-dark ps-4 pe-4 pt-1 pb-1 fs-6 position-absolute";
+                    newFilterButton.style.bottom = "-0.2rem";
                     newFilterButton.name = "filterButton";
 
                     if (result.productsCount === 0) {
                         newFilterButton.disabled = true;
                         newFilterButton.textContent = result.productsCount;
                         document.getElementById("submitButton").disabled = true;
+                    } else {
+                        document.getElementById("submitButton").disabled = false;
                     }
-                    document.getElementById("submitButton").disabled = false;
                     spanForFilterButton.appendChild(newFilterButton);
                 }
             })
